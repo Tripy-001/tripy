@@ -8,40 +8,72 @@ const HomePage = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden light-theme dark:dark-theme">
-        {/* Enhanced background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10" />
-        
-        {/* Animated background elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-pulse delay-1000" />
-        </div>
+      <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-screen py-20">
+            {/* Left Content */}
+            <div className="space-y-8">
+              <div className="space-y-6">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
+                  Your Perfect Trip,{' '}
+                  <span className="theme-text-accent">
+                    AI-Crafted
+                  </span>
+                </h1>
+                
+                <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-lg">
+                  Stop spending hours researching. Our AI creates personalized travel itineraries in minutes, learning from millions of real traveler experiences.
+                </p>
+              </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
-              Discover Your Next
-              <span className="gradient-text">
-                {' '}Adventure
-              </span>
-            </h1>
-            
-            <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-              Let AI craft the perfect trip tailored to your interests, budget, and travel style. 
-              From hidden gems to iconic destinations, your dream vacation awaits.
-            </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button 
+                  size="lg" 
+                  className="group text-lg px-8 py-4 theme-bg theme-bg-hover text-primary-foreground border-0 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200"
+                >
+                  Plan Your Adventure
+                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="text-lg px-8 py-4 bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200"
+                >
+                  Watch Demo
+                </Button>
+              </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button size="lg" className="group text-lg px-8 py-4 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                Start Planning
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
+              {/* Social Proof */}
+              <div className="flex items-center gap-8 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  <span>50K+ travelers</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                  <span>4.9/5 rating</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Content - Hero Image */}
+            <div className="relative">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <div className="aspect-[4/3] bg-muted/50 flex items-center justify-center">
+                  <div className="text-center space-y-4">
+                    <div className="w-24 h-24 mx-auto theme-bg rounded-full flex items-center justify-center">
+                      <Globe className="w-12 h-12 text-white" />
+                    </div>
+                    <div className="text-2xl font-bold text-gray-800">Beautiful Destination</div>
+                    <div className="text-gray-600">Your perfect trip awaits</div>
+                  </div>
+                </div>
+              </div>
               
-              <Button variant="outline" size="lg" className="text-lg px-8 py-4 bg-background/80 backdrop-blur-sm shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                <Sparkles className="mr-2 w-5 h-5" />
-                See How It Works
-              </Button>
+              {/* Floating elements */}
+              <div className="absolute -top-4 -right-4 w-8 h-8 bg-accent rounded-full animate-bounce" />
+              <div className="absolute -bottom-4 -left-4 w-6 h-6 bg-primary rounded-full animate-bounce delay-1000" />
             </div>
           </div>
         </div>
@@ -371,7 +403,7 @@ const HomePage = () => {
       {/* CTA Section */}
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="p-12 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-3xl border border-border/50">
+          <div className="p-12 bg-muted/50 rounded-3xl border border-border/50">
             <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
               Ready to Explore the World?
             </h2>
@@ -379,7 +411,7 @@ const HomePage = () => {
               Join thousands of travelers who have discovered their perfect destinations with Tripy
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="text-lg px-8 py-4 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+              <Button size="lg" className="text-lg px-8 py-4 theme-bg theme-bg-hover text-primary-foreground shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                 Get Started Today
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>

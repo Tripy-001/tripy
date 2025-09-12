@@ -11,7 +11,7 @@ const ContactPage = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20 light-theme dark:dark-theme bg-gradient-to-br from-primary/10 via-background to-accent/10">
+      <section className="relative py-20 light-theme dark:dark-theme bg-muted/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Button variant="ghost" asChild className="mb-8">
             <Link href="/">
@@ -21,7 +21,7 @@ const ContactPage = () => {
           </Button>
           
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6">
-            Get in <span className="gradient-text">Touch</span>
+            Get in <span className="theme-text-accent">Touch</span>
           </h1>
           
           <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
