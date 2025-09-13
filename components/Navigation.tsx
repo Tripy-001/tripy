@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogFooter } from '@/components/ui/dialog';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -25,7 +26,7 @@ interface NavigationProps {
 
 const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps) => {
   const router = useRouter();
-  const { user, isAuthenticated, firebaseUser, signInWithGoogle, signOut, setCurrentStep } = useAppStore();
+  const { user, isAuthenticated, firebaseUser, signInWithGoogle, signOut, setCurrentStep, authLoading } = useAppStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -59,6 +60,20 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
     router.push('/signup');
   };
 
+  if (authLoading) {
+    return (
+      <header className="bg-white/80 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 theme-bg rounded-lg flex items-center justify-center">
+              <Loader2 className="w-6 h-6 text-white animate-spin" />
+            </div>
+            <span className="text-xl font-bold text-foreground">tripy</span>
+          </div>
+        </div>
+      </header>
+    );
+  }
   return (
     <header className="bg-white/80 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

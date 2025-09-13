@@ -25,7 +25,7 @@ import { useAppStore } from '@/lib/store';
 
 const DashboardPage = () => {
   const router = useRouter();
-  const { user, trips, createTrip, setCurrentStep } = useAppStore();
+  const { user, trips, createTrip, setCurrentStep, authLoading } = useAppStore();
   const [isCreatingTrip, setIsCreatingTrip] = useState(false);
 
   const handleCreateTrip = () => {
@@ -57,6 +57,13 @@ const DashboardPage = () => {
     }
   };
 
+  if (authLoading) {
+    return <div className="min-h-screen flex items-center justify-center bg-muted/30"><span className="text-lg text-muted-foreground">Loading...</span></div>;
+  }
+  if (!user) {
+    // Optionally, redirect or show nothing if not authenticated
+    return null;
+  }
   return (
     <div className="min-h-screen bg-muted/30">
 
