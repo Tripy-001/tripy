@@ -120,7 +120,7 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
                   <div className="flex items-center space-x-3">
                     <Avatar className="w-8 h-8">
                       <AvatarImage src={firebaseUser?.photoURL || user?.avatar} />
-                      <AvatarFallback>{user?.name?.charAt(0) || firebaseUser?.displayName?.charAt(0) || 'U'}</AvatarFallback>
+                      <AvatarFallback>{user?.displayName?.charAt(0) || firebaseUser?.displayName?.charAt(0) || 'U'}</AvatarFallback>
                     </Avatar>
                     <div className="flex items-center space-x-2">
                       <Button
@@ -228,9 +228,9 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
                         <div className="flex items-center space-x-3 p-2">
                           <Avatar className="w-8 h-8">
                             <AvatarImage src={firebaseUser?.photoURL || user?.avatar} />
-                            <AvatarFallback>{user?.name?.charAt(0) || firebaseUser?.displayName?.charAt(0) || 'U'}</AvatarFallback>
+                            <AvatarFallback>{user?.displayName?.charAt(0) || firebaseUser?.displayName?.charAt(0) || 'U'}</AvatarFallback>
                           </Avatar>
-                          <span className="text-sm font-medium">{user?.name || firebaseUser?.displayName || 'User'}</span>
+                          <span className="text-sm font-medium">{user?.displayName || firebaseUser?.displayName || 'User'}</span>
                         </div>
                         <Button
                           variant="ghost"

@@ -25,9 +25,9 @@ const SigninPage = () => {
 
   const handleSignin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setFieldErrors({});
-    setLoading(true);
+  setError(null);
+  setFieldErrors({});
+  setLoading(true);
     try {
       await signInWithEmail(formData.email, formData.password);
       // Wait for Zustand user to update (profile fetch)
@@ -52,6 +52,7 @@ const SigninPage = () => {
       if (msg.toLowerCase().includes("email")) setFieldErrors((prev) => ({ ...prev, email: msg }));
       else if (msg.toLowerCase().includes("password")) setFieldErrors((prev) => ({ ...prev, password: msg }));
       else setError("Failed to sign in. " + msg);
+      // Do NOT clear formData or reset input fields on error
     }
   };
 

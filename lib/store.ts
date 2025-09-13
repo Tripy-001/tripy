@@ -5,7 +5,7 @@ import { User as FirebaseUser } from 'firebase/auth';
 // User Profile Types
 export interface UserProfile {
   id: string;
-  name: string;
+  displayName: string;
   email: string;
   avatar?: string;
   travelStyle: 'adventure' | 'luxury' | 'budget' | 'cultural' | null;
@@ -197,14 +197,14 @@ export const useAppStore = create<AppState>()(
           });
           if (response.ok) {
             const userData = await response.json();
-            // Always set email and name in Zustand user
+            // Always set email and displayName in Zustand user
             set({
               firebaseUser,
               isAuthenticated: true,
               user: {
                 ...userData.user,
                 email: userData.user.email || firebaseUser.email || '',
-                name: userData.user.displayName || firebaseUser.displayName || '',
+                displayName: userData.user.displayName || firebaseUser.displayName || '',
               },
               currentStep: userData.user.preferences?.travelStyle ? 'dashboard' : 'onboarding',
             });
@@ -219,13 +219,13 @@ export const useAppStore = create<AppState>()(
         }
       },
 
-      signUpWithEmail: async (email, password, name) => {
+  signUpWithEmail: async (email, password, displayName) => {
         try {
           const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth');
           const { auth } = await import('./firebase');
           const result = await createUserWithEmailAndPassword(auth, email, password);
-          if (name) {
-            await updateProfile(result.user, { displayName: name });
+          if (displayName) {
+            await updateProfile(result.user, { displayName });
           }
           // Sync with Firestore
           const response = await fetch('/api/auth/signin', {
@@ -234,7 +234,7 @@ export const useAppStore = create<AppState>()(
             body: JSON.stringify({
               uid: result.user.uid,
               email: result.user.email,
-              displayName: name,
+              displayName,
               photoURL: result.user.photoURL,
             }),
           });
@@ -246,7 +246,7 @@ export const useAppStore = create<AppState>()(
               user: {
                 ...userData.user,
                 email: userData.user.email || result.user.email || '',
-                name: userData.user.displayName || name || '',
+                displayName: userData.user.displayName || displayName || '',
               },
               currentStep: userData.user.preferences?.travelStyle ? 'dashboard' : 'onboarding',
             });
@@ -285,7 +285,7 @@ export const useAppStore = create<AppState>()(
               user: {
                 ...userData.user,
                 email: userData.user.email || result.user.email || '',
-                name: userData.user.displayName || result.user.displayName || '',
+                displayName: userData.user.displayName || result.user.displayName || '',
               },
               currentStep: userData.user.preferences?.travelStyle ? 'dashboard' : 'onboarding',
             });
@@ -369,7 +369,7 @@ export const useAppStore = create<AppState>()(
         const { onboardingData, firebaseUser } = get();
         const user: UserProfile = {
           id: firebaseUser?.uid || crypto.randomUUID(),
-          name: firebaseUser?.displayName || onboardingData.name || '',
+          displayName: firebaseUser?.displayName || onboardingData.displayName || '',
           email: firebaseUser?.email || onboardingData.email || '',
           travelStyle: onboardingData.travelStyle || null,
           interests: onboardingData.interests || [],

@@ -64,7 +64,7 @@ const DashboardPage = () => {
         {/* Welcome Section */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-foreground mb-2">
-            Welcome back, {user?.name || 'Traveler'}! 👋
+            Welcome back, {user?.displayName || 'Traveler'}! 👋
           </h2>
           <p className="text-muted-foreground">
             Ready to plan your next adventure? Let AI craft the perfect trip for you.
