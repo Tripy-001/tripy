@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,7 +25,7 @@ import { useAppStore } from '@/lib/store';
 
 const DashboardPage = () => {
   const router = useRouter();
-  const { user, trips, createTrip, setCurrentStep, authLoading } = useAppStore();
+  const { user, trips, createTrip, setCurrentStep, authLoading, firebaseUser } = useAppStore();
   const [isCreatingTrip, setIsCreatingTrip] = useState(false);
 
   const handleCreateTrip = () => {
@@ -57,12 +57,20 @@ const DashboardPage = () => {
     }
   };
 
-  if (authLoading) {
+  useEffect(() => {
+    if (!authLoading) {
+      if (!firebaseUser) {
+        router.replace('/signin');
+      } else {
+        // Log Firebase token for debugging
+        firebaseUser.getIdToken().then(token => {
+          console.log('Firebase ID Token:', token);
+        });
+      }
+    }
+  }, [authLoading, firebaseUser, router]);
+  if (authLoading || !firebaseUser) {
     return <div className="min-h-screen flex items-center justify-center bg-muted/30"><span className="text-lg text-muted-foreground">Loading...</span></div>;
-  }
-  if (!user) {
-    // Optionally, redirect or show nothing if not authenticated
-    return null;
   }
   return (
     <div className="min-h-screen bg-muted/30">

@@ -1,6 +1,12 @@
 "use client"
 
 import * as React from "react"
+// VisuallyHidden utility for accessibility
+const VisuallyHidden: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <span style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 0 }}>
+    {children}
+  </span>
+);
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { XIcon } from "lucide-react"
 
@@ -54,6 +60,10 @@ function DialogContent({
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
 }) {
+  // Check if children include a DialogTitle
+  const hasDialogTitle = React.Children.toArray(children).some(
+    (child: any) => child?.type?.displayName === 'DialogTitle' || child?.type?.name === 'DialogTitle'
+  );
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
@@ -65,6 +75,11 @@ function DialogContent({
         )}
         {...props}
       >
+        {!hasDialogTitle && (
+          <VisuallyHidden>
+            <DialogTitle>Dialog</DialogTitle>
+          </VisuallyHidden>
+        )}
         {children}
         {showCloseButton && (
           <DialogPrimitive.Close
@@ -77,7 +92,7 @@ function DialogContent({
         )}
       </DialogPrimitive.Content>
     </DialogPortal>
-  )
+  );
 }
 
 function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
