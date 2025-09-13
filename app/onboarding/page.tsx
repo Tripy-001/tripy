@@ -1,31 +1,107 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, ArrowRight, User, Mail, Lock, Eye, EyeOff, Check } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 
 const OnboardingPage = () => {
+  // router already declared above
+  const {
+    onboardingStep,
+    setOnboardingStep,
+    updateOnboardingData,
+    completeOnboarding,
+    isAuthenticated,
+    user,
+    firebaseUser,
+    error,
+    setError,
+    authLoading,
+    onboardingData
+  } = useAppStore();
   const router = useRouter();
-  const { onboardingStep, setOnboardingStep, updateOnboardingData, completeOnboarding } = useAppStore();
-  const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-  });
 
-  const handleNext = () => {
-    if (onboardingStep < 3) {
+  // Redirect logic: must be authenticated, must not have completed onboarding
+  // Track loading state for auth/profile check
+  const [pageLoading, setPageLoading] = useState(true);
+  useEffect(() => {
+    // Only show onboarding if user is authenticated and has NOT completed onboarding (travelStyle missing)
+    if (authLoading) {
+      setPageLoading(true);
+      return;
+    }
+    if (!isAuthenticated || !firebaseUser) {
+      router.replace('/signin');
+      return;
+    }
+    if (user?.preferences?.travelStyle) {
+      router.replace('/dashboard');
+      return;
+    }
+    setPageLoading(false);
+  }, [isAuthenticated, firebaseUser, user, authLoading, router]);
+
+  // Set initial onboarding step only once
+  useEffect(() => {
+    if (isAuthenticated && firebaseUser && !user?.travelStyle) {
+      console.log('Setting initial onboarding step to 0');
+      setOnboardingStep(0);
+    }
+  }, [isAuthenticated, firebaseUser, user?.travelStyle, setOnboardingStep]);
+
+  const handleNext = async () => {
+    console.log('handleNext called, current step:', onboardingStep, 'onboardingData:', onboardingData);
+    if (onboardingStep < 2) {
+      console.log('About to advance step from', onboardingStep, 'to', onboardingStep + 1);
       setOnboardingStep(onboardingStep + 1);
+      console.log('setOnboardingStep called');
     } else {
-      completeOnboarding();
-      router.push('/dashboard');
+      // Complete onboarding and save preferences to Firebase
+      if (!firebaseUser || !firebaseUser.uid) {
+        setError('You must be signed in to complete onboarding.');
+        return;
+      }
+      if (user && user.id && user.id !== firebaseUser.uid) {
+        setError('You are not authorized to update this profile.');
+        return;
+      }
+      try {
+        const response = await fetch(`/api/users/${firebaseUser.uid}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            preferences: {
+              travelStyle: onboardingData.travelStyle,
+              interests: onboardingData.interests,
+              budgetRange: onboardingData.budgetPreference,
+              previousExperience: onboardingData.previousExperience
+            }
+          }),
+        });
+        if (response.ok) {
+          // Update Zustand store with new preferences in user.preferences
+          updateOnboardingData({
+            travelStyle: onboardingData.travelStyle,
+            interests: onboardingData.interests,
+            budgetPreference: onboardingData.budgetPreference,
+            previousExperience: onboardingData.previousExperience
+          });
+          // Also update user.preferences in Zustand
+          // (user object is updated by useFirebaseAuth on next reload, but for instant UX)
+          completeOnboarding();
+          router.push('/dashboard');
+        } else {
+          setError('Error saving preferences.');
+        }
+      } catch (error) {
+        setError('Error saving preferences.');
+        console.error('Error saving preferences:', error);
+      }
     }
   };
 
@@ -35,76 +111,16 @@ const OnboardingPage = () => {
     }
   };
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = (field: string, value: any) => {
+    console.log('handleInputChange called:', field, value);
     updateOnboardingData({ [field]: value });
   };
+
+  // No sign-in logic in onboarding anymore
 
   const renderStep = () => {
     switch (onboardingStep) {
       case 0:
-        return (
-          <div className="space-y-6">
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 mx-auto theme-bg rounded-full flex items-center justify-center">
-                <User className="w-8 h-8 text-white" />
-              </div>
-              <h2 className="text-3xl font-bold text-foreground">Welcome to Tripy</h2>
-              <p className="text-muted-foreground max-w-md mx-auto">
-                Let's create your account and start planning amazing trips with AI
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="Enter your full name"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
-                  className="h-12"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  className="h-12"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Create a password"
-                    value={formData.password}
-                    onChange={(e) => handleInputChange('password', e.target.value)}
-                    className="h-12 pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 1:
         return (
           <div className="space-y-6">
             <div className="text-center space-y-4">
@@ -124,7 +140,7 @@ const OnboardingPage = () => {
                 <Card
                   key={style.id}
                   className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${
-                    formData.travelStyle === style.id ? 'ring-2 ring-primary bg-primary/5' : ''
+                    onboardingData.travelStyle === style.id ? 'ring-2 ring-primary bg-primary/5' : ''
                   }`}
                   onClick={() => handleInputChange('travelStyle', style.id)}
                 >
@@ -139,7 +155,7 @@ const OnboardingPage = () => {
           </div>
         );
 
-      case 2:
+      case 1:
         return (
           <div className="space-y-6">
             <div className="text-center space-y-4">
@@ -163,10 +179,10 @@ const OnboardingPage = () => {
                 <Card
                   key={interest.id}
                   className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${
-                    formData.interests?.includes(interest.id) ? 'ring-2 ring-primary bg-primary/5' : ''
+                    onboardingData.interests?.includes(interest.id) ? 'ring-2 ring-primary bg-primary/5' : ''
                   }`}
                   onClick={() => {
-                    const currentInterests = formData.interests || [];
+                    const currentInterests = onboardingData.interests || [];
                     const newInterests = currentInterests.includes(interest.id)
                       ? currentInterests.filter(i => i !== interest.id)
                       : [...currentInterests, interest.id];
@@ -183,7 +199,7 @@ const OnboardingPage = () => {
           </div>
         );
 
-      case 3:
+      case 2:
         return (
           <div className="space-y-6">
             <div className="text-center space-y-4">
@@ -205,7 +221,7 @@ const OnboardingPage = () => {
                     <Card
                       key={budget.id}
                       className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${
-                        formData.budgetPreference === budget.id ? 'ring-2 ring-primary bg-primary/5' : ''
+                        onboardingData.budgetPreference === budget.id ? 'ring-2 ring-primary bg-primary/5' : ''
                       }`}
                       onClick={() => handleInputChange('budgetPreference', budget.id)}
                     >
@@ -229,7 +245,7 @@ const OnboardingPage = () => {
                     <Card
                       key={exp.id}
                       className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${
-                        formData.previousExperience === exp.id ? 'ring-2 ring-primary bg-primary/5' : ''
+                        onboardingData.previousExperience === exp.id ? 'ring-2 ring-primary bg-primary/5' : ''
                       }`}
                       onClick={() => handleInputChange('previousExperience', exp.id)}
                     >
@@ -250,25 +266,22 @@ const OnboardingPage = () => {
     }
   };
 
+  if (pageLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/30">
+        <Loader2 className="w-12 h-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-muted/30 flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         <Card className="shadow-2xl border-0">
           <CardHeader className="text-center pb-8">
-            <div className="flex items-center justify-between mb-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleBack}
-                disabled={onboardingStep === 0}
-                className="invisible"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
-              
+            <div className="flex items-center justify-center mb-4">
               <div className="flex space-x-2">
-                {[0, 1, 2, 3].map((step) => (
+                {[0, 1, 2].map((step) => (
                   <div
                     key={step}
                     className={`w-3 h-3 rounded-full transition-all duration-200 ${
@@ -277,34 +290,32 @@ const OnboardingPage = () => {
                   />
                 ))}
               </div>
-              
+            </div>
+          </CardHeader>
+          <CardContent className="px-8 pb-8">
+            {renderStep()}
+            <div className="mt-8 flex justify-between">
               <Button
-                variant="ghost"
-                size="sm"
                 onClick={handleBack}
+                className="px-6"
+                variant="outline"
                 disabled={onboardingStep === 0}
+                type="button"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
-            </div>
-          </CardHeader>
-          
-          <CardContent className="px-8 pb-8">
-            {renderStep()}
-            
-            <div className="mt-8 flex justify-end">
               <Button
                 onClick={handleNext}
                 className="theme-bg theme-bg-hover text-primary-foreground px-8"
                 disabled={
-                  (onboardingStep === 0 && (!formData.name || !formData.email || !formData.password)) ||
-                  (onboardingStep === 1 && !formData.travelStyle) ||
-                  (onboardingStep === 2 && (!formData.interests || formData.interests.length === 0)) ||
-                  (onboardingStep === 3 && (!formData.budgetPreference || !formData.previousExperience))
+                  (onboardingStep === 0 && !onboardingData.travelStyle) ||
+                  (onboardingStep === 1 && (!onboardingData.interests || onboardingData.interests.length === 0)) ||
+                  (onboardingStep === 2 && (!onboardingData.budgetPreference || !onboardingData.previousExperience))
                 }
+                type="button"
               >
-                {onboardingStep === 3 ? 'Complete Setup' : 'Continue'}
+                {onboardingStep === 2 ? 'Complete Setup' : 'Continue'}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>

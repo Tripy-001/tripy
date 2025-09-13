@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { User as FirebaseUser } from 'firebase/auth';
 
 // User Profile Types
 export interface UserProfile {
@@ -15,6 +16,13 @@ export interface UserProfile {
   accessibilityNeeds: string[];
   createdAt: Date;
   updatedAt: Date;
+  // Firestore shape for compatibility
+  preferences?: {
+    travelStyle?: string | null;
+    interests?: string[];
+    budgetRange?: string | null;
+    previousExperience?: string | null;
+  };
 }
 
 // Trip Types
@@ -78,6 +86,8 @@ export interface AppState {
   // User state
   user: UserProfile | null;
   isAuthenticated: boolean;
+  firebaseUser: FirebaseUser | null;
+  authLoading: boolean;
   
   // Trip state
   trips: Trip[];
@@ -100,9 +110,17 @@ export interface AppState {
   // Actions
   setUser: (user: UserProfile | null) => void;
   setAuthenticated: (isAuthenticated: boolean) => void;
+  setFirebaseUser: (user: FirebaseUser | null) => void;
+  setAuthLoading: (loading: boolean) => void;
   setCurrentStep: (step: AppState['currentStep']) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
+  
+  // Firebase Auth Actions
+  signInWithGoogle: () => Promise<void>;
+  signUpWithEmail: (email: string, password: string, name: string) => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signOut: () => Promise<void>;
   
   // Trip actions
   createTrip: (trip: Omit<Trip, 'id' | 'createdAt' | 'updatedAt'>) => void;
@@ -135,6 +153,8 @@ export const useAppStore = create<AppState>()(
       // Initial state
       user: null,
       isAuthenticated: false,
+      firebaseUser: null,
+      authLoading: true,
       trips: [],
       currentTrip: null,
       activeTrip: null,
@@ -149,9 +169,155 @@ export const useAppStore = create<AppState>()(
       // User actions
       setUser: (user) => set({ user }),
       setAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
+      setFirebaseUser: (firebaseUser) => set({ firebaseUser }),
+      setAuthLoading: (authLoading) => set({ authLoading }),
       setCurrentStep: (currentStep) => set({ currentStep }),
       setLoading: (isLoading) => set({ isLoading }),
       setError: (error) => set({ error }),
+      
+      // Firebase Auth Actions
+
+      signInWithGoogle: async () => {
+        try {
+          const { GoogleAuthProvider, signInWithPopup } = await import('firebase/auth');
+          const { auth } = await import('./firebase');
+          const provider = new GoogleAuthProvider();
+          const result = await signInWithPopup(auth, provider);
+          const firebaseUser = result.user;
+          // Call API to create/get user profile
+          const response = await fetch('/api/auth/signin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              uid: firebaseUser.uid,
+              email: firebaseUser.email,
+              displayName: firebaseUser.displayName,
+              photoURL: firebaseUser.photoURL,
+            }),
+          });
+          if (response.ok) {
+            const userData = await response.json();
+            // Always set email and name in Zustand user
+            set({
+              firebaseUser,
+              isAuthenticated: true,
+              user: {
+                ...userData.user,
+                email: userData.user.email || firebaseUser.email || '',
+                name: userData.user.displayName || firebaseUser.displayName || '',
+              },
+              currentStep: userData.user.preferences?.travelStyle ? 'dashboard' : 'onboarding',
+            });
+          }
+        } catch (error: any) {
+          if (error.code === 'auth/account-exists-with-different-credential') {
+            set({ error: 'Account exists with different sign-in method. Please use the correct provider.' });
+          } else {
+            set({ error: 'Failed to sign in with Google' });
+          }
+          console.error('Authentication error:', error);
+        }
+      },
+
+      signUpWithEmail: async (email, password, name) => {
+        try {
+          const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth');
+          const { auth } = await import('./firebase');
+          const result = await createUserWithEmailAndPassword(auth, email, password);
+          if (name) {
+            await updateProfile(result.user, { displayName: name });
+          }
+          // Sync with Firestore
+          const response = await fetch('/api/auth/signin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              uid: result.user.uid,
+              email: result.user.email,
+              displayName: name,
+              photoURL: result.user.photoURL,
+            }),
+          });
+          if (response.ok) {
+            const userData = await response.json();
+            set({
+              firebaseUser: result.user,
+              isAuthenticated: true,
+              user: {
+                ...userData.user,
+                email: userData.user.email || result.user.email || '',
+                name: userData.user.displayName || name || '',
+              },
+              currentStep: userData.user.preferences?.travelStyle ? 'dashboard' : 'onboarding',
+            });
+          }
+        } catch (error: any) {
+          if (error.code === 'auth/email-already-in-use') {
+            set({ error: 'Email already in use. Please sign in instead.' });
+          } else {
+            set({ error: 'Failed to sign up with email' });
+          }
+          console.error('Email sign-up error:', error);
+        }
+      },
+
+      signInWithEmail: async (email, password) => {
+        try {
+          const { signInWithEmailAndPassword } = await import('firebase/auth');
+          const { auth } = await import('./firebase');
+          const result = await signInWithEmailAndPassword(auth, email, password);
+          // Sync with Firestore
+          const response = await fetch('/api/auth/signin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              uid: result.user.uid,
+              email: result.user.email,
+              displayName: result.user.displayName,
+              photoURL: result.user.photoURL,
+            }),
+          });
+          if (response.ok) {
+            const userData = await response.json();
+            set({
+              firebaseUser: result.user,
+              isAuthenticated: true,
+              user: {
+                ...userData.user,
+                email: userData.user.email || result.user.email || '',
+                name: userData.user.displayName || result.user.displayName || '',
+              },
+              currentStep: userData.user.preferences?.travelStyle ? 'dashboard' : 'onboarding',
+            });
+          }
+        } catch (error: any) {
+          if (error.code === 'auth/wrong-password') {
+            set({ error: 'Incorrect password.' });
+          } else if (error.code === 'auth/user-not-found') {
+            set({ error: 'No user found with this email.' });
+          } else {
+            set({ error: 'Failed to sign in with email' });
+          }
+          console.error('Email sign-in error:', error);
+        }
+      },
+
+      signOut: async () => {
+        try {
+          const { signOut } = await import('firebase/auth');
+          const { auth } = await import('./firebase');
+          await signOut(auth);
+          set({
+            user: null,
+            isAuthenticated: false,
+            firebaseUser: null,
+            currentStep: 'onboarding',
+          });
+        } catch (error) {
+          console.error('Logout error:', error);
+          set({ error: 'Failed to sign out' });
+        }
+      },
       
       // Trip actions
       createTrip: (tripData) => {
@@ -200,11 +366,11 @@ export const useAppStore = create<AppState>()(
       },
       
       completeOnboarding: () => {
-        const { onboardingData } = get();
+        const { onboardingData, firebaseUser } = get();
         const user: UserProfile = {
-          id: crypto.randomUUID(),
-          name: onboardingData.name || '',
-          email: onboardingData.email || '',
+          id: firebaseUser?.uid || crypto.randomUUID(),
+          name: firebaseUser?.displayName || onboardingData.name || '',
+          email: firebaseUser?.email || onboardingData.email || '',
           travelStyle: onboardingData.travelStyle || null,
           interests: onboardingData.interests || [],
           budgetPreference: onboardingData.budgetPreference || null,
@@ -214,7 +380,6 @@ export const useAppStore = create<AppState>()(
           createdAt: new Date(),
           updatedAt: new Date(),
         };
-        
         set({
           user,
           isAuthenticated: true,

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogFooter } from '@/components/ui/dialog';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -24,8 +25,9 @@ interface NavigationProps {
 
 const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps) => {
   const router = useRouter();
-  const { user, isAuthenticated, setCurrentStep } = useAppStore();
+  const { user, isAuthenticated, firebaseUser, signInWithGoogle, signOut, setCurrentStep } = useAppStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleCreateTrip = () => {
     if (isAuthenticated) {
@@ -36,9 +38,25 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
     }
   };
 
-  const handleLogout = () => {
-    // TODO: Implement logout functionality
-    console.log('Logout');
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      setShowLogoutModal(false);
+      router.push('/');
+    } catch (error) {
+      setShowLogoutModal(false);
+      console.error('Logout error:', error);
+    }
+  };
+
+
+
+  const handleSignInRedirect = () => {
+    router.push('/signin');
+  };
+
+  const handleSignupRedirect = () => {
+    router.push('/signup');
   };
 
   return (
@@ -101,7 +119,8 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
                 {isAuthenticated ? (
                   <div className="flex items-center space-x-3">
                     <Avatar className="w-8 h-8">
-                      <AvatarFallback>{user?.name?.charAt(0) || 'U'}</AvatarFallback>
+                      <AvatarImage src={firebaseUser?.photoURL || user?.avatar} />
+                      <AvatarFallback>{user?.name?.charAt(0) || firebaseUser?.displayName?.charAt(0) || 'U'}</AvatarFallback>
                     </Avatar>
                     <div className="flex items-center space-x-2">
                       <Button
@@ -114,7 +133,7 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={handleLogout}
+                        onClick={() => setShowLogoutModal(true)}
                       >
                         <LogOut className="w-4 h-4" />
                       </Button>
@@ -124,12 +143,12 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
                   <div className="flex items-center space-x-2">
                     <Button
                       variant="ghost"
-                      onClick={() => router.push('/onboarding')}
+                      onClick={handleSignInRedirect}
                     >
                       Sign In
                     </Button>
                     <Button
-                      onClick={() => router.push('/onboarding')}
+                      onClick={handleSignupRedirect}
                       className="theme-bg theme-bg-hover text-primary-foreground"
                     >
                       Get Started
@@ -208,9 +227,10 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
                       <div className="space-y-2">
                         <div className="flex items-center space-x-3 p-2">
                           <Avatar className="w-8 h-8">
-                            <AvatarFallback>{user?.name?.charAt(0) || 'U'}</AvatarFallback>
+                            <AvatarImage src={firebaseUser?.photoURL || user?.avatar} />
+                            <AvatarFallback>{user?.name?.charAt(0) || firebaseUser?.displayName?.charAt(0) || 'U'}</AvatarFallback>
                           </Avatar>
-                          <span className="text-sm font-medium">{user?.name || 'User'}</span>
+                          <span className="text-sm font-medium">{user?.name || firebaseUser?.displayName || 'User'}</span>
                         </div>
                         <Button
                           variant="ghost"
@@ -227,7 +247,7 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
                           variant="ghost"
                           className="w-full justify-start"
                           onClick={() => {
-                            handleLogout();
+                            setShowLogoutModal(true);
                             setIsMobileMenuOpen(false);
                           }}
                         >
@@ -241,7 +261,7 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
                           variant="ghost"
                           className="w-full"
                           onClick={() => {
-                            router.push('/onboarding');
+                            handleSignInRedirect();
                             setIsMobileMenuOpen(false);
                           }}
                         >
@@ -249,7 +269,7 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
                         </Button>
                         <Button
                           onClick={() => {
-                            router.push('/onboarding');
+                            handleSignupRedirect();
                             setIsMobileMenuOpen(false);
                           }}
                           className="w-full gradient-primary gradient-primary-hover text-white"
@@ -265,6 +285,22 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
           </div>
         )}
       </div>
+      <Dialog open={showLogoutModal} onOpenChange={setShowLogoutModal}>
+        <DialogContent>
+          <DialogHeader>
+            <div className="text-lg font-semibold text-foreground">Confirm Logout</div>
+          </DialogHeader>
+          <div className="py-2 text-muted-foreground">Are you sure you want to log out?</div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowLogoutModal(false)}>
+              Cancel
+            </Button>
+            <Button className="theme-bg theme-bg-hover text-primary-foreground" onClick={handleLogout}>
+              Logout
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </header>
   );
 };
