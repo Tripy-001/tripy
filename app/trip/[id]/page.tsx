@@ -1,12 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { 
   ArrowLeft, 
   MapPin, 
@@ -16,29 +15,29 @@ import {
   Users,
   Star,
   Edit3,
-  Save,
   Share2,
   Download,
   Plus,
-  Trash2,
   GripVertical
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 
 interface TripDetailPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
+
 
 const TripDetailPage = ({ params }: TripDetailPageProps) => {
   const router = useRouter();
+  const localParams = React.use(params)
   const { trips, updateTrip, setCurrentTrip } = useAppStore();
   const [isEditing, setIsEditing] = useState(false);
   const [editingDay, setEditingDay] = useState<string | null>(null);
   const [newActivity, setNewActivity] = useState('');
 
-  const trip = trips.find(t => t.id === params.id);
+  const trip = trips.find(t => t.id === localParams.id);
 
   if (!trip) {
     return (
