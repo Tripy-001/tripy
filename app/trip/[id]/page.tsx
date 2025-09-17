@@ -18,9 +18,13 @@ import {
   Share2,
   Download,
   Plus,
-  GripVertical
+  GripVertical,
+  CheckCircle
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
+import { AI_RESPONSE } from '@/app/constant';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import GoogleMapsPreview from '@/components/GoogleMapsPreview';
 
 interface TripDetailPageProps {
   params: Promise<{
@@ -36,6 +40,96 @@ const TripDetailPage = ({ params }: TripDetailPageProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingDay, setEditingDay] = useState<string | null>(null);
   const [newActivity, setNewActivity] = useState('');
+
+  const response = AI_RESPONSE;
+
+  // Map AI response to our store types
+  const mapCategory = (raw?: string | null): 'attraction' | 'restaurant' | 'activity' | 'transport' | 'accommodation' => {
+    if (!raw) return 'activity';
+    const lc = raw.toLowerCase();
+    if (lc.includes('restaurant') || lc.includes('food') || lc.includes('cafe')) return 'restaurant';
+    if (lc.includes('hotel') || lc.includes('stay') || lc.includes('accommodation')) return 'accommodation';
+    if (lc.includes('transport') || lc.includes('bus') || lc.includes('train') || lc.includes('taxi')) return 'transport';
+    return 'attraction';
+  };
+
+  const mapAiToDayPlans = React.useCallback((ai: any) => {
+    const days: any[] = ai?.daily_itineraries || [];
+    return days.map((day: any) => {
+      const allBlocks = [
+        { label: 'Morning', key: 'morning' },
+        { label: 'Lunch', key: 'lunch' },
+        { label: 'Afternoon', key: 'afternoon' },
+        { label: 'Evening', key: 'evening' },
+      ];
+      const activities: any[] = [];
+      allBlocks.forEach((block) => {
+        const section = day?.[block.key];
+        if (!section) return;
+        // Handle lunch special shape
+        if (block.key === 'lunch' && section?.restaurant) {
+          const restaurant = section.restaurant;
+          const durationHours = section?.duration_hours ?? restaurant?.duration_hours;
+          const cost = section?.estimated_cost_per_person ?? restaurant?.estimated_cost ?? 0;
+          activities.push({
+            id: crypto.randomUUID(),
+            name: restaurant?.name || 'Lunch',
+            description: restaurant?.description || 'Lunch',
+            location: restaurant?.address || restaurant?.name || ai?.destination || 'Location',
+            duration: typeof durationHours === 'number' ? Math.round(durationHours * 60) : 60,
+            cost: typeof cost === 'number' ? cost : parseFloat(cost || '0') || 0,
+            category: 'restaurant',
+            rating: typeof restaurant?.rating === 'number' ? restaurant.rating : 0,
+            coordinates: {
+              lat: restaurant?.coordinates?.lat ?? 0,
+              lng: restaurant?.coordinates?.lng ?? 0,
+            },
+            weatherDependent: false,
+            redditInsights: restaurant?.why_recommended || '',
+            completed: false,
+          });
+          return;
+        }
+        const items = section?.activities || [];
+        items.forEach((item: any) => {
+          const place = item?.activity || {};
+          const durationHours = place?.duration_hours ?? item?.duration_hours;
+          const cost = item?.estimated_cost_per_person ?? place?.estimated_cost ?? 0;
+          activities.push({
+            id: crypto.randomUUID(),
+            name: place?.name || item?.activity_type || 'Activity',
+            description: place?.description || item?.activity_type || '',
+            location: place?.address || place?.name || ai?.destination || 'Location',
+            duration: typeof durationHours === 'number' ? Math.round(durationHours * 60) : 60,
+            cost: typeof cost === 'number' ? cost : parseFloat(cost || '0') || 0,
+            category: mapCategory(place?.category),
+            rating: typeof place?.rating === 'number' ? place.rating : 0,
+            coordinates: {
+              lat: place?.coordinates?.lat ?? 0,
+              lng: place?.coordinates?.lng ?? 0,
+            },
+            weatherDependent: !!item?.weather_dependent,
+            redditInsights: place?.why_recommended || '',
+            completed: false,
+          });
+        });
+      });
+      return {
+        id: crypto.randomUUID(),
+        date: day?.date || new Date().toISOString(),
+        activities,
+        totalCost: parseFloat(day?.daily_total_cost || '0') || 0,
+        weather: {
+          temperature: 0,
+          condition: '',
+          icon: '',
+        },
+        notes: Array.isArray(day?.daily_notes) ? day.daily_notes.join(' \n') : '',
+      };
+    });
+  }, [response?.destination]);
+
+  const aiDayPlans = React.useMemo(() => mapAiToDayPlans(response), [mapAiToDayPlans, response]);
 
   const trip = trips.find(t => t.id === localParams.id);
 
@@ -106,6 +200,60 @@ const TripDetailPage = ({ params }: TripDetailPageProps) => {
     }
   };
 
+  // Import helpers from AI preview
+  const importAllAI = () => {
+    if (!aiDayPlans?.length) return;
+    const willReplace = trip.dayPlans.length > 0 ? confirm('Replace your current itinerary with the AI plan? This will overwrite your days.') : true;
+    if (!willReplace) return;
+    updateTrip(trip.id, { dayPlans: aiDayPlans });
+  };
+
+  // removed per-day/per-activity import actions from UI per request
+
+  // Convert raw AI item (activity or restaurant) into our Activity and add it
+  const mapRawItemToActivity = (raw: any): any => {
+    const place = raw?.activity || raw?.restaurant || raw || {};
+    const durationHours = raw?.duration_hours ?? place?.duration_hours;
+    const cost = raw?.estimated_cost_per_person ?? place?.estimated_cost ?? 0;
+    return {
+      id: crypto.randomUUID(),
+      name: place?.name || raw?.activity_type || 'Activity',
+      description: place?.description || raw?.activity_type || '',
+      location: place?.address || place?.name || response?.destination || 'Location',
+      duration: typeof durationHours === 'number' ? Math.round(durationHours * 60) : 60,
+      cost: typeof cost === 'number' ? cost : parseFloat(cost || '0') || 0,
+      category: mapCategory(place?.category || (raw?.restaurant ? 'restaurant' : undefined)),
+      rating: typeof place?.rating === 'number' ? place.rating : 0,
+      coordinates: {
+        lat: place?.coordinates?.lat ?? 0,
+        lng: place?.coordinates?.lng ?? 0,
+      },
+      weatherDependent: !!raw?.weather_dependent,
+      redditInsights: place?.why_recommended || '',
+      completed: false,
+    };
+  };
+
+  const addSingleAIActivityFromRaw = (dayDate: string, rawItem: any) => {
+    const activity = mapRawItemToActivity(rawItem);
+    const existingDay = trip.dayPlans.find(d => new Date(d.date).toDateString() === new Date(dayDate).toDateString());
+    if (existingDay) {
+      updateTrip(trip.id, {
+        dayPlans: trip.dayPlans.map(d => d.id === existingDay.id ? { ...d, activities: [...d.activities, activity] } : d)
+      });
+    } else {
+      const newDay = {
+        id: crypto.randomUUID(),
+        date: dayDate,
+        activities: [activity],
+        totalCost: activity.cost || 0,
+        weather: { temperature: 0, condition: '', icon: '' },
+        notes: '',
+      };
+      updateTrip(trip.id, { dayPlans: [...trip.dayPlans, newDay] });
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'planning': return 'bg-yellow-100 text-yellow-800';
@@ -155,6 +303,247 @@ const TripDetailPage = ({ params }: TripDetailPageProps) => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* AI Itinerary Preview */}
+        <Card className="glass-card mb-8">
+          <CardHeader>
+            <div className="flex items-start justify-between">
+              <div className="space-y-2">
+                <CardTitle className="text-2xl">AI Itinerary Preview</CardTitle>
+                <CardDescription>Generated plan based on your inputs. Import fully or cherry-pick days and activities.</CardDescription>
+              </div>
+              <div className="flex gap-2"></div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {/* Summary chips */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
+              <div className="flex items-center space-x-2"><MapPin className="w-4 h-4 text-muted-foreground" /><span className="text-sm">{response.origin} → {response.destination}</span></div>
+              <div className="flex items-center space-x-2"><Calendar className="w-4 h-4 text-muted-foreground" /><span className="text-sm">{response.trip_duration_days} day(s)</span></div>
+              <div className="flex items-center space-x-2"><Users className="w-4 h-4 text-muted-foreground" /><span className="text-sm">{response.group_size} people</span></div>
+              <div className="flex items-center space-x-2"><DollarSign className="w-4 h-4 text-muted-foreground" /><span className="text-sm">{response.total_budget} {response.currency}</span></div>
+              <div className="flex items-center space-x-2"><Star className="w-4 h-4 text-muted-foreground" /><span className="text-sm">{response.travel_style}</span></div>
+              <div className="flex items-center space-x-2"><Clock className="w-4 h-4 text-muted-foreground" /><span className="text-sm">{response.activity_level}</span></div>
+            </div>
+
+            {/* Day-wise accordion */}
+            <Accordion type="single" collapsible className="w-full">
+              {response.daily_itineraries?.map((day: any, idx: number) => (
+                <AccordionItem value={`day-${idx + 1}`} key={idx}>
+                  <AccordionTrigger>
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center gap-3">
+                        <Badge variant="secondary">Day {day.day_number}</Badge>
+                        <span className="text-sm text-muted-foreground">{new Date(day.date).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline">{day.daily_total_cost || '—'} {response.currency}</Badge>
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-6">
+                      {(['morning','lunch','afternoon','evening'] as const).map((sectionKey) => {
+                        const section: any = day?.[sectionKey];
+                        if (!section) return null;
+                        // Special lunch shape rendering (single restaurant)
+                        if (sectionKey === 'lunch' && section.restaurant) {
+                          const restaurant = section.restaurant;
+                          return (
+                            <div key={sectionKey} className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <h4 className="text-sm font-semibold capitalize">{sectionKey}</h4>
+                                <span className="text-xs text-muted-foreground">{typeof section.duration_hours === 'number' ? `${section.duration_hours} hrs` : ''}</span>
+                              </div>
+                              <div className="p-4 rounded-lg border bg-card hover:shadow-md transition-all">
+                                <div className="flex items-start justify-between gap-3">
+                                  <div className="min-w-0">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      <span className="font-medium truncate">{restaurant.name || 'Lunch'}</span>
+                                      {restaurant.category && <Badge variant="outline" className="truncate">{restaurant.category}</Badge>}
+                                      {typeof restaurant.rating === 'number' && (
+                                        <div className="flex items-center gap-0.5">
+                                          {[...Array(5)].map((_, i) => (
+                                            <Star key={i} className={`w-3 h-3 ${i < Math.round(restaurant.rating) ? 'text-yellow-400 fill-current' : 'text-muted-foreground'}`} />
+                                          ))}
+                                        </div>
+                                      )}
+                                    </div>
+                                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{restaurant.description || 'Lunch'}</p>
+                                    <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2 flex-wrap">
+                                      <span className="flex items-center"><Clock className="w-3 h-3 mr-1" />{restaurant.duration_hours ? `${restaurant.duration_hours} hrs` : '—'}</span>
+                                      <span className="flex items-center"><DollarSign className="w-3 h-3 mr-1" />{section.estimated_cost_per_person ?? restaurant.estimated_cost ?? 0} {response.currency}</span>
+                                      {restaurant.address && <span className="flex items-center"><MapPin className="w-3 h-3 mr-1" />{restaurant.address}</span>}
+                                    </div>
+                                    <div className="mt-3">
+                                      <GoogleMapsPreview
+                                        lat={restaurant?.coordinates?.lat}
+                                        lng={restaurant?.coordinates?.lng}
+                                        placeId={restaurant?.place_id}
+                                        name={restaurant?.name}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-2"></div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
+                        if (!section.activities || section.activities.length === 0) return null;
+                        return (
+                          <div key={sectionKey} className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <h4 className="text-sm font-semibold capitalize">{sectionKey}</h4>
+                              <span className="text-xs text-muted-foreground">{typeof section.total_duration_hours === 'number' ? `${section.total_duration_hours} hrs` : ''}</span>
+                            </div>
+                            <div className="space-y-3">
+                              {section.activities.map((act: any, aIdx: number) => {
+                                const place = act.activity || {};
+                                return (
+                                  <div key={aIdx} className="p-4 rounded-lg border bg-card hover:shadow-md transition-all">
+                                    <div className="flex items-start justify-between gap-3">
+                                      <div className="min-w-0">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                          <span className="font-medium truncate">{place.name || act.activity_type}</span>
+                                          {place.category && <Badge variant="outline" className="truncate">{place.category}</Badge>}
+                                          {typeof place.rating === 'number' && (
+                                            <div className="flex items-center gap-0.5">
+                                              {[...Array(5)].map((_, i) => (
+                                                <Star key={i} className={`w-3 h-3 ${i < Math.round(place.rating) ? 'text-yellow-400 fill-current' : 'text-muted-foreground'}`} />
+                                              ))}
+                                            </div>
+                                          )}
+                                        </div>
+                                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{place.description || act.activity_type}</p>
+                                        <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2 flex-wrap">
+                                          <span className="flex items-center"><Clock className="w-3 h-3 mr-1" />{place.duration_hours ? `${place.duration_hours} hrs` : '—'}</span>
+                                          <span className="flex items-center"><DollarSign className="w-3 h-3 mr-1" />{act.estimated_cost_per_person ?? place.estimated_cost ?? 0} {response.currency}</span>
+                                          {place.address && <span className="flex items-center"><MapPin className="w-3 h-3 mr-1" />{place.address}</span>}
+                                        </div>
+                                        <div className="mt-3">
+                                          <GoogleMapsPreview
+                                            lat={place?.coordinates?.lat}
+                                            lng={place?.coordinates?.lng}
+                                            placeId={place?.place_id}
+                                            name={place?.name}
+                                          />
+                                        </div>
+                                      </div>
+                                      <div className="flex items-center gap-2"></div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+
+            {/* Budget & Accommodation */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+              <Card className="glass-card">
+                <CardHeader>
+                  <CardTitle className="text-lg">Budget breakdown</CardTitle>
+                  <CardDescription>How the estimated costs are distributed</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="flex items-center gap-2"><DollarSign className="w-4 h-4 text-muted-foreground" />Total: {response.budget_breakdown?.total_budget} {response.budget_breakdown?.currency || response.currency}</div>
+                    <div>Food: {response.budget_breakdown?.food_cost} {response.budget_breakdown?.currency || response.currency}</div>
+                    <div>Activities: {response.budget_breakdown?.activities_cost} {response.budget_breakdown?.currency || response.currency}</div>
+                    <div>Transport: {response.budget_breakdown?.transport_cost} {response.budget_breakdown?.currency || response.currency}</div>
+                    <div>Misc: {response.budget_breakdown?.miscellaneous_cost} {response.budget_breakdown?.currency || response.currency}</div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="glass-card">
+                <CardHeader>
+                  <CardTitle className="text-lg">Accommodation</CardTitle>
+                  <CardDescription>Top picks you can book</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {response.accommodations?.primary_recommendation && (
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between">
+                        <div className="font-medium">{response.accommodations.primary_recommendation.name}</div>
+                        <Badge variant="outline">Primary</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{response.accommodations.primary_recommendation.address}</p>
+                      {response.accommodations.primary_recommendation.website && (
+                        <a className="text-xs underline" href={response.accommodations.primary_recommendation.website} target="_blank" rel="noreferrer">Visit website</a>
+                      )}
+                    </div>
+                  )}
+                  <div className="space-y-3">
+                    {response.accommodations?.alternative_options?.map((opt: any, i: number) => (
+                      <div key={i} className="p-3 rounded-md border">
+                        <div className="font-medium">{opt.name}</div>
+                        <p className="text-sm text-muted-foreground">{opt.address}</p>
+                        {opt.website && (
+                          <a className="text-xs underline" href={opt.website} target="_blank" rel="noreferrer">Visit website</a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            {/* Transportation */}
+            <Card className="glass-card mt-6">
+              <CardHeader>
+                <CardTitle className="text-lg">Transportation</CardTitle>
+                <CardDescription>Transfers, local modes, and daily costs</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                  <div>
+                    <div className="font-medium mb-2">Airport transfers</div>
+                    <div className="space-y-1 text-muted-foreground">
+                      {response.transportation?.airport_transfers?.arrival && (
+                        <div>Arrival: {response.transportation.airport_transfers.arrival.mode} · {response.transportation.airport_transfers.arrival.estimated_cost} {response.currency}</div>
+                      )}
+                      {response.transportation?.airport_transfers?.departure && (
+                        <div>Departure: {response.transportation.airport_transfers.departure.mode} · {response.transportation.airport_transfers.departure.estimated_cost} {response.currency}</div>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-medium mb-2">Local transport</div>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {(response.transportation?.local_transport_guide?.modes || []).map((m: string, i: number) => (
+                        <Badge key={i} variant="secondary" className="capitalize">{m.replaceAll('_',' ')}</Badge>
+                      ))}
+                    </div>
+                    <p className="text-muted-foreground">{response.transportation?.local_transport_guide?.notes}</p>
+                  </div>
+                  <div>
+                    <div className="font-medium mb-2">Daily transport costs</div>
+                    <div className="space-y-1 text-muted-foreground">
+                      {response.transportation?.daily_transport_costs && Object.entries(response.transportation.daily_transport_costs).map(([k,v]: any, i: number) => (
+                        <div key={i}>{k}: {v} {response.currency}</div>
+                      ))}
+                    </div>
+                    {response.transportation?.recommended_apps?.length ? (
+                      <div className="mt-3">
+                        <div className="font-medium">Recommended apps</div>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {response.transportation.recommended_apps.map((app: string, i: number) => (
+                            <Badge key={i} variant="outline">{app}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </CardContent>
+        </Card>
         {/* Trip Overview */}
         <Card className="glass-card mb-8">
           <CardHeader>
