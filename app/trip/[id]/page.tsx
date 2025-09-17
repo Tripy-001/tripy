@@ -19,7 +19,8 @@ import {
   Download,
   Plus,
   GripVertical,
-  CheckCircle
+  CheckCircle,
+  Utensils
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { AI_RESPONSE } from '@/app/constant';
@@ -325,124 +326,225 @@ const TripDetailPage = ({ params }: TripDetailPageProps) => {
               <div className="flex items-center space-x-2"><Clock className="w-4 h-4 text-muted-foreground" /><span className="text-sm">{response.activity_level}</span></div>
             </div>
 
-            {/* Day-wise accordion */}
-            <Accordion type="single" collapsible className="w-full">
-              {response.daily_itineraries?.map((day: any, idx: number) => (
-                <AccordionItem value={`day-${idx + 1}`} key={idx}>
-                  <AccordionTrigger>
-                    <div className="flex items-center justify-between w-full">
-                      <div className="flex items-center gap-3">
-                        <Badge variant="secondary">Day {day.day_number}</Badge>
-                        <span className="text-sm text-muted-foreground">{new Date(day.date).toLocaleDateString()}</span>
+            {/* Day-wise timeline accordion */}
+            <div className="relative">
+              {/* Main timeline line */}
+              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500 opacity-30"></div>
+              
+              <Accordion type="single" collapsible defaultValue="day-1" className="w-full space-y-4">
+                {response.daily_itineraries?.map((day: any, idx: number) => (
+                  <AccordionItem key={idx} value={`day-${idx + 1}`} className="border-0 bg-transparent">
+                    <AccordionTrigger className="relative pl-16 py-6 hover:no-underline group">
+                      {/* Timeline dot */}
+                      <div className="absolute left-4 top-6 w-4 h-4 rounded-full theme-bg border-4 border-white dark:border-gray-900 shadow-lg z-10 group-hover:scale-110 transition-transform"></div>
+                      
+                      <div className="flex items-center justify-between w-full pr-4">
+                        <div className="flex flex-col items-start gap-2">
+                          <div className="flex items-center gap-3">
+                            <Badge variant="secondary" className="px-3 py-1">Day {day.day_number}</Badge>
+                            <h3 className="text-lg font-semibold text-foreground">{day.theme}</h3>
+                          </div>
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <Calendar className="w-4 h-4" />
+                              {new Date(day.date).toLocaleDateString()}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-4 h-4" />
+                              {day.daily_notes && day.daily_notes.length > 0 ? 'Full day' : 'Activities planned'}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Badge variant="outline" className="px-3 py-1 font-medium">
+                            {day.daily_total_cost || '—'} {response.currency}
+                          </Badge>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline">{day.daily_total_cost || '—'} {response.currency}</Badge>
-                      </div>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-6">
-                      {(['morning','lunch','afternoon','evening'] as const).map((sectionKey) => {
-                        const section: any = day?.[sectionKey];
-                        if (!section) return null;
-                        // Special lunch shape rendering (single restaurant)
-                        if (sectionKey === 'lunch' && section.restaurant) {
-                          const restaurant = section.restaurant;
-                          return (
-                            <div key={sectionKey} className="space-y-3">
-                              <div className="flex items-center justify-between">
-                                <h4 className="text-sm font-semibold capitalize">{sectionKey}</h4>
-                                <span className="text-xs text-muted-foreground">{typeof section.duration_hours === 'number' ? `${section.duration_hours} hrs` : ''}</span>
-                              </div>
-                              <div className="p-4 rounded-lg border bg-card hover:shadow-md transition-all">
-                                <div className="flex items-start justify-between gap-3">
-                                  <div className="min-w-0">
-                                    <div className="flex items-center gap-2 flex-wrap">
-                                      <span className="font-medium truncate">{restaurant.name || 'Lunch'}</span>
-                                      {restaurant.category && <Badge variant="outline" className="truncate">{restaurant.category}</Badge>}
-                                      {typeof restaurant.rating === 'number' && (
-                                        <div className="flex items-center gap-0.5">
-                                          {[...Array(5)].map((_, i) => (
-                                            <Star key={i} className={`w-3 h-3 ${i < Math.round(restaurant.rating) ? 'text-yellow-400 fill-current' : 'text-muted-foreground'}`} />
-                                          ))}
-                                        </div>
-                                      )}
-                                    </div>
-                                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{restaurant.description || 'Lunch'}</p>
-                                    <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2 flex-wrap">
-                                      <span className="flex items-center"><Clock className="w-3 h-3 mr-1" />{restaurant.duration_hours ? `${restaurant.duration_hours} hrs` : '—'}</span>
-                                      <span className="flex items-center"><DollarSign className="w-3 h-3 mr-1" />{section.estimated_cost_per_person ?? restaurant.estimated_cost ?? 0} {response.currency}</span>
-                                      {restaurant.address && <span className="flex items-center"><MapPin className="w-3 h-3 mr-1" />{restaurant.address}</span>}
-                                    </div>
-                                    <div className="mt-3">
-                                      <GoogleMapsPreview
-                                        lat={restaurant?.coordinates?.lat}
-                                        lng={restaurant?.coordinates?.lng}
-                                        placeId={restaurant?.place_id}
-                                        name={restaurant?.name}
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="flex items-center gap-2"></div>
-                                </div>
-                              </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="relative pl-16 pb-8">
+                        <div className="rounded-2xl border bg-gradient-to-br from-white/80 to-gray-50/50 dark:from-gray-900/80 dark:to-gray-800/50 backdrop-blur-sm p-6 shadow-lg">
+                          {/* Day summary */}
+                          {day.daily_notes && day.daily_notes.length > 0 && (
+                            <div className="mb-6 p-4 rounded-xl bg-blue-50/50 dark:bg-blue-900/20 border border-blue-200/50 dark:border-blue-800/50">
+                              <p className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed">
+                                {Array.isArray(day.daily_notes) ? day.daily_notes.join(' ') : day.daily_notes}
+                              </p>
                             </div>
-                          );
-                        }
-                        if (!section.activities || section.activities.length === 0) return null;
-                        return (
-                          <div key={sectionKey} className="space-y-3">
-                            <div className="flex items-center justify-between">
-                              <h4 className="text-sm font-semibold capitalize">{sectionKey}</h4>
-                              <span className="text-xs text-muted-foreground">{typeof section.total_duration_hours === 'number' ? `${section.total_duration_hours} hrs` : ''}</span>
-                            </div>
-                            <div className="space-y-3">
-                              {section.activities.map((act: any, aIdx: number) => {
-                                const place = act.activity || {};
+                          )}
+                          
+                          <div className="space-y-8">
+                            {(['morning','lunch','afternoon','evening'] as const).map((sectionKey) => {
+                              const section: any = day?.[sectionKey];
+                              if (!section) return null;
+                              
+                              // Section header
+                              const sectionIcons = {
+                                morning: '🌅',
+                                lunch: '🍽️',
+                                afternoon: '☀️',
+                                evening: '🌅'
+                              };
+                              
+                              if (sectionKey === 'lunch' && section.restaurant) {
+                                const restaurant = section.restaurant;
                                 return (
-                                  <div key={aIdx} className="p-4 rounded-lg border bg-card hover:shadow-md transition-all">
-                                    <div className="flex items-start justify-between gap-3">
-                                      <div className="min-w-0">
-                                        <div className="flex items-center gap-2 flex-wrap">
-                                          <span className="font-medium truncate">{place.name || act.activity_type}</span>
-                                          {place.category && <Badge variant="outline" className="truncate">{place.category}</Badge>}
-                                          {typeof place.rating === 'number' && (
-                                            <div className="flex items-center gap-0.5">
-                                              {[...Array(5)].map((_, i) => (
-                                                <Star key={i} className={`w-3 h-3 ${i < Math.round(place.rating) ? 'text-yellow-400 fill-current' : 'text-muted-foreground'}`} />
-                                              ))}
+                                  <div key={sectionKey} className="space-y-4">
+                                    <div className="flex items-center gap-3 pb-2 border-b border-border/50">
+                                      <span className="text-lg">{sectionIcons[sectionKey]}</span>
+                                      <h4 className="text-lg font-semibold capitalize text-foreground">{sectionKey}</h4>
+                                      <Badge variant="secondary" className="ml-auto">
+                                        {typeof section.duration_hours === 'number' ? `${section.duration_hours} hrs` : 'Meal time'}
+                                      </Badge>
+                                    </div>
+                                    
+                                    <div className="p-6 rounded-xl border bg-gradient-to-br from-orange-50/50 to-amber-50/50 dark:from-orange-900/20 dark:to-amber-900/20 hover:shadow-lg transition-all duration-300">
+                                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                        <div className="space-y-4">
+                                          <div className="flex items-start gap-3">
+                                            <div className="p-2 rounded-lg bg-orange-100 dark:bg-orange-900/50">
+                                              <Utensils className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                                            </div>
+                                            <div className="flex-1">
+                                              <h5 className="font-semibold text-lg text-foreground">{restaurant.name || 'Lunch'}</h5>
+                                              <div className="flex items-center gap-2 mt-1">
+                                                {restaurant.category && <Badge variant="outline">{restaurant.category}</Badge>}
+                                                {typeof restaurant.rating === 'number' && (
+                                                  <div className="flex items-center gap-0.5">
+                                                    {[...Array(5)].map((_, i) => (
+                                                      <Star key={i} className={`w-4 h-4 ${i < Math.round(restaurant.rating) ? 'text-yellow-500 fill-current' : 'text-muted-foreground'}`} />
+                                                    ))}
+                                                    <span className="text-sm text-muted-foreground ml-1">({restaurant.rating})</span>
+                                                  </div>
+                                                )}
+                                              </div>
+                                            </div>
+                                          </div>
+                                          
+                                          <p className="text-sm text-muted-foreground leading-relaxed">{restaurant.description || 'Lunch'}</p>
+                                          
+                                          <div className="grid grid-cols-2 gap-4 text-sm">
+                                            <div className="flex items-center gap-2">
+                                              <Clock className="w-4 h-4 text-muted-foreground" />
+                                              <span>{restaurant.duration_hours ? `${restaurant.duration_hours} hrs` : '—'}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                              <DollarSign className="w-4 h-4 text-muted-foreground" />
+                                              <span>{section.estimated_cost_per_person ?? restaurant.estimated_cost ?? 0} {response.currency}</span>
+                                            </div>
+                                          </div>
+                                          
+                                          {restaurant.address && (
+                                            <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                                              <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                                              <span className="leading-relaxed">{restaurant.address}</span>
                                             </div>
                                           )}
                                         </div>
-                                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{place.description || act.activity_type}</p>
-                                        <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2 flex-wrap">
-                                          <span className="flex items-center"><Clock className="w-3 h-3 mr-1" />{place.duration_hours ? `${place.duration_hours} hrs` : '—'}</span>
-                                          <span className="flex items-center"><DollarSign className="w-3 h-3 mr-1" />{act.estimated_cost_per_person ?? place.estimated_cost ?? 0} {response.currency}</span>
-                                          {place.address && <span className="flex items-center"><MapPin className="w-3 h-3 mr-1" />{place.address}</span>}
-                                        </div>
-                                        <div className="mt-3">
+                                        
+                                        <div>
                                           <GoogleMapsPreview
-                                            lat={place?.coordinates?.lat}
-                                            lng={place?.coordinates?.lng}
-                                            placeId={place?.place_id}
-                                            name={place?.name}
+                                            lat={restaurant?.coordinates?.lat}
+                                            lng={restaurant?.coordinates?.lng}
+                                            placeId={restaurant?.place_id}
+                                            name={restaurant?.name}
+                                            ratio={16 / 10}
+                                            className="w-full"
                                           />
                                         </div>
                                       </div>
-                                      <div className="flex items-center gap-2"></div>
                                     </div>
                                   </div>
                                 );
-                              })}
-                            </div>
+                              }
+                              
+                              if (!section.activities || section.activities.length === 0) return null;
+                              
+                              return (
+                                <div key={sectionKey} className="space-y-4">
+                                  <div className="flex items-center gap-3 pb-2 border-b border-border/50">
+                                    <span className="text-lg">{sectionIcons[sectionKey]}</span>
+                                    <h4 className="text-lg font-semibold capitalize text-foreground">{sectionKey}</h4>
+                                    <Badge variant="secondary" className="ml-auto">
+                                      {typeof section.total_duration_hours === 'number' ? `${section.total_duration_hours} hrs` : 'Activities'}
+                                    </Badge>
+                                  </div>
+                                  
+                                  <div className="grid gap-4">
+                                    {section.activities.map((act: any, aIdx: number) => {
+                                      const place = act.activity || {};
+                                      return (
+                                        <div key={aIdx} className="p-6 rounded-xl border bg-gradient-to-br from-blue-50/50 to-indigo-50/50 dark:from-blue-900/20 dark:to-indigo-900/20 hover:shadow-lg transition-all duration-300">
+                                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                            <div className="space-y-4">
+                                              <div className="flex items-start gap-3">
+                                                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/50">
+                                                  <MapPin className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                                </div>
+                                                <div className="flex-1">
+                                                  <h5 className="font-semibold text-lg text-foreground">{place.name || act.activity_type}</h5>
+                                                  <div className="flex items-center gap-2 mt-1">
+                                                    {place.category && <Badge variant="outline">{place.category}</Badge>}
+                                                    {typeof place.rating === 'number' && (
+                                                      <div className="flex items-center gap-0.5">
+                                                        {[...Array(5)].map((_, i) => (
+                                                          <Star key={i} className={`w-4 h-4 ${i < Math.round(place.rating) ? 'text-yellow-500 fill-current' : 'text-muted-foreground'}`} />
+                                                        ))}
+                                                        <span className="text-sm text-muted-foreground ml-1">({place.rating})</span>
+                                                      </div>
+                                                    )}
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              
+                                              <p className="text-sm text-muted-foreground leading-relaxed">{place.description || act.activity_type}</p>
+                                              
+                                              <div className="grid grid-cols-2 gap-4 text-sm">
+                                                <div className="flex items-center gap-2">
+                                                  <Clock className="w-4 h-4 text-muted-foreground" />
+                                                  <span>{place.duration_hours ? `${place.duration_hours} hrs` : '—'}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                  <DollarSign className="w-4 h-4 text-muted-foreground" />
+                                                  <span>{act.estimated_cost_per_person ?? place.estimated_cost ?? 0} {response.currency}</span>
+                                                </div>
+                                              </div>
+                                              
+                                              {place.address && (
+                                                <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                                                  <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                                                  <span className="leading-relaxed">{place.address}</span>
+                                                </div>
+                                              )}
+                                            </div>
+                                            
+                                            <div>
+                                              <GoogleMapsPreview
+                                                lat={place?.coordinates?.lat}
+                                                lng={place?.coordinates?.lng}
+                                                placeId={place?.place_id}
+                                                name={place?.name}
+                                                ratio={16 / 10}
+                                                className="w-full"
+                                              />
+                                            </div>
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              );
+                            })}
                           </div>
-                        );
-                      })}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
 
             {/* Budget & Accommodation */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">

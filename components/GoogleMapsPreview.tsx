@@ -1,16 +1,18 @@
 'use client';
 
 import React from 'react';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 interface GoogleMapsPreviewProps {
   lat?: number;
   lng?: number;
   placeId?: string;
   name?: string;
-  height?: number;
+  ratio?: number;
+  className?: string;
 }
 
-const GoogleMapsPreview: React.FC<GoogleMapsPreviewProps> = ({ lat, lng, placeId, name, height = 180 }) => {
+const GoogleMapsPreview: React.FC<GoogleMapsPreviewProps> = ({ lat, lng, placeId, name, ratio = 16 / 10, className }) => {
   const hasCoords = typeof lat === 'number' && typeof lng === 'number';
   const mapSrc = hasCoords
     ? `https://www.google.com/maps?q=${lat},${lng}&z=15&output=embed`
@@ -23,30 +25,25 @@ const GoogleMapsPreview: React.FC<GoogleMapsPreviewProps> = ({ lat, lng, placeId
       : undefined;
 
   return (
-    <div className="relative rounded-lg overflow-hidden border bg-muted/20">
+    <div className={`relative rounded-lg overflow-hidden border bg-muted/20 ${className || ''}`}>
       {mapSrc ? (
-        <iframe
-          title={name || 'Map preview'}
-          loading="lazy"
-          src={mapSrc}
-          style={{ border: 0, width: '100%', height }}
-          referrerPolicy="no-referrer-when-downgrade"
-          aria-hidden="false"
-        />
+        <AspectRatio ratio={ratio}>
+          <iframe
+            title={name || 'Map preview'}
+            loading="lazy"
+            src={mapSrc}
+            className="w-full h-full"
+            style={{ border: 0 }}
+            referrerPolicy="no-referrer-when-downgrade"
+            aria-hidden="false"
+          />
+        </AspectRatio>
       ) : (
-        <div className="p-4 text-sm text-muted-foreground" style={{ height }}>
-          Map preview unavailable
-        </div>
-      )}
-      {openHref && (
-        <a
-          href={openHref}
-          target="_blank"
-          rel="noreferrer"
-          className="absolute bottom-2 left-2 theme-bg theme-bg-hover text-primary-foreground text-xs px-3 py-1 rounded-md shadow-md"
-        >
-          Open in Google Maps
-        </a>
+        <AspectRatio ratio={ratio}>
+          <div className="flex items-center justify-center h-full p-4 text-sm text-muted-foreground bg-muted/10">
+            <span>Map preview unavailable</span>
+          </div>
+        </AspectRatio>
       )}
     </div>
   );

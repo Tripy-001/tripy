@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Form } from '@/components/ui/form';
 import { 
@@ -17,7 +17,6 @@ import {
   DollarSign,
   Heart,
   Home,
-  Car,
   Star,
   CheckCircle
 } from 'lucide-react';
@@ -138,7 +137,7 @@ export const TripCreationForm = () => {
       case 6: return ['must_visit_places', 'must_try_cuisines', 'avoid_places', 'previous_visits', 'language_preferences'];
       default: return [];
     }
-  };
+  }; 
 
   const renderStep = () => {
     switch (currentStep) {
