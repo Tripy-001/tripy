@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
   Plus, 
   MapPin, 
@@ -17,15 +16,15 @@ import {
   Plane, 
   Clock,
   TrendingUp,
-  Globe,
   Heart,
-  X
+  X,
+  RefreshCw
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 
 const DashboardPage = () => {
   const router = useRouter();
-  const { user, trips, createTrip, setCurrentStep, authLoading, firebaseUser } = useAppStore();
+  const { user, trips, createTrip, setCurrentStep, authLoading, firebaseUser, fetchUserTrips, isLoading, error } = useAppStore();
   const [isCreatingTrip, setIsCreatingTrip] = useState(false);
 
   const handleCreateTrip = () => {
@@ -62,13 +61,11 @@ const DashboardPage = () => {
       if (!firebaseUser) {
         router.replace('/signin');
       } else {
-        // Log Firebase token for debugging
-        firebaseUser.getIdToken().then(token => {
-          console.log('Firebase ID Token:', token);
-        });
+        // Fetch user trips when component mounts
+        fetchUserTrips();
       }
     }
-  }, [authLoading, firebaseUser, router]);
+  }, [authLoading, firebaseUser, router, fetchUserTrips]);
   if (authLoading || !firebaseUser) {
     return <div className="min-h-screen flex items-center justify-center bg-muted/30"><span className="text-lg text-muted-foreground">Loading...</span></div>;
   }
@@ -122,9 +119,9 @@ const DashboardPage = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Countries Visited</p>
+                  <p className="text-sm font-medium text-muted-foreground">Destinations</p>
                   <p className="text-2xl font-bold text-foreground">
-                    {new Set(trips.map(trip => trip.destination.split(',')[1]?.trim()).filter(Boolean)).size}
+                    {new Set(trips.map(trip => trip.destination.split('→')[1]?.trim()).filter(Boolean)).size}
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
@@ -140,7 +137,7 @@ const DashboardPage = () => {
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Total Spent</p>
                   <p className="text-2xl font-bold text-foreground">
-                    ${trips.reduce((sum, trip) => sum + trip.totalCost, 0).toLocaleString()}
+                    ₹{trips.reduce((sum, trip) => sum + trip.totalCost, 0).toLocaleString()}
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -194,13 +191,58 @@ const DashboardPage = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-semibold text-foreground">Your Trips</h3>
-            <Button variant="outline" size="sm">
-              View All
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => fetchUserTrips()}
+                disabled={isLoading}
+              >
+                <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+              <Button variant="outline" size="sm">
+                View All
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
           </div>
 
-          {trips.length === 0 ? (
+          {/* Error State */}
+          {error && (
+            <Card className="glass-card border-red-200">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <X className="w-8 h-8 text-red-600" />
+                </div>
+                <h4 className="text-lg font-semibold text-foreground mb-2">Error Loading Trips</h4>
+                <p className="text-muted-foreground mb-4">{error}</p>
+                <Button
+                  onClick={() => fetchUserTrips()}
+                  variant="outline"
+                  size="sm"
+                >
+                  Try Again
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Loading State */}
+          {isLoading && !error && (
+            <Card className="glass-card">
+              <CardContent className="p-12 text-center">
+                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+                  <Plane className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <h4 className="text-lg font-semibold text-foreground mb-2">Loading your trips...</h4>
+                <p className="text-muted-foreground">Please wait while we fetch your travel data</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Empty State */}
+          {!isLoading && !error && trips.length === 0 && (
             <Card className="glass-card">
               <CardContent className="p-12 text-center">
                 <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
@@ -219,7 +261,10 @@ const DashboardPage = () => {
                 </Button>
               </CardContent>
             </Card>
-          ) : (
+          )}
+
+          {/* Trips Grid */}
+          {!isLoading && !error && trips.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {trips.slice(0, 6).map((trip) => (
                 <Card 
@@ -259,7 +304,7 @@ const DashboardPage = () => {
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center text-muted-foreground">
                           <DollarSign className="w-4 h-4 mr-1" />
-                          ${trip.totalCost.toLocaleString()}
+                          ₹{trip.totalCost.toLocaleString()}
                         </div>
                         <div className="flex items-center text-muted-foreground">
                           <Clock className="w-4 h-4 mr-1" />

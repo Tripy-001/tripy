@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 type PublicTrip = {
   source_trip_id?: string;
@@ -31,6 +32,7 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasInitialized, setHasInitialized] = useState<boolean>(false);
 
   const buildUrl = useCallback(
     (cursor?: string | null) => {
@@ -63,12 +65,15 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
       setIsLoading(false);
       setIsFirstLoad(false);
     }
-  }, [buildUrl, isLoading, nextCursor]);
+  }, [buildUrl, nextCursor]); // Removed isLoading from dependencies
 
   useEffect(() => {
-    fetchPage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // Only fetch on initial load, prevent duplicate calls from React StrictMode
+    if (!hasInitialized && !isLoading) {
+      setHasInitialized(true);
+      fetchPage();
+    }
+  }, [fetchPage, hasInitialized, isLoading]);
 
   const gridCols = useMemo(() => "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6", []);
 
@@ -80,7 +85,8 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
 
       <div className={gridCols}>
         {trips.map((trip, idx) => (
-          <Card key={`${trip.source_trip_id}-${idx}`} className="overflow-hidden hover:shadow-lg transition-shadow">
+          <Link href={`/explore/trip/${trip.source_trip_id}`} key={`${trip.source_trip_id}-${idx}`}>
+          <Card className="overflow-hidden hover:shadow-lg transition-shadow">
             {trip.thumbnail_url ? (
               <div className="w-full aspect-[4/3] bg-muted/40 overflow-hidden">
                 {/* Using img to avoid external domain config for Next/Image */}
@@ -110,6 +116,7 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
               </p>
             </CardContent>
           </Card>
+          </Link>
         ))}
 
         {isLoading && (

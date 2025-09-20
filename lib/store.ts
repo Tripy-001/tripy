@@ -137,6 +137,8 @@ export interface AppState {
   deleteTrip: (id: string) => void;
   setCurrentTrip: (trip: Trip | null) => void;
   setActiveTrip: (trip: Trip | null) => void;
+  fetchUserTrips: () => Promise<void>;
+  setTrips: (trips: Trip[]) => void;
   
   // Onboarding actions
   setOnboardingStep: (step: number) => void;
@@ -376,6 +378,73 @@ export const useAppStore = create<AppState>()(
       
       setCurrentTrip: (currentTrip) => set({ currentTrip }),
       setActiveTrip: (activeTrip) => set({ activeTrip }),
+      
+      setTrips: (trips) => set({ trips }),
+      
+      fetchUserTrips: async () => {
+        try {
+          set({ isLoading: true, error: null });
+          
+          const { firebaseUser } = get();
+          if (!firebaseUser) {
+            throw new Error('User not authenticated');
+          }
+
+          const token = await firebaseUser.getIdToken();
+          const response = await fetch(`/api/trips?userId=${firebaseUser.uid}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to fetch trips');
+          }
+
+          const data = await response.json();
+          
+          // Transform API response to match our Trip interface
+          const transformedTrips: Trip[] = data.trips.map((trip: any) => {
+            
+            // Calculate duration from start and end dates
+            const startDate = new Date(trip.userInput.start_date);
+            const endDate = new Date(trip.userInput.end_date);
+            const duration = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+            
+            return {
+              id: trip.id,
+              title: `${trip.userInput.destination} Adventure` || 'Untitled Trip',
+              destination: `${trip.userInput.origin} → ${trip.userInput.destination}`,
+              startDate: trip.userInput.start_date,
+              endDate: trip.userInput.end_date,
+              duration: duration,
+              travelers: trip.userInput.group_size || 1,
+              budget: trip.userInput.total_budget || 0,
+              status: trip.status === 'processing' ? 'planning' : trip.status || 'planning',
+              dayPlans: trip.itinerary || [],
+              totalCost: trip.userInput.total_budget || 0,
+              createdAt: new Date(trip.createdAt),
+              updatedAt: new Date(trip.updatedAt),
+              shared: false, // Default to private
+              shareId: undefined,
+              aiPreferences: {
+                activityIntensity: trip.userInput.activity_level || 'moderate',
+                mustSeePlaces: trip.userInput.must_visit_places || [],
+                budgetAdherence: 80, // Default value
+              },
+            };
+          });
+
+          set({ trips: transformedTrips, isLoading: false });
+        } catch (error) {
+          console.error('Error fetching trips:', error);
+          const errorMessage = error instanceof Error ? error.message : 'Failed to fetch trips';
+          set({ error: errorMessage, isLoading: false });
+        }
+      },
       
       // Onboarding actions
       setOnboardingStep: (onboardingStep) => set({ onboardingStep }),
