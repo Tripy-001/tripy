@@ -1,6 +1,9 @@
 import { create } from 'zustand';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { auth as clientAuth, db } from '@/lib/firebase';
 import { persist } from 'zustand/middleware';
 import { User as FirebaseUser } from 'firebase/auth';
+import type { TripPlanRequest } from '@/lib/schemas/trip-plan';
 
 // User Profile Types
 export interface UserProfile {
@@ -98,6 +101,11 @@ export interface AppState {
   currentStep: 'onboarding' | 'dashboard' | 'trip-creation' | 'trip-active' | 'trip-review';
   isLoading: boolean;
   error: string | null;
+
+  // Generation state
+  isGenerating?: boolean;
+  currentTripId?: string | null;
+  currentItinerary?: unknown | null;
   
   // Onboarding state
   onboardingStep: number;
@@ -115,6 +123,7 @@ export interface AppState {
   setCurrentStep: (step: AppState['currentStep']) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
+  resetCurrentTrip?: () => void;
   
   // Firebase Auth Actions
   signInWithGoogle: () => Promise<void>;
@@ -145,6 +154,10 @@ export interface AppState {
   rateActivity: (tripId: string, dayId: string, activityId: string, rating: number) => void;
   addActivityNote: (tripId: string, dayId: string, activityId: string, note: string) => void;
   addActivityPhoto: (tripId: string, dayId: string, activityId: string, photoUrl: string) => void;
+
+  // AI itinerary actions
+  startItineraryGeneration?: (userInput: TripPlanRequest) => Promise<void>;
+  listenToTripUpdates?: (tripId: string) => () => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -161,6 +174,9 @@ export const useAppStore = create<AppState>()(
       currentStep: 'onboarding',
       isLoading: false,
       error: null,
+  isGenerating: false,
+  currentTripId: null,
+  currentItinerary: null,
       onboardingStep: 0,
       onboardingData: {},
       tripCreationStep: 0,
@@ -174,6 +190,7 @@ export const useAppStore = create<AppState>()(
       setCurrentStep: (currentStep) => set({ currentStep }),
       setLoading: (isLoading) => set({ isLoading }),
       setError: (error) => set({ error }),
+  resetCurrentTrip: () => set({ currentTripId: null, currentItinerary: null, isGenerating: false, error: null }),
       
       // Firebase Auth Actions
 
@@ -209,8 +226,9 @@ export const useAppStore = create<AppState>()(
               currentStep: userData.user.preferences?.travelStyle ? 'dashboard' : 'onboarding',
             });
           }
-        } catch (error: any) {
-          if (error.code === 'auth/account-exists-with-different-credential') {
+        } catch (error: unknown) {
+          const err = error as { code?: string } | undefined;
+          if (err?.code === 'auth/account-exists-with-different-credential') {
             set({ error: 'Account exists with different sign-in method. Please use the correct provider.' });
           } else {
             set({ error: 'Failed to sign in with Google' });
@@ -251,8 +269,9 @@ export const useAppStore = create<AppState>()(
               currentStep: userData.user.preferences?.travelStyle ? 'dashboard' : 'onboarding',
             });
           }
-        } catch (error: any) {
-          if (error.code === 'auth/email-already-in-use') {
+        } catch (error: unknown) {
+          const err = error as { code?: string } | undefined;
+          if (err?.code === 'auth/email-already-in-use') {
             set({ error: 'Email already in use. Please sign in instead.' });
           } else {
             set({ error: 'Failed to sign up with email' });
@@ -290,10 +309,11 @@ export const useAppStore = create<AppState>()(
               currentStep: userData.user.preferences?.travelStyle ? 'dashboard' : 'onboarding',
             });
           }
-        } catch (error: any) {
-          if (error.code === 'auth/wrong-password') {
+        } catch (error: unknown) {
+          const err = error as { code?: string } | undefined;
+          if (err?.code === 'auth/wrong-password') {
             set({ error: 'Incorrect password.' });
-          } else if (error.code === 'auth/user-not-found') {
+          } else if (err?.code === 'auth/user-not-found') {
             set({ error: 'No user found with this email.' });
           } else {
             set({ error: 'Failed to sign in with email' });
@@ -453,6 +473,57 @@ export const useAppStore = create<AppState>()(
         const activity = day?.activities.find((a) => a.id === activityId);
         const photos = [...(activity?.photos || []), photoUrl];
         get().updateActivity(tripId, dayId, activityId, { photos });
+      },
+
+      // AI itinerary actions
+      startItineraryGeneration: async (userInput) => {
+        // Initialize generation state
+        set({ isGenerating: true, error: null, currentItinerary: null, currentTripId: null });
+
+        const user = clientAuth.currentUser;
+        if (!user) {
+          set({ error: 'User not authenticated.', isGenerating: false });
+          return;
+        }
+        const token = await user.getIdToken();
+
+        try {
+          const response = await fetch('/api/trips/generate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(userInput),
+          });
+
+          const data = await response.json();
+          if (!response.ok || !data?.success) {
+            throw new Error(data?.error || 'Failed to start generation.');
+          }
+
+          set({ currentTripId: data.tripId });
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : 'Failed to start generation.';
+          set({ error: message, isGenerating: false });
+        }
+      },
+
+      listenToTripUpdates: (tripId: string) => {
+        const tripRef = doc(db, 'trips', tripId);
+
+        const unsubscribe = onSnapshot(tripRef, (docSnap) => {
+          if (docSnap.exists()) {
+            const tripData = docSnap.data() as { status?: string; itinerary?: unknown; error?: string };
+            if (tripData.status === 'completed' && tripData.itinerary) {
+              set({ currentItinerary: tripData.itinerary, isGenerating: false, error: null });
+            } else if (tripData.status === 'failed') {
+              set({ error: tripData.error || 'Itinerary generation failed.', isGenerating: false });
+            }
+          }
+        });
+
+        return unsubscribe;
       },
     }),
     {
