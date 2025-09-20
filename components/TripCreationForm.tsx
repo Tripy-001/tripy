@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -29,6 +29,7 @@ import { AccommodationTransportStep } from '@/components/form-steps/Accommodatio
 import { SpecialRequirementsStep } from '@/components/form-steps/SpecialRequirementsStep';
 import { AdditionalInfoStep } from '@/components/form-steps/AdditionalInfoStep';
 import { SummaryStep } from '@/components/form-steps/SummaryStep';
+import { useAppStore } from '@/lib/store';
 
 const STEPS = [
   { id: 'basic', title: 'Basic Info', icon: MapPin },
@@ -44,14 +45,15 @@ const STEPS = [
 export const TripCreationForm = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
+  const { startItineraryGeneration } = useAppStore();
 
   const form = useForm<TripPlanRequest>({
-    resolver: zodResolver(TripPlanRequestSchema) as any,
+    resolver: zodResolver(TripPlanRequestSchema) as Resolver<TripPlanRequest>,
     defaultValues: defaultTripPlanValues,
     mode: 'onChange',
   });
 
-  const { handleSubmit, trigger, formState: { errors, isValid } } = form;
+  const { handleSubmit, trigger } = form;
   const isStepValid = () => {
     const values = form.getValues();
     switch (currentStep) {
@@ -93,7 +95,7 @@ export const TripCreationForm = () => {
     }
   };
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: TripPlanRequest) => {
     try {
       // Convert dates to proper format
       const payload = {
@@ -102,25 +104,9 @@ export const TripCreationForm = () => {
         end_date: new Date(data.end_date).toISOString().split('T')[0],
       };
 
-      console.log('Trip Plan Request:', payload);
-      
-      // Test the API endpoint
-      const response = await fetch('/api/trips/test', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
-      
-      if (result.success) {
-        console.log('Trip plan validated successfully:', result.data);
-        // Redirect to AI generation
-        router.push('/trip/ai-generation');
-      } else {
-        console.error('Validation failed:', result.error);
-        // You could show an error message to the user here
-      }
+      // Start itinerary generation via proxy route
+      await startItineraryGeneration?.(payload);
+      router.push('/trip/ai-generation');
     } catch (error) {
       console.error('Error creating trip:', error);
     }
