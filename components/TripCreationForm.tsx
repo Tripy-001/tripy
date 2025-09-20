@@ -95,13 +95,24 @@ export const TripCreationForm = () => {
     }
   };
 
+  // Ensure strict YYYY-MM-DD formatting regardless of timezone
+  const formatDate = (value: string): string => {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return value;
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
   const onSubmit = async (data: TripPlanRequest) => {
     try {
       // Convert dates to proper format
       const payload = {
         ...data,
-        start_date: new Date(data.start_date).toISOString().split('T')[0],
-        end_date: new Date(data.end_date).toISOString().split('T')[0],
+        start_date: formatDate(data.start_date),
+        end_date: formatDate(data.end_date),
       };
 
       // Start itinerary generation via proxy route

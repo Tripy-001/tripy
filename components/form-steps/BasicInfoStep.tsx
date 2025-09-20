@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -17,11 +18,43 @@ interface BasicInfoStepProps {
 }
 
 export const BasicInfoStep = ({ form }: BasicInfoStepProps) => {
-  const { control, watch } = form;
+  const { control, watch, setValue, setError, clearErrors } = form;
   const startDate = watch('start_date');
   const endDate = watch('end_date');
 
-  const today = new Date().toISOString().split('T')[0];
+  // Helper function to format date without timezone issues
+  const formatDateForInput = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Get today's date in local timezone
+  const today = new Date();
+  const todayString = formatDateForInput(today);
+
+  // Validate date relationships
+  const validateDates = () => {
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      
+      if (end <= start) {
+        setError('end_date', {
+          type: 'manual',
+          message: 'End date must be after start date'
+        });
+      } else {
+        clearErrors('end_date');
+      }
+    }
+  };
+
+  // Validate dates whenever they change
+  React.useEffect(() => {
+    validateDates();
+  }, [startDate, endDate]);
 
   return (
     <div className="space-y-6">
@@ -87,21 +120,25 @@ export const BasicInfoStep = ({ form }: BasicInfoStepProps) => {
                         }`}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.value ? format(new Date(field.value), 'PPP') : 'Pick start date'}
+                        {field.value ? format(new Date(field.value + 'T00:00:00'), 'PPP') : 'Pick start date'}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={field.value ? new Date(field.value) : undefined}
+                      selected={field.value ? new Date(field.value + 'T00:00:00') : undefined}
                       onSelect={(date) => {
                         if (date) {
-                          field.onChange(date.toISOString().split('T')[0]);
+                          field.onChange(formatDateForInput(date));
                         } else {
                           field.onChange('');
                         }
                       }}
-                      disabled={(date) => date < new Date(today)}
+                      disabled={(date) => {
+                        const todayDate = new Date();
+                        todayDate.setHours(0, 0, 0, 0);
+                        return date < todayDate;
+                      }}
                       initialFocus
                     />
                     </PopoverContent>
@@ -128,23 +165,30 @@ export const BasicInfoStep = ({ form }: BasicInfoStepProps) => {
                         }`}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.value ? format(new Date(field.value), 'PPP') : 'Pick end date'}
+                        {field.value ? format(new Date(field.value + 'T00:00:00'), 'PPP') : 'Pick end date'}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={field.value ? new Date(field.value) : undefined}
+                      selected={field.value ? new Date(field.value + 'T00:00:00') : undefined}
                       onSelect={(date) => {
                         if (date) {
-                          field.onChange(date.toISOString().split('T')[0]);
+                          field.onChange(formatDateForInput(date));
                         } else {
                           field.onChange('');
                         }
                       }}
                       disabled={(date) => {
-                        const minDate = startDate ? new Date(startDate) : new Date(today);
-                        return date < minDate;
+                        const todayDate = new Date();
+                        todayDate.setHours(0, 0, 0, 0);
+                        
+                        if (startDate) {
+                          const minDate = new Date(startDate + 'T00:00:00');
+                          return date <= minDate;
+                        }
+                        
+                        return date < todayDate;
                       }}
                       initialFocus
                     />
@@ -176,8 +220,8 @@ export const BasicInfoStep = ({ form }: BasicInfoStepProps) => {
                   const end = new Date();
                   end.setDate(start.getDate() + option.days);
                   
-                  form.setValue('start_date', start.toISOString().split('T')[0]);
-                  form.setValue('end_date', end.toISOString().split('T')[0]);
+                  setValue('start_date', formatDateForInput(start));
+                  setValue('end_date', formatDateForInput(end));
                 }}
                 className="text-xs"
               >

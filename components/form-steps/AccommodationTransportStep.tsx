@@ -1,13 +1,14 @@
 'use client';
 
+import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form';
 import { Car, Bus, Footprints } from 'lucide-react';
 import { TripPlanRequest } from '@/lib/schemas/trip-plan';
+import { MultiSelectCards } from '@/components/ui/multi-select-cards';
 
 interface AccommodationTransportStepProps {
   form: UseFormReturn<TripPlanRequest>;
@@ -56,25 +57,25 @@ const TRANSPORT_OPTIONS = [
     value: 'walking',
     label: 'Walking',
     description: 'Explore on foot',
-    icon: Footprints
+    icon: <Footprints className="w-4 h-4" />
   },
   {
     value: 'public_transport',
     label: 'Public Transport',
     description: 'Buses, trains, metro',
-    icon: Bus
+    icon: <Bus className="w-4 h-4" />
   },
   {
     value: 'taxi',
     label: 'Taxi/Rideshare',
     description: 'Uber, Lyft, local taxis',
-    icon: Car
+    icon: <Car className="w-4 h-4" />
   },
   {
     value: 'rental_car',
     label: 'Rental Car',
     description: 'Self-drive exploration',
-    icon: Car
+    icon: <Car className="w-4 h-4" />
   },
   {
     value: 'bike',
@@ -90,18 +91,8 @@ const TRANSPORT_OPTIONS = [
   },
 ];
 
-export const AccommodationTransportStep = ({ form }: AccommodationTransportStepProps) => {
-  const { control, watch } = form;
-  const transportPreferences = watch('transport_preferences') || [];
-
-  const handleTransportChange = (value: string, checked: boolean) => {
-    const current = transportPreferences || [];
-    if (checked) {
-      form.setValue('transport_preferences', [...current, value]);
-    } else {
-      form.setValue('transport_preferences', current.filter((item: string) => item !== value));
-    }
-  };
+const AccommodationTransportStep = React.memo(({ form }: AccommodationTransportStepProps) => {
+  const { control } = form;
 
   return (
     <div className="space-y-8">
@@ -169,64 +160,28 @@ export const AccommodationTransportStep = ({ form }: AccommodationTransportStepP
           How do you prefer to get around during your trip? (Select all that apply)
         </p>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {TRANSPORT_OPTIONS.map((option) => (
-            <Card
-              key={option.value}
-              className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${
-                transportPreferences.includes(option.value) ? 'ring-2 ring-primary bg-primary/5' : ''
-              }`}
-              onClick={() => handleTransportChange(option.value, !transportPreferences.includes(option.value))}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-3">
-                  <Checkbox
-                    checked={transportPreferences.includes(option.value)}
-                    onCheckedChange={(checked) => handleTransportChange(option.value, checked as boolean)}
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-1">
-                      {typeof option.icon === 'string' ? (
-                        <span className="text-lg">{option.icon}</span>
-                      ) : (
-                        <option.icon className="w-5 h-5 text-primary" />
-                      )}
-                      <span className="font-medium">{option.label}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{option.description}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <FormField
+          control={control}
+          name="transport_preferences"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <MultiSelectCards
+                  options={TRANSPORT_OPTIONS}
+                  selectedValues={field.value || []}
+                  onChange={field.onChange}
+                  gridCols="grid-cols-2 md:grid-cols-3"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
-
-      {transportPreferences.length > 0 && (
-        <Card className="bg-muted/50">
-          <CardContent className="p-4">
-            <div className="text-center">
-              <div className="flex items-center justify-center space-x-2 mb-2">
-                <Car className="w-5 h-5 text-primary" />
-                <span className="font-medium">Selected Transport Options</span>
-              </div>
-              <div className="flex flex-wrap gap-2 justify-center">
-                {transportPreferences.map((pref) => {
-                  const option = TRANSPORT_OPTIONS.find(o => o.value === pref);
-                  return (
-                    <span
-                      key={pref}
-                      className="text-sm bg-primary/10 text-primary px-3 py-1 rounded-full"
-                    >
-                      {option?.label}
-                    </span>
-                  );
-                })}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
-};
+});
+
+AccommodationTransportStep.displayName = 'AccommodationTransportStep';
+
+export { AccommodationTransportStep };

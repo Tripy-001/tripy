@@ -41,8 +41,8 @@ export const TripPlanRequestSchema = z.object({
   end_date: z.string().min(1, 'End date is required'),
   
   // Budget
-  total_budget: z.number().min(0.01, 'Budget must be greater than 0'),
-  budget_currency: z.string().regex(/^[A-Z]{3}$/, 'Currency must be a 3-letter code').optional().default('USD'),
+  total_budget: z.number().nonnegative().optional(),
+  budget_currency: z.string().regex(/^[A-Z]{3}$/, 'Currency must be a 3-letter code').optional().default('INR'),
   budget_breakdown: BudgetBreakdownSchema.optional(),
   
   // Group Details
@@ -100,8 +100,7 @@ export const defaultTripPlanValues: Partial<TripPlanRequest> = {
   destination: '',
   start_date: '',
   end_date: '',
-  total_budget: 1000,
-  budget_currency: 'USD',
+  budget_currency: 'INR',
   group_size: 1,
   traveler_ages: [25],
   activity_level: 'moderate',
