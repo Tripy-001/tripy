@@ -1,87 +1,169 @@
 // /app/api/trips/[tripId]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '../../../../lib/firebase';
-import { doc, getDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { adminDb, adminAuth } from '@/lib/firebaseAdmin';
+import { Timestamp } from 'firebase-admin/firestore';
 
-interface RouteParams {
-  params: {
-    tripId: string;
-  };
-}
+type Params = { tripId: string };
+type Context = { params: Params } | { params: Promise<Params> };
+
+const resolveParams = async (context: Context): Promise<Params> => {
+  const p = (context as { params: Params | Promise<Params> }).params;
+  return p instanceof Promise ? await p : p;
+};
 
 // GET /api/trips/[tripId] - Get a specific trip
-export async function GET(req: NextRequest, { params }: RouteParams): Promise<NextResponse> {
+export async function GET(req: NextRequest, context: Context): Promise<NextResponse> {
   try {
-    const { tripId } = params;
-    const tripRef = doc(db, 'trips', tripId);
-    const tripSnap = await getDoc(tripRef);
+    // Auth: verify Firebase ID token
+    const authorization = req.headers.get('Authorization');
+    if (!authorization?.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized: Missing token' }, { status: 401 });
+    }
+    const idToken = authorization.split('Bearer ')[1];
+    const decoded = await adminAuth.verifyIdToken(idToken);
+    const authUid = decoded.uid;
 
-    if (!tripSnap.exists()) {
+  // Support Next.js 15 where params may be a Promise
+  const { tripId } = await resolveParams(context);
+    const tripRef = adminDb.collection('trips').doc(tripId);
+    const tripSnap = await tripRef.get();
+
+    if (!tripSnap.exists) {
       return NextResponse.json({ error: 'Trip not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ 
-      trip: { id: tripSnap.id, ...tripSnap.data() } 
-    }, { status: 200 });
+    const data = tripSnap.data() as { userId?: string; createdAt?: unknown; updatedAt?: unknown } | undefined;
+    if (!data || data.userId !== authUid) {
+      return NextResponse.json({ error: 'Forbidden: You do not own this trip' }, { status: 403 });
+    }
 
-  } catch (error) {
+    const toMillis = (value: unknown): number => {
+      if (value && typeof value === 'object') {
+        type TS1 = { toMillis: () => number };
+        type TS2 = { toDate: () => Date };
+        type TS3 = { _seconds?: number; _nanoseconds?: number; seconds?: number; nanoseconds?: number };
+        const v = value as Record<string, unknown>;
+        if ('toMillis' in v && typeof (v as TS1).toMillis === 'function') return (v as TS1).toMillis();
+        if ('toDate' in v && typeof (v as TS2).toDate === 'function') return (v as TS2).toDate().getTime();
+        const raw = value as TS3;
+        const secs = raw._seconds ?? raw.seconds;
+        const nanos = raw._nanoseconds ?? raw.nanoseconds;
+        if (typeof secs === 'number') return secs * 1000 + Math.round((typeof nanos === 'number' ? nanos : 0) / 1e6);
+      }
+      if (typeof value === 'string' || value instanceof Date || typeof value === 'number') {
+        const d = value instanceof Date ? value : new Date(value as string | number);
+        return d.getTime() || 0;
+      }
+      return 0;
+    };
+
+    const createdAtMs = toMillis(data.createdAt);
+    const updatedAtMs = toMillis(data.updatedAt);
+
+    return NextResponse.json(
+      {
+        trip: {
+          id: tripSnap.id,
+          ...data,
+          ...(createdAtMs ? { createdAt: new Date(createdAtMs).toISOString() } : {}),
+          ...(updatedAtMs ? { updatedAt: new Date(updatedAtMs).toISOString() } : {}),
+        },
+      },
+      { status: 200 }
+    );
+  } catch (error: unknown) {
     console.error('API Error /api/trips/[tripId] GET:', error);
+    const err = error as { code?: string } | undefined;
+    if (err?.code === 'auth/id-token-expired') {
+      return NextResponse.json({ error: 'Authentication token expired.' }, { status: 401 });
+    }
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 // PUT /api/trips/[tripId] - Update a specific trip
-export async function PUT(req: NextRequest, { params }: RouteParams): Promise<NextResponse> {
+export async function PUT(req: NextRequest, context: Context): Promise<NextResponse> {
   try {
-    const { tripId } = params;
+    // Auth
+    const authorization = req.headers.get('Authorization');
+    if (!authorization?.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized: Missing token' }, { status: 401 });
+    }
+    const idToken = authorization.split('Bearer ')[1];
+    const decoded = await adminAuth.verifyIdToken(idToken);
+    const authUid = decoded.uid;
+
+  const { tripId } = await resolveParams(context);
     const updateData = await req.json();
 
-    const tripRef = doc(db, 'trips', tripId);
-    
-    // Check if trip exists first
-    const tripSnap = await getDoc(tripRef);
-    if (!tripSnap.exists()) {
+    const tripRef = adminDb.collection('trips').doc(tripId);
+    const tripSnap = await tripRef.get();
+    if (!tripSnap.exists) {
       return NextResponse.json({ error: 'Trip not found' }, { status: 404 });
     }
 
-    // Add updated timestamp
+    const data = tripSnap.data() as { userId?: string } | undefined;
+    if (!data || data.userId !== authUid) {
+      return NextResponse.json({ error: 'Forbidden: You do not own this trip' }, { status: 403 });
+    }
+
+    // Prevent ownership/creation timestamp changes
+    const safeUpdate = { ...(updateData || {}) } as Record<string, unknown>;
+    delete safeUpdate.userId;
+    delete safeUpdate.createdAt;
     const updatedTrip = {
-      ...updateData,
-      updatedAt: serverTimestamp()
+      ...safeUpdate,
+      updatedAt: Timestamp.now(),
     };
 
-    await updateDoc(tripRef, updatedTrip);
+    await tripRef.update(updatedTrip);
 
-    return NextResponse.json({ 
-      message: 'Trip updated successfully' 
-    }, { status: 200 });
-
-  } catch (error) {
+    return NextResponse.json({ message: 'Trip updated successfully' }, { status: 200 });
+  } catch (error: unknown) {
     console.error('API Error /api/trips/[tripId] PUT:', error);
+    const err = error as { code?: string } | undefined;
+    if (err?.code === 'auth/id-token-expired') {
+      return NextResponse.json({ error: 'Authentication token expired.' }, { status: 401 });
+    }
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 // DELETE /api/trips/[tripId] - Delete a specific trip
-export async function DELETE(req: NextRequest, { params }: RouteParams): Promise<NextResponse> {
+export async function DELETE(req: NextRequest, context: Context): Promise<NextResponse> {
   try {
-    const { tripId } = params;
-    const tripRef = doc(db, 'trips', tripId);
-    
-    // Check if trip exists first
-    const tripSnap = await getDoc(tripRef);
-    if (!tripSnap.exists()) {
+    // Auth
+    const authorization = req.headers.get('Authorization');
+    if (!authorization?.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized: Missing token' }, { status: 401 });
+    }
+    const idToken = authorization.split('Bearer ')[1];
+    const decoded = await adminAuth.verifyIdToken(idToken);
+    const authUid = decoded.uid;
+
+  const { tripId } = await resolveParams(context);
+    const tripRef = adminDb.collection('trips').doc(tripId);
+    const tripSnap = await tripRef.get();
+    if (!tripSnap.exists) {
       return NextResponse.json({ error: 'Trip not found' }, { status: 404 });
     }
 
-    await deleteDoc(tripRef);
+    const data = tripSnap.data() as { userId?: string } | undefined;
+    if (!data || data.userId !== authUid) {
+      return NextResponse.json({ error: 'Forbidden: You do not own this trip' }, { status: 403 });
+    }
 
-    return NextResponse.json({ 
-      message: 'Trip deleted successfully' 
-    }, { status: 200 });
+    await tripRef.delete();
 
-  } catch (error) {
+    return NextResponse.json({ message: 'Trip deleted successfully' }, { status: 200 });
+  } catch (error: unknown) {
     console.error('API Error /api/trips/[tripId] DELETE:', error);
+    const err = error as { code?: string } | undefined;
+    if (err?.code === 'auth/id-token-expired') {
+      return NextResponse.json({ error: 'Authentication token expired.' }, { status: 401 });
+    }
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+
+export const dynamic = 'force-dynamic';
