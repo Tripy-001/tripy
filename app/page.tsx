@@ -1,8 +1,8 @@
-import { ArrowRight, Sparkles, Globe, Users, Shield, Star, TrendingUp, Clock, MapPin, Heart, Award, CheckCircle } from 'lucide-react';
+import { ArrowRight, Globe, Users, Shield, Star, TrendingUp, Clock, MapPin, Heart, Award, CheckCircle, CalendarDays, CloudSun, Sliders } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import PublicTrips from '@/components/PublicTrips';
 
 const HomePage = () => {
   return (
@@ -95,14 +95,14 @@ const HomePage = () => {
             <Card className="group glass-card hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 shadow-soft dark:shadow-soft-dark">
               <CardHeader>
                 <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                  <Globe className="w-6 h-6 text-primary" />
+                  <CalendarDays className="w-6 h-6 text-primary" />
                 </div>
-                <CardTitle className="text-xl">Global Coverage</CardTitle>
-                <Badge variant="secondary" className="w-fit">Worldwide</Badge>
+                <CardTitle className="text-xl">Daily Itineraries</CardTitle>
+                <Badge variant="secondary" className="w-fit">Fully Customized</Badge>
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-base">
-                  Access to millions of destinations worldwide with real-time data and local insights
+                  End-to-end trips with day-by-day activities tailored to your goals and pace.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -110,14 +110,14 @@ const HomePage = () => {
             <Card className="group glass-card hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 shadow-soft dark:shadow-soft-dark">
               <CardHeader>
                 <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                  <Sparkles className="w-6 h-6 text-primary" />
+                  <CloudSun className="w-6 h-6 text-primary" />
                 </div>
-                <CardTitle className="text-xl">AI-Powered</CardTitle>
-                <Badge variant="secondary" className="w-fit">Smart</Badge>
+                <CardTitle className="text-xl">Weather-Aware</CardTitle>
+                <Badge variant="secondary" className="w-fit">Real-time</Badge>
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-base">
-                  Advanced algorithms learn your preferences to suggest perfect destinations and activities
+                  Live weather signals auto-adjust your plan and suggest better time slots.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -125,14 +125,14 @@ const HomePage = () => {
             <Card className="group glass-card hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 shadow-soft dark:shadow-soft-dark">
               <CardHeader>
                 <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                  <Users className="w-6 h-6 text-primary" />
+                  <Sliders className="w-6 h-6 text-primary" />
                 </div>
-                <CardTitle className="text-xl">Community Driven</CardTitle>
-                <Badge variant="secondary" className="w-fit">Social</Badge>
+                <CardTitle className="text-xl">Preference-First</CardTitle>
+                <Badge variant="secondary" className="w-fit">Personalized</Badge>
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-base">
-                  Connect with fellow travelers and get recommendations from real experiences
+                  Trips evolve from your interests, budget, pace, and travel style.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -147,43 +147,10 @@ const HomePage = () => {
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-base">
-                  Your data is protected with enterprise-grade security and privacy controls
+                  Your data is protected with enterprise-grade security and privacy controls.
                 </CardDescription>
               </CardContent>
             </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-20 bg-muted/20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Trusted by Travelers Worldwide
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Join millions of users who have discovered their perfect destinations
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">2M+</div>
-              <div className="text-muted-foreground">Happy Travelers</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">50+</div>
-              <div className="text-muted-foreground">Countries Covered</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">98%</div>
-              <div className="text-muted-foreground">Satisfaction Rate</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">24/7</div>
-              <div className="text-muted-foreground">AI Support</div>
-            </div>
           </div>
         </div>
       </section>
@@ -234,85 +201,17 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
+
+      {/* Public Trips Section */}
       <section className="py-20 bg-muted/20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              What Our Users Say
-            </h2>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Explore Public Trips</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Real stories from travelers who discovered their dream destinations
+              See community-created itineraries and get inspired. Load more to browse.
             </p>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="glass-card shadow-soft dark:shadow-soft-dark">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  "Tripy helped me discover hidden gems in Japan I never would have found on my own. The AI recommendations were spot on!"
-                </p>
-                <div className="flex items-center">
-                  <Avatar className="w-10 h-10 mr-3">
-                    <AvatarFallback>SM</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <div className="font-semibold text-foreground">Sarah Miller</div>
-                    <div className="text-sm text-muted-foreground">Tokyo, Japan</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="glass-card shadow-soft dark:shadow-soft-dark">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  "As a solo traveler, I was nervous about planning my first international trip. Tripy made it so easy and safe!"
-                </p>
-                <div className="flex items-center">
-                  <Avatar className="w-10 h-10 mr-3">
-                    <AvatarFallback>MJ</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <div className="font-semibold text-foreground">Michael Johnson</div>
-                    <div className="text-sm text-muted-foreground">Barcelona, Spain</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="glass-card shadow-soft dark:shadow-soft-dark">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  "The family-friendly recommendations were perfect for our trip with kids. Everyone had an amazing time!"
-                </p>
-                <div className="flex items-center">
-                  <Avatar className="w-10 h-10 mr-3">
-                    <AvatarFallback>ED</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <div className="font-semibold text-foreground">Emily Davis</div>
-                    <div className="text-sm text-muted-foreground">Paris, France</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <PublicTrips initialLimit={9} />
         </div>
       </section>
 
