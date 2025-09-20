@@ -1,11 +1,19 @@
 // /app/api/trips/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '../../../lib/firebase';
-import { collection, addDoc, getDocs, query, where, orderBy, serverTimestamp } from 'firebase/firestore';
+import { adminDb, adminAuth } from '@/lib/firebaseAdmin';
 
 // GET /api/trips - Fetch all trips for authenticated user
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
+    // Auth: verify Firebase ID token
+    const authorization = req.headers.get('Authorization');
+    if (!authorization?.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized: Missing token' }, { status: 401 });
+    }
+    const idToken = authorization.split('Bearer ')[1];
+    const decoded = await adminAuth.verifyIdToken(idToken);
+    const authUid = decoded.uid;
+
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get('userId');
 
@@ -13,60 +21,68 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
     }
 
-    const tripsRef = collection(db, 'trips');
-    const q = query(
-      tripsRef, 
-      where('userId', '==', userId),
-      orderBy('createdAt', 'desc')
-    );
-    
-    const querySnapshot = await getDocs(q);
-    const trips: any[] = [];
-    
-    querySnapshot.forEach((doc) => {
-      trips.push({
-        id: doc.id,
-        ...doc.data()
-      });
-    });
+    if (userId !== authUid) {
+      return NextResponse.json({ error: 'Forbidden: Cannot access other users\' trips' }, { status: 403 });
+    }
+
+    // Query trips owned by user
+    const q = adminDb.collection('trips').where('userId', '==', userId);
+    const snapshot = await q.get();
+    // Helper to normalize various timestamp shapes to epoch ms
+    const toMillis = (value: unknown): number => {
+      if (value && typeof value === 'object') {
+        type TS1 = { toMillis: () => number };
+        type TS2 = { toDate: () => Date };
+        type TS3 = { _seconds?: number; _nanoseconds?: number; seconds?: number; nanoseconds?: number };
+        const v = value as Record<string, unknown>;
+        if ('toMillis' in v && typeof (v as TS1).toMillis === 'function') return (v as TS1).toMillis();
+        if ('toDate' in v && typeof (v as TS2).toDate === 'function') return (v as TS2).toDate().getTime();
+        const raw = value as TS3;
+        const secs = raw._seconds ?? raw.seconds;
+        const nanos = raw._nanoseconds ?? raw.nanoseconds;
+        if (typeof secs === 'number') return secs * 1000 + Math.round((typeof nanos === 'number' ? nanos : 0) / 1e6);
+      }
+      if (typeof value === 'string' || value instanceof Date || typeof value === 'number') {
+        const d = value instanceof Date ? value : new Date(value as string | number);
+        return d.getTime() || 0;
+      }
+      return 0;
+    };
+
+    // Sort newest first in-memory to avoid requiring a composite index
+    const trips = snapshot.docs
+      .map((d) => {
+        const data = d.data() as Record<string, unknown>;
+        const createdAtMs = toMillis(data.createdAt);
+        const updatedAtMs = toMillis(data.updatedAt);
+        return {
+          id: d.id,
+          ...data,
+          ...(createdAtMs ? { createdAt: new Date(createdAtMs).toISOString() } : {}),
+          ...(updatedAtMs ? { updatedAt: new Date(updatedAtMs).toISOString() } : {}),
+        };
+      })
+      .sort((a: Record<string, unknown>, b: Record<string, unknown>) => toMillis(b.createdAt) - toMillis(a.createdAt));
 
     return NextResponse.json({ trips }, { status: 200 });
-
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('API Error /api/trips GET:', error);
+    const err = error as { code?: string } | undefined;
+    if (err?.code === 'auth/id-token-expired') {
+      return NextResponse.json({ error: 'Authentication token expired.' }, { status: 401 });
+    }
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 // POST /api/trips - Create a new trip
-export async function POST(req: NextRequest): Promise<NextResponse> {
-  try {
-    const tripData = await req.json();
-
-    // Guardrail: Basic server-side validation
-    if (!tripData.userId || !tripData.title || !tripData.destination) {
-      return NextResponse.json({ 
-        error: 'Missing required fields: userId, title, and destination are required' 
-      }, { status: 400 });
-    }
-
-    const newTrip = {
-      ...tripData,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-      status: tripData.status || 'planning',
-      visibility: tripData.visibility || 'private'
-    };
-
-    const docRef = await addDoc(collection(db, 'trips'), newTrip);
-
-    return NextResponse.json({ 
-      message: 'Trip created successfully',
-      tripId: docRef.id 
-    }, { status: 201 });
-
-  } catch (error) {
-    console.error('API Error /api/trips POST:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-  }
+// Note: Trip creation in this app is handled by /api/trips/generate.
+// Keeping this POST to avoid breaking clients, but returning 405 to steer usage.
+export async function POST(): Promise<NextResponse> {
+  return NextResponse.json(
+    { error: 'Use /api/trips/generate to create trips.' },
+    { status: 405 }
+  );
 }
+
+export const dynamic = 'force-dynamic';
