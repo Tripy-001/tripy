@@ -6,14 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { 
   MapPin, 
-  Calendar, 
   Users, 
   DollarSign, 
   Heart, 
-  Home, 
   Star,
   CheckCircle,
-  Clock,
   Globe
 } from 'lucide-react';
 import { TripPlanRequest } from '@/lib/schemas/trip-plan';

@@ -407,7 +407,7 @@ export const useAppStore = create<AppState>()(
           const data = await response.json();
           
           // Transform API response to match our Trip interface
-          const transformedTrips: Trip[] = data.trips.map((trip: any) => {
+          const transformedTrips: Trip[] = data.trips.map((trip: unknown) => {
             
             // Calculate duration from start and end dates
             const startDate = new Date(trip.userInput.start_date);

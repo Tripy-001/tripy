@@ -23,7 +23,6 @@ import {
   Calendar,
   Users,
   Star,
-  Heart,
   Eye
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
@@ -54,7 +53,7 @@ const ShareTripPage = ({ params }: ShareTripPageProps) => {
         <Card className="shadow-2xl border-0">
           <CardContent className="p-12 text-center">
             <h2 className="text-2xl font-bold text-foreground mb-4">Trip not found</h2>
-            <p className="text-muted-foreground mb-6">The trip you're looking for doesn't exist.</p>
+            <p className="text-muted-foreground mb-6">The trip you&apos;re looking for doesn&apos;t exist.</p>
             <Button onClick={() => router.push('/dashboard')}>
               Back to Dashboard
             </Button>

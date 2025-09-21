@@ -166,7 +166,7 @@ export const AdditionalInfoStep = ({ form }: AdditionalInfoStepProps) => {
       <div className="space-y-4">
         <Label className="text-base font-medium">Places to Avoid</Label>
         <p className="text-sm text-muted-foreground">
-          Are there any places, areas, or types of attractions you'd prefer to avoid?
+          Are there any places, areas, or types of attractions you&apos;d prefer to avoid?
         </p>
         
         <div className="flex space-x-2">

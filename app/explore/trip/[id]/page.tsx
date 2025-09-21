@@ -9,7 +9,7 @@ import { MapPin, Calendar, Clock, DollarSign, Users, Star } from 'lucide-react';
 import ScrollSpyTabs from '@/components/ScrollSpyTabs';
 import { Button } from '@/components/ui/button';
 
-type PublicTrip = any;
+type PublicTrip = unknown;
 
 async function fetchPublicTrip(id: string): Promise<PublicTrip | null> {
   try {
@@ -21,7 +21,8 @@ async function fetchPublicTrip(id: string): Promise<PublicTrip | null> {
     if (!res.ok) return null;
     const data = await res.json();
     return data?.trip || null;
-  } catch (_) {
+  } catch (error) {
+    console.error("Something went wrong", error)
     return null;
   }
 }

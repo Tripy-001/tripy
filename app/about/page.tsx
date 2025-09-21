@@ -2,7 +2,6 @@ import { ArrowLeft, Heart, Star, Award } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 const AboutPage = () => {
   return (
@@ -22,7 +21,7 @@ const AboutPage = () => {
           </h1>
           
           <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
-            We're passionate about making travel planning effortless and personalized through the power of artificial intelligence.
+            We&apos;re passionate about making travel planning effortless and personalized through the power of artificial intelligence.
           </p>
         </div>
       </section>
@@ -39,7 +38,7 @@ const AboutPage = () => {
               </p>
               <p className="text-lg text-muted-foreground">
                 Our AI-powered platform learns from your preferences, budget, and travel style to suggest 
-                destinations and experiences that truly match what you're looking for.
+                destinations and experiences that truly match what you&apos;re looking for.
               </p>
             </div>
             

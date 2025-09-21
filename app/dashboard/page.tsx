@@ -24,8 +24,7 @@ import { useAppStore } from '@/lib/store';
 
 const DashboardPage = () => {
   const router = useRouter();
-  const { user, trips, createTrip, setCurrentStep, authLoading, firebaseUser, fetchUserTrips, isLoading, error } = useAppStore();
-  const [isCreatingTrip, setIsCreatingTrip] = useState(false);
+  const { user, trips, setCurrentStep, authLoading, firebaseUser, fetchUserTrips, isLoading, error } = useAppStore();
 
   const handleCreateTrip = () => {
     setCurrentStep('trip-creation');

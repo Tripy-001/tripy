@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Separator } from '@/components/ui/separator';
 
 const ContactPage = () => {
   return (
@@ -25,7 +24,7 @@ const ContactPage = () => {
           </h1>
           
           <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
-            Have questions about Tripy? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            Have questions about Tripy? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
           </p>
         </div>
       </section>
@@ -39,7 +38,7 @@ const ContactPage = () => {
               <CardHeader>
                 <CardTitle className="text-2xl">Send us a message</CardTitle>
                 <CardDescription>
-                  Fill out the form below and we'll get back to you as soon as possible.
+                  Fill out the form below and we&apos;ll get back to you as soon as possible.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -109,7 +108,7 @@ const ContactPage = () => {
               <div>
                 <h2 className="text-2xl font-bold text-foreground mb-6">Contact Information</h2>
                 <p className="text-muted-foreground mb-8">
-                  We're here to help and answer any question you might have. 
+                  We&apos;re here to help and answer any question you might have. 
                   We look forward to hearing from you!
                 </p>
               </div>

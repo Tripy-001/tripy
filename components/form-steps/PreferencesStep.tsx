@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form';
 import { Heart, Star, Mountain, Camera, ShoppingBag, Utensils } from 'lucide-react';
 import { TripPlanRequest } from '@/lib/schemas/trip-plan';
 
@@ -140,7 +140,7 @@ const PREFERENCE_CATEGORIES = [
 ];
 
 export const PreferencesStep = ({ form }: PreferencesStepProps) => {
-  const { control, watch } = form;
+  const { control } = form;
 
   return (
     <div className="space-y-8">
@@ -260,7 +260,7 @@ export const PreferencesStep = ({ form }: PreferencesStepProps) => {
             <FormField
               key={category.key}
               control={control}
-              name={`preferences.${category.key}` as any}
+              name={`preferences.${category.key}` as unknown}
               render={({ field }) => (
                 <FormItem>
                   <div className="space-y-3">
