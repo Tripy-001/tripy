@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,7 +13,6 @@ import {
   Calendar, 
   Clock, 
   DollarSign, 
-  Users,
   Star,
   CheckCircle,
   Camera,
@@ -35,7 +34,7 @@ interface ActiveTripPageProps {
 
 const ActiveTripPage = ({ params }: ActiveTripPageProps) => {
   const router = useRouter();
-  const { trips, updateTrip, updateActivity, completeActivity, rateActivity, addActivityNote } = useAppStore();
+  const { trips, completeActivity, rateActivity, addActivityNote } = useAppStore();
   const [currentDay, setCurrentDay] = useState(0);
   const [showRating, setShowRating] = useState<string | null>(null);
   const [rating, setRating] = useState(0);
@@ -63,7 +62,6 @@ const ActiveTripPage = ({ params }: ActiveTripPageProps) => {
   const today = trip.dayPlans[currentDay];
   const completedActivities = today?.activities.filter(a => a.completed).length || 0;
   const totalActivities = today?.activities.length || 0;
-  const progress = totalActivities > 0 ? (completedActivities / totalActivities) * 100 : 0;
 
   const handleCompleteActivity = (activityId: string) => {
     completeActivity(trip.id, today.id, activityId);
@@ -203,7 +201,7 @@ const ActiveTripPage = ({ params }: ActiveTripPageProps) => {
                   <div className="flex items-center space-x-3">
                     <DollarSign className="w-5 h-5 text-green-500" />
                     <div>
-                      <p className="text-sm font-medium text-foreground">Today's Budget</p>
+                      <p className="text-sm font-medium text-foreground">Today&apos;s Budget</p>
                       <p className="text-sm text-muted-foreground">${today.totalCost}</p>
                     </div>
                   </div>

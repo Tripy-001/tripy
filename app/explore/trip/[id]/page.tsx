@@ -29,9 +29,11 @@ async function fetchPublicTrip(id: string): Promise<PublicTrip | null> {
   }
 }
 
-export default async function PublicTripsPage(props: { params: Promise<{ id: string }> }) {
-  const params = await props.params;
-  const id = params.id;
+export default async function PublicTripsPage(
+  input: { params: { id: string } } | Promise<{ params: { id: string } }>
+) {
+  const resolved: unknown = (typeof (input as unknown)?.then === 'function') ? await (input as unknown) : input;
+  const id = resolved?.params?.id;
   const fetchedTrip = id ? await fetchPublicTrip(id) : null;
   const sampleTrip = SAMPLE_CONST?.trip ?? null;
   const trip = fetchedTrip || sampleTrip;
@@ -42,7 +44,7 @@ export default async function PublicTripsPage(props: { params: Promise<{ id: str
         <Card className="shadow-2xl border-0">
           <CardContent className="p-12 text-center">
             <h2 className="text-2xl font-bold text-foreground mb-4">Trip not found</h2>
-            <p className="text-muted-foreground">We couldn&rsquo;t load this public trip.</p>
+            <p className="text-muted-foreground">We couldn&apos;t load this public trip.</p>
           </CardContent>
         </Card>
       </div>
@@ -223,7 +225,7 @@ export default async function PublicTripsPage(props: { params: Promise<{ id: str
                     <div className="mt-4">
                       <div className="font-medium mb-1">Requested budget distribution</div>
                       {(() => {
-                        const bb: any = response.request.budget_breakdown;
+                        const bb: unknown = response.request.budget_breakdown;
                         const items = [
                           ['Accommodation', bb.accommodation_percentage],
                           ['Food', bb.food_percentage],
@@ -268,13 +270,13 @@ export default async function PublicTripsPage(props: { params: Promise<{ id: str
           <Card id="itinerary" className="glass-card mb-8">
             <CardHeader>
               <CardTitle className="text-2xl">Daily Itinerary</CardTitle>
-              <CardDescription>Explore each day&rsquo;s plan</CardDescription>
+              <CardDescription>Explore each day&apos;s plan</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="relative">
                 <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500 opacity-30"></div>
                 <Accordion type="single" collapsible defaultValue="day-1" className="w-full space-y-4">
-                  {it.daily_itineraries.map((day: any, idx: number) => (
+                  {it.daily_itineraries.map((day: unknown, idx: number) => (
                     <AccordionItem key={idx} value={`day-${idx + 1}`} className="border-0 bg-transparent">
                       <AccordionTrigger className="relative pl-16 py-6 hover:no-underline group">
                         <div className="absolute left-4 top-6 w-4 h-4 rounded-full theme-bg border-4 border-white dark:border-gray-900 shadow-lg z-10 group-hover:scale-110 transition-transform"></div>
@@ -301,7 +303,7 @@ export default async function PublicTripsPage(props: { params: Promise<{ id: str
                         <div className="relative pl-16 pb-8">
                           <div className="rounded-2xl border bg-gradient-to-br from-white/80 to-gray-50/50 dark:from-gray-900/80 dark:to-gray-800/50 backdrop-blur-sm p-6 shadow-lg">
                             {(['morning','lunch','afternoon','evening'] as const).map((sectionKey) => {
-                              const section: any = day?.[sectionKey];
+                              const section: unknown = day?.[sectionKey];
                               if (!section) return null;
 
                               if (sectionKey === 'lunch' && section.restaurant) {
@@ -330,7 +332,7 @@ export default async function PublicTripsPage(props: { params: Promise<{ id: str
                                     <h4 className="text-lg font-semibold capitalize text-foreground">{sectionKey}</h4>
                                   </div>
                                   <div className="grid gap-4">
-                                    {section.activities.map((act: any, aIdx: number) => {
+                                    {section.activities.map((act: unknown, aIdx: number) => {
                                       const p = act.activity || {};
                                       return (
                                         <div key={aIdx} className="p-6 rounded-xl border">
@@ -364,7 +366,7 @@ export default async function PublicTripsPage(props: { params: Promise<{ id: str
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {it.travel_options.map((opt: any, i: number) => (
+                {it.travel_options.map((opt: unknown, i: number) => (
                   <div key={i} className="p-4 rounded-xl border">
                     <div className="flex items-start justify-between">
                       <div className="font-medium">{opt.mode}</div>
@@ -380,7 +382,7 @@ export default async function PublicTripsPage(props: { params: Promise<{ id: str
                     )}
                     {Array.isArray(opt.legs) && opt.legs.length > 0 && (
                       <div className="mt-3 space-y-2 text-sm">
-                        {opt.legs.map((leg: any, j: number) => (
+                        {opt.legs.map((leg: unknown, j: number) => (
                           <div key={j} className="p-3 rounded-md border">
                             <div className="flex items-center justify-between">
                               <div className="font-medium">{leg.mode}</div>
@@ -461,7 +463,7 @@ export default async function PublicTripsPage(props: { params: Promise<{ id: str
                   <div>
                     <div className="font-medium mb-2">Emergency contacts</div>
                     <div className="grid grid-cols-2 gap-2 text-muted-foreground">
-                      {Object.entries(it.local_information.emergency_contacts).map(([k,v]: any, i: number) => (<div key={i}><span className="font-medium capitalize">{k.replaceAll('_',' ')}:</span> {v as string}</div>))}
+                      {Object.entries(it.local_information.emergency_contacts).map(([k,v]: unknown, i: number) => (<div key={i}><span className="font-medium capitalize">{k.replaceAll('_',' ')}:</span> {v as string}</div>))}
                     </div>
                   </div>
                 )}
@@ -485,7 +487,7 @@ export default async function PublicTripsPage(props: { params: Promise<{ id: str
                   <div>
                     <div className="font-medium mb-2">Useful phrases</div>
                     <div className="grid grid-cols-2 gap-2 text-muted-foreground">
-                      {Object.entries(it.local_information.useful_phrases).map(([k,v]: any, i: number) => (<div key={i}><span className="font-medium">{k}:</span> {v as string}</div>))}
+                      {Object.entries(it.local_information.useful_phrases).map(([k,v]: unknown, i: number) => (<div key={i}><span className="font-medium">{k}:</span> {v as string}</div>))}
                     </div>
                   </div>
                 )}
@@ -503,7 +505,7 @@ export default async function PublicTripsPage(props: { params: Promise<{ id: str
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {it.hidden_gems.map((gem: any, i: number) => (
+                {it.hidden_gems.map((gem: unknown, i: number) => (
                   <div key={i} className="p-4 rounded-xl border">
                     <div className="flex items-start justify-between">
                       <div>
@@ -533,7 +535,7 @@ export default async function PublicTripsPage(props: { params: Promise<{ id: str
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {it.photography_spots.map((spot: any, i: number) => (
+                {it.photography_spots.map((spot: unknown, i: number) => (
                   <div key={i} className="p-4 rounded-xl border">
                     <div className="flex items-start justify-between">
                       <div className="font-medium">{spot.name}</div>
@@ -630,7 +632,7 @@ export default async function PublicTripsPage(props: { params: Promise<{ id: str
                 </div>
               )}
               <div className="space-y-3">
-                {Array.isArray(it.accommodations.alternative_options) && it.accommodations.alternative_options.map((opt: any, i: number) => (
+                {Array.isArray(it.accommodations.alternative_options) && it.accommodations.alternative_options.map((opt: unknown, i: number) => (
                   <div key={i} className="p-3 rounded-md border">
                     <div className="font-medium">{opt.name}</div>
                     {opt.address && <p className="text-sm text-muted-foreground">{opt.address}</p>}
@@ -683,7 +685,7 @@ export default async function PublicTripsPage(props: { params: Promise<{ id: str
                   <div>
                     <div className="font-medium mb-2">Daily transport costs</div>
                     <div className="space-y-1 text-muted-foreground">
-                      {Object.entries(it.transportation.daily_transport_costs).map(([k,v]: any, i: number) => (
+                      {Object.entries(it.transportation.daily_transport_costs).map(([k,v]: unknown, i: number) => (
                         <div key={i}>{k}: {v} {it.currency}</div>
                       ))}
                     </div>
@@ -729,7 +731,7 @@ export default async function PublicTripsPage(props: { params: Promise<{ id: str
                 <div className="mt-4">
                   <div className="font-medium mb-2">Daily route maps</div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
-                    {Object.entries(mapData.daily_route_maps).map(([day, url]: any, i: number) => (
+                    {Object.entries(mapData.daily_route_maps).map(([day, url]: unknown, i: number) => (
                       <a key={i} href={url as string} target="_blank" rel="noreferrer" className="p-3 rounded-md border hover:bg-muted transition-colors">
                         {day}
                       </a>
@@ -741,7 +743,7 @@ export default async function PublicTripsPage(props: { params: Promise<{ id: str
                 <div className="mt-4">
                   <div className="font-medium mb-2">All locations</div>
                   <div className="flex flex-wrap gap-2">
-                    {mapData.all_locations.map((loc: any, i: number) => (
+                    {mapData.all_locations.map((loc: unknown, i: number) => (
                       <Badge key={i} variant="secondary" className="capitalize">{loc.name}</Badge>
                     ))}
                   </div>

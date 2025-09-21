@@ -111,7 +111,7 @@ const OnboardingPage = () => {
     }
   };
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: unknown) => {
     console.log('handleInputChange called:', field, value);
     updateOnboardingData({ [field]: value });
   };
@@ -124,7 +124,7 @@ const OnboardingPage = () => {
         return (
           <div className="space-y-6">
             <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold text-foreground">What's your travel style?</h2>
+              <h2 className="text-3xl font-bold text-foreground">What&apos;s your travel style?</h2>
               <p className="text-muted-foreground max-w-md mx-auto">
                 Help us understand your preferences to create better recommendations
               </p>

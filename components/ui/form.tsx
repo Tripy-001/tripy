@@ -69,6 +69,7 @@ const useFormField = () => {
   }
 
   const { getFieldState } = formContext
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const formState = useFormState({ name: fieldContext.name })
   const fieldState = getFieldState(fieldContext.name, formState)
 

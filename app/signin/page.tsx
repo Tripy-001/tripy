@@ -46,9 +46,9 @@ const SigninPage = () => {
       } else {
         router.replace("/onboarding");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setLoading(false);
-      let msg = err?.message || "";
+      const msg = err?.message || "";
       if (msg.toLowerCase().includes("email")) setFieldErrors((prev) => ({ ...prev, email: msg }));
       else if (msg.toLowerCase().includes("password")) setFieldErrors((prev) => ({ ...prev, password: msg }));
       else setError("Failed to sign in. " + msg);
@@ -77,7 +77,7 @@ const SigninPage = () => {
       } else {
         router.replace("/onboarding");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setLoading(false);
       setError("Failed to sign in with Google. " + (err?.message || ""));
     }
@@ -139,7 +139,7 @@ const SigninPage = () => {
           Continue with Google
         </Button>
         <div className="mt-4 text-center text-sm">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <a href="/signup" className="text-primary underline">Sign Up</a>
         </div>
       </div>

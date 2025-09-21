@@ -174,7 +174,7 @@ const HomePage = () => {
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-4">Tell Us Your Preferences</h3>
               <p className="text-muted-foreground">
-                Share your interests, budget, travel dates, and what kind of experience you're looking for.
+                Share your interests, budget, travel dates, and what kind of experience you&apos;re looking for.
               </p>
             </div>
             
@@ -234,7 +234,7 @@ const HomePage = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-foreground mb-2">Personalized Recommendations</h3>
-                    <p className="text-muted-foreground">AI learns your preferences to suggest destinations and activities you'll love.</p>
+                    <p className="text-muted-foreground">AI learns your preferences to suggest destinations and activities you&apos;ll love.</p>
                   </div>
                 </div>
                 

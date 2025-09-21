@@ -12,7 +12,7 @@ import ScrollSpyTabs from '@/components/ScrollSpyTabs';
 import { auth } from '@/lib/firebase';
 import { useAppStore } from '@/lib/store';
 
-type Trip = any;
+type Trip = unknown;
 
 type TripPageProps = {
   params: { id: string } | Promise<{ id: string }>;
@@ -20,7 +20,7 @@ type TripPageProps = {
 
 const resolveParams = async (input: TripPageProps['params']): Promise<{ id: string } | null> => {
   try {
-    const p = input as any;
+    const p = input as unknown;
     if (p && typeof p.then === 'function') {
       return await p;
     }
@@ -90,7 +90,7 @@ export default function TripDetailPage(props: TripPageProps) {
           setTrip(data?.trip || null);
           setLoading(false);
         }
-      } catch (e: any) {
+      } catch (e: unknown) {
         if (!cancelled) {
           setError(e?.message || 'Error loading trip');
           setLoading(false);
@@ -105,7 +105,7 @@ export default function TripDetailPage(props: TripPageProps) {
   }, [tripId, firebaseUser, authLoading]);
 
   const it = useMemo(() => (trip?.itinerary ?? {}), [trip]);
-  const mapData = useMemo(() => it?.map_data || {}, [it]);
+  const mapData = useMemo(() => it?.map_data || {}, [it]);å
   const currency = it?.currency || it?.budget_breakdown?.currency;
 
   const formatCurrency = (val: unknown): string => {
@@ -157,11 +157,10 @@ export default function TripDetailPage(props: TripPageProps) {
           ['Total budget', formatCurrency(bb.total_budget)],
         ].filter((r) => r[1]);
         if (budgetRows.length) {
-          // @ts-ignore types from plugin
           autoTable(doc, {
-            startY: (doc as any).lastAutoTable ? (doc as any).lastAutoTable.finalY + 8 : undefined,
+            startY: (doc as unknown).lastAutoTable ? (doc as unknown).lastAutoTable.finalY + 8 : undefined,
             head: [['Budget item', 'Amount']],
-            body: budgetRows as any,
+            body: budgetRows as unknown,
             styles: { fontSize: 10, cellPadding: 5 },
             headStyles: { fillColor: [32, 90, 167] },
           });
@@ -170,7 +169,7 @@ export default function TripDetailPage(props: TripPageProps) {
 
       // Daily itineraries
       if (Array.isArray(it?.daily_itineraries)) {
-        it.daily_itineraries.forEach((day: any, idx: number) => {
+        it.daily_itineraries.forEach((day: unknown, idx: number) => {
           doc.addPage();
           const dayTitle = `Day ${day?.day_number || idx + 1}${day?.theme ? ` - ${day.theme}` : ''}`;
           doc.setFontSize(14);
@@ -190,7 +189,7 @@ export default function TripDetailPage(props: TripPageProps) {
           } catch {}
           const sectionKeys = ['morning', 'afternoon', 'evening', 'lunch'] as const;
           sectionKeys.forEach((sectionKey) => {
-            const section: any = day?.[sectionKey];
+            const section: unknown = day?.[sectionKey];
             if (!section) return;
 
             const headerRows: Array<[string, string]> = [];
@@ -199,7 +198,6 @@ export default function TripDetailPage(props: TripPageProps) {
             if (section?.transportation_notes) headerRows.push(['Transport notes', String(section.transportation_notes)]);
 
             if (headerRows.length) {
-              // @ts-ignore
               autoTable(doc, {
                 startY: currentY,
                 head: [[`${String(sectionKey).toUpperCase()} SUMMARY`, '']],
@@ -207,12 +205,12 @@ export default function TripDetailPage(props: TripPageProps) {
                 styles: { fontSize: 9, cellPadding: 4 },
                 headStyles: { fillColor: [240, 240, 240], textColor: [0, 0, 0] },
               });
-              // @ts-ignore
-              currentY = (doc as any).lastAutoTable.finalY + 6;
+              // @ts-expect-error - lastAutoTable property from jsPDF plugin
+              currentY = (doc as unknown).lastAutoTable.finalY + 6;
             }
 
             if (Array.isArray(section?.activities) && section.activities.length) {
-              const rows = section.activities.map((act: any) => {
+              const rows = section.activities.map((act: unknown) => {
                 const p = act?.activity || {};
                 const type = act?.activity_type || p?.subcategory || p?.category || '';
                 const duration = p?.duration_hours ?? act?.duration_hours ?? '';
@@ -228,7 +226,6 @@ export default function TripDetailPage(props: TripPageProps) {
                 return [p?.name || type || 'Activity', type, String(duration || ''), formatCurrency(cost), addr, mapUrl];
               });
 
-              // @ts-ignore
               autoTable(doc, {
                 startY: currentY,
                 head: [[`${String(sectionKey).toUpperCase()} ACTIVITIES`, 'Type', 'Duration (hrs)', 'Cost', 'Address', 'Map']],
@@ -237,12 +234,12 @@ export default function TripDetailPage(props: TripPageProps) {
                 columnStyles: { 4: { cellWidth: 200 }, 5: { cellWidth: 160 } },
                 headStyles: { fillColor: [32, 90, 167] },
               });
-              // @ts-ignore
-              currentY = (doc as any).lastAutoTable.finalY + 6;
+              // @ts-expect-error - lastAutoTable property from jsPDF plugin
+              currentY = (doc as unknown).lastAutoTable.finalY + 6;
 
               // Optional descriptions block
               const descRows = section.activities
-                .map((act: any) => {
+                .map((act: unknown) => {
                   const p = act?.activity || {};
                   const desc = p?.description || '';
                   if (!desc) return null;
@@ -250,7 +247,6 @@ export default function TripDetailPage(props: TripPageProps) {
                 })
                 .filter(Boolean) as Array<[string, string]>;
               if (descRows.length) {
-                // @ts-ignore
                 autoTable(doc, {
                   startY: currentY,
                   head: [['Activity', 'Description']],
@@ -259,8 +255,8 @@ export default function TripDetailPage(props: TripPageProps) {
                   columnStyles: { 1: { cellWidth: 350 } },
                   headStyles: { fillColor: [240, 240, 240], textColor: [0, 0, 0] },
                 });
-                // @ts-ignore
-                currentY = (doc as any).lastAutoTable.finalY + 6;
+                // @ts-expect-error - lastAutoTable property from jsPDF plugin
+                currentY = (doc as unknown).lastAutoTable.finalY + 6;
               }
             }
           });
@@ -478,8 +474,8 @@ export default function TripDetailPage(props: TripPageProps) {
               {response?.visibility && (
                 <Badge className="bg-blue-100 text-blue-800">{String(response.visibility).toUpperCase()}</Badge>
               )}
-              {(response as any)?.updated_at && (
-                <Badge variant="outline">Updated {new Date((response as any).updated_at).toLocaleDateString()}</Badge>
+              {(response as unknown)?.updated_at && (
+                <Badge variant="outline">Updated {new Date((response as unknown).updated_at).toLocaleDateString()}</Badge>
               )}
               {response?.updatedAt && (
                 <Badge variant="outline">Updated {new Date(response.updatedAt).toLocaleDateString()}</Badge>
@@ -504,8 +500,8 @@ export default function TripDetailPage(props: TripPageProps) {
                 <div className="text-lg font-semibold drop-shadow">{it?.destination || response?.title}</div>
                 <div className="mt-1 flex flex-wrap items-center gap-2 text-xs opacity-90">
                   {response?.id && <Badge variant="secondary">ID: {response.id}</Badge>}
-                  {(response as any)?.source_trip_id && <Badge variant="secondary">Source: {(response as any).source_trip_id}</Badge>}
-                  {(response as any)?.schema_version && <Badge variant="secondary">Schema v{(response as any).schema_version}</Badge>}
+                  {(response as unknown)?.source_trip_id && <Badge variant="secondary">Source: {(response as unknown).source_trip_id}</Badge>}
+                  {(response as unknown)?.schema_version && <Badge variant="secondary">Schema v{(response as unknown).schema_version}</Badge>}
                   {it?.version && <Badge variant="secondary">Itinerary v{it.version}</Badge>}
                   {typeof it?.confidence_score === 'number' && <Badge variant="outline" className="bg-white/20 text-white border-white/40">Confidence: {Math.round(it.confidence_score * 100)}%</Badge>}
                 </div>
@@ -607,7 +603,7 @@ export default function TripDetailPage(props: TripPageProps) {
                     <div className="mt-4">
                       <div className="font-medium mb-1">Requested budget distribution</div>
                       {(() => {
-                        const bb: any = response.request.budget_breakdown;
+                        const bb: unknown = response.request.budget_breakdown;
                         const items = [
                           ['Accommodation', bb.accommodation_percentage],
                           ['Food', bb.food_percentage],
@@ -654,19 +650,13 @@ export default function TripDetailPage(props: TripPageProps) {
           <Card id="itinerary" className="glass-card mb-8">
             <CardHeader>
               <CardTitle className="text-2xl">Daily Itinerary</CardTitle>
-                <CardDescription>Explore each day&apos;s plan</CardDescription>
-                {weatherLoading && (
-                  <div className="mt-2"><Badge variant="outline">Fetching weather…</Badge></div>
-                )}
-                {weatherError && (
-                  <div className="mt-2"><Badge variant="destructive">{weatherError}</Badge></div>
-                )}
+              <CardDescription>Explore each day&apos;s plan</CardDescription>
             </CardHeader>
             <CardContent>
             <div className="relative">
               <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500 opacity-30"></div>
               <Accordion type="single" collapsible defaultValue="day-1" className="w-full space-y-4">
-                  {it.daily_itineraries.map((day: any, idx: number) => (
+                  {it.daily_itineraries.map((day: unknown, idx: number) => (
                   <AccordionItem key={idx} value={`day-${idx + 1}`} className="border-0 bg-transparent">
                     <AccordionTrigger className="relative pl-16 py-6 hover:no-underline group">
                       <div className="absolute left-4 top-6 w-4 h-4 rounded-full theme-bg border-4 border-white dark:border-gray-900 shadow-lg z-10 group-hover:scale-110 transition-transform"></div>
@@ -693,7 +683,7 @@ export default function TripDetailPage(props: TripPageProps) {
                       <div className="relative pl-16 pb-8">
                           <div className="rounded-2xl border bg-gradient-to-br from-white/80 to-gray-50/50 dark:from-gray-900/80 dark:to-gray-800/50 backdrop-blur-sm p-6 shadow-lg">
                             {(['morning','lunch','afternoon','evening'] as const).map((sectionKey) => {
-                              const section: any = day?.[sectionKey];
+                              const section: unknown = day?.[sectionKey];
                               if (!section) return null;
                               
                               if (sectionKey === 'lunch' && section.restaurant) {
@@ -735,7 +725,7 @@ export default function TripDetailPage(props: TripPageProps) {
                                     </div>
                                   )}
                                   <div className="grid gap-4">
-                                    {section.activities.map((act: any, aIdx: number) => {
+                                    {section.activities.map((act: unknown, aIdx: number) => {
                                       const p = act.activity || {};
                                       const lat = p?.coordinates?.lat;
                                       const lng = p?.coordinates?.lng;
@@ -814,7 +804,7 @@ export default function TripDetailPage(props: TripPageProps) {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {it.travel_options.map((opt: any, i: number) => (
+                {it.travel_options.map((opt: unknown, i: number) => (
                   <div key={i} className="p-4 rounded-xl border">
                     <div className="flex items-start justify-between">
                       <div className="font-medium">{opt.mode}</div>
@@ -828,7 +818,7 @@ export default function TripDetailPage(props: TripPageProps) {
                     )}
                     {Array.isArray(opt.legs) && opt.legs.length > 0 && (
                       <div className="mt-3 space-y-2 text-sm">
-                        {opt.legs.map((leg: any, j: number) => (
+                        {opt.legs.map((leg: unknown, j: number) => (
                           <div key={j} className="p-3 rounded-md border">
                             <div className="flex items-center justify-between">
                               <div className="font-medium">{leg.mode}</div>
@@ -905,7 +895,7 @@ export default function TripDetailPage(props: TripPageProps) {
                   <div>
                     <div className="font-medium mb-2">Emergency contacts</div>
                     <div className="grid grid-cols-2 gap-2 text-muted-foreground">
-                      {Object.entries(it.local_information.emergency_contacts).map(([k,v]: any, i: number) => (<div key={i}><span className="font-medium capitalize">{k.replaceAll('_',' ')}:</span> {v as string}</div>))}
+                      {Object.entries(it.local_information.emergency_contacts).map(([k,v]: unknown, i: number) => (<div key={i}><span className="font-medium capitalize">{k.replaceAll('_',' ')}:</span> {v as string}</div>))}
                     </div>
                   </div>
                 )}
@@ -929,7 +919,7 @@ export default function TripDetailPage(props: TripPageProps) {
                   <div>
                     <div className="font-medium mb-2">Useful phrases</div>
                     <div className="grid grid-cols-2 gap-2 text-muted-foreground">
-                      {Object.entries(it.local_information.useful_phrases).map(([k,v]: any, i: number) => (<div key={i}><span className="font-medium">{k}:</span> {v as string}</div>))}
+                      {Object.entries(it.local_information.useful_phrases).map(([k,v]: unknown, i: number) => (<div key={i}><span className="font-medium">{k}:</span> {v as string}</div>))}
                     </div>
                   </div>
                 )}
@@ -946,7 +936,7 @@ export default function TripDetailPage(props: TripPageProps) {
                 </CardHeader>
                 <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {it.hidden_gems.map((gem: any, i: number) => (
+                {it.hidden_gems.map((gem: unknown, i: number) => (
                   <div key={i} className="p-4 rounded-xl border">
                     <div className="flex items-start justify-between">
                       <div>
@@ -975,7 +965,7 @@ export default function TripDetailPage(props: TripPageProps) {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {it.photography_spots.map((spot: any, i: number) => (
+                {it.photography_spots.map((spot: unknown, i: number) => (
                   <div key={i} className="p-4 rounded-xl border">
                     <div className="flex items-start justify-between">
                       <div className="font-medium">{spot.name}</div>
@@ -1068,7 +1058,7 @@ export default function TripDetailPage(props: TripPageProps) {
                     </div>
                   )}
                   <div className="space-y-3">
-                {Array.isArray(it.accommodations.alternative_options) && it.accommodations.alternative_options.map((opt: any, i: number) => (
+                {Array.isArray(it.accommodations.alternative_options) && it.accommodations.alternative_options.map((opt: unknown, i: number) => (
                       <div key={i} className="p-3 rounded-md border">
                         <div className="font-medium">{opt.name}</div>
                     {opt.address && <p className="text-sm text-muted-foreground">{opt.address}</p>}
@@ -1120,7 +1110,7 @@ export default function TripDetailPage(props: TripPageProps) {
                   <div>
                     <div className="font-medium mb-2">Daily transport costs</div>
                     <div className="space-y-1 text-muted-foreground">
-                      {Object.entries(it.transportation.daily_transport_costs).map(([k,v]: any, i: number) => (
+                      {Object.entries(it.transportation.daily_transport_costs).map(([k,v]: unknown, i: number) => (
                         <div key={i}>{k}: {v} {it.currency}</div>
                       ))}
                     </div>
@@ -1158,7 +1148,7 @@ export default function TripDetailPage(props: TripPageProps) {
                 <div className="">
                   <div className="font-medium mb-2">Day-wise routes</div>
                   <div className="flex flex-wrap gap-2">
-                    {Object.entries(mapData.daily_route_maps).map(([day, url]: any, i: number) => (
+                    {Object.entries(mapData.daily_route_maps).map(([day, url]: unknown, i: number) => (
                       <a key={i} href={url as string} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm hover:bg-muted transition-colors">
                         <span className="w-2 h-2 rounded-full theme-bg" />
                         {day}

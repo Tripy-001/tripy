@@ -29,8 +29,8 @@ const SignupPage = () => {
     try {
       await signUpWithEmail(formData.email, formData.password, formData.name);
       router.push("/onboarding");
-    } catch (err: any) {
-      let msg = err?.message || "";
+    } catch (err: unknown) {
+      const msg = err?.message || "";
       if (msg.toLowerCase().includes("name")) setFieldErrors((prev) => ({ ...prev, name: msg }));
       else if (msg.toLowerCase().includes("email")) setFieldErrors((prev) => ({ ...prev, email: msg }));
       else if (msg.toLowerCase().includes("password")) setFieldErrors((prev) => ({ ...prev, password: msg }));
@@ -43,7 +43,7 @@ const SignupPage = () => {
     try {
       await signInWithGoogle();
       router.push("/onboarding");
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError("Failed to sign up with Google. " + (err?.message || ""));
     }
   };

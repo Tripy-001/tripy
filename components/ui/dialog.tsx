@@ -62,7 +62,7 @@ function DialogContent({
 }) {
   // Check if children include a DialogTitle
   const hasDialogTitle = React.Children.toArray(children).some(
-    (child: any) => child?.type?.displayName === 'DialogTitle' || child?.type?.name === 'DialogTitle'
+    (child) => child?.type?.displayName === 'DialogTitle' || child?.type?.name === 'DialogTitle'
   );
   return (
     <DialogPortal data-slot="dialog-portal">
