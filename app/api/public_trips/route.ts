@@ -48,16 +48,22 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     const trips = pageDocs.map(d => {
       const data = d.data() as Record<string, unknown>;
+      const photosRaw = (data.destination_photos ?? undefined) as unknown;
+      const destination_photos = Array.isArray(photosRaw)
+        ? (photosRaw.filter((p): p is string => typeof p === 'string'))
+        : undefined;
       return {
         source_trip_id: data.source_trip_id,
         summary: data.summary,
         thumbnail_url: data.thumbnail_url,
+        destination_photos,
         title: data.title,
         updated_at: data.updated_at,
       } as {
         source_trip_id?: string;
         summary?: string;
         thumbnail_url?: string;
+        destination_photos?: string[];
         title?: string;
         updated_at?: string;
       };

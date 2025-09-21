@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { headers } from 'next/headers';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +9,7 @@ import { AI_RESPONSE as SAMPLE_CONST } from '@/app/constant';
 import { MapPin, Calendar, Clock, DollarSign, Users, Star } from 'lucide-react';
 import ScrollSpyTabs from '@/components/ScrollSpyTabs';
 import { Button } from '@/components/ui/button';
+import AutoCarousel from '@/components/AutoCarousel';
 
 type PublicTrip = unknown;
 
@@ -27,11 +29,9 @@ async function fetchPublicTrip(id: string): Promise<PublicTrip | null> {
   }
 }
 
-export default async function PublicTripsPage(
-  input: { params: { id: string } } | Promise<{ params: { id: string } }>
-) {
-  const resolved: any = (typeof (input as any)?.then === 'function') ? await (input as any) : input;
-  const id = resolved?.params?.id;
+export default async function PublicTripsPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  const id = params.id;
   const fetchedTrip = id ? await fetchPublicTrip(id) : null;
   const sampleTrip = SAMPLE_CONST?.trip ?? null;
   const trip = fetchedTrip || sampleTrip;
@@ -42,16 +42,16 @@ export default async function PublicTripsPage(
         <Card className="shadow-2xl border-0">
           <CardContent className="p-12 text-center">
             <h2 className="text-2xl font-bold text-foreground mb-4">Trip not found</h2>
-            <p className="text-muted-foreground">We couldn't load this public trip.</p>
+            <p className="text-muted-foreground">We couldn&rsquo;t load this public trip.</p>
           </CardContent>
         </Card>
       </div>
     );
   }
 
-  const response = trip;
-  const it = response?.itinerary || {};
-  const mapData = it?.map_data || {};
+  const response = trip as any;
+  const it = (response?.itinerary || {}) as any;
+  const mapData = (it?.map_data || {}) as any;
 
   const sectionLinks: Array<{ href: string; label: string }> = [];
   sectionLinks.push({ href: '#overview', label: 'Overview' });
@@ -68,6 +68,12 @@ export default async function PublicTripsPage(
   if (it?.accommodations) sectionLinks.push({ href: '#stay', label: 'Stay' });
   if (it?.transportation) sectionLinks.push({ href: '#transport', label: 'Transport' });
   if (mapData?.static_map_url || mapData?.daily_route_maps || mapData?.all_locations) sectionLinks.push({ href: '#maps', label: 'Maps' });
+
+  const heroPhotos: string[] = Array.isArray(response?.destination_photos)
+    ? (response.destination_photos as string[])
+    : Array.isArray(it?.destination_photos)
+      ? (it.destination_photos as string[])
+      : [];
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -93,28 +99,32 @@ export default async function PublicTripsPage(
         </div>
       </header>
 
-      {/* Hero thumbnail */}
-      {response?.thumbnail_url && (
-        <div className="w-full">
-          <div className="relative h-[220px] sm:h-[280px] lg:h-[360px] overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={response.thumbnail_url} alt={response?.title || 'Trip thumbnail'} className="absolute inset-0 w-full h-full object-contain bg-black/10" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-6 lg:px-8 pb-5">
-              <div className="max-w-7xl mx-auto text-white">
-                <div className="text-lg font-semibold drop-shadow">{it?.destination || response?.title}</div>
-                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs opacity-90">
-                  {response?.id && <Badge variant="secondary">ID: {response.id}</Badge>}
-                  {response?.source_trip_id && <Badge variant="secondary">Source: {response.source_trip_id}</Badge>}
-                  {response?.schema_version && <Badge variant="secondary">Schema v{response.schema_version}</Badge>}
-                  {it?.version && <Badge variant="secondary">Itinerary v{it.version}</Badge>}
-                  {typeof it?.confidence_score === 'number' && <Badge variant="outline" className="bg-white/20 text-white border-white/40">Confidence: {Math.round(it.confidence_score * 100)}%</Badge>}
-                </div>
+      {/* Hero media: prefer destination_photos, then thumbnail_url, else placeholder */}
+      <div className="w-full">
+        <div className="relative h-[220px] sm:h-[280px] lg:h-[360px] overflow-hidden">
+          {heroPhotos.length > 0 ? (
+            <AutoCarousel images={heroPhotos} className="absolute inset-0 h-full" imgAlt={response?.title || 'Destination photo'} imgLoading="eager" rounded="" />
+          ) : response?.thumbnail_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={response.thumbnail_url} alt={response?.title || 'Trip thumbnail'} className="absolute inset-0 w-full h-full object-cover bg-black/10" />
+          ) : (
+            <div className="absolute inset-0 w-full h-full bg-muted/40" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-6 lg:px-8 pb-5">
+            <div className="max-w-7xl mx-auto text-white">
+              <div className="text-lg font-semibold drop-shadow">{it?.destination || response?.title}</div>
+              <div className="mt-1 flex flex-wrap items-center gap-2 text-xs opacity-90">
+                {response?.id && <Badge variant="secondary">ID: {response.id}</Badge>}
+                {response?.source_trip_id && <Badge variant="secondary">Source: {response.source_trip_id}</Badge>}
+                {response?.schema_version && <Badge variant="secondary">Schema v{response.schema_version}</Badge>}
+                {it?.version && <Badge variant="secondary">Itinerary v{it.version}</Badge>}
+                {typeof it?.confidence_score === 'number' && <Badge variant="outline" className="bg-white/20 text-white border-white/40">Confidence: {Math.round(it.confidence_score * 100)}%</Badge>}
               </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Section nav */}
       <div className="bg-white/70 sticky top-16 z-40 border-b border-border/60">
@@ -223,15 +233,15 @@ export default async function PublicTripsPage(
                         return (
                           <div>
                             <div className="flex h-2 w-full overflow-hidden rounded bg-muted">
-                              {items.map(([label, value], i) => (
+                              {items.map(([, value], i) => (
                                 <div key={i} className="h-full" style={{ width: `${value}%`, backgroundColor: ['#60a5fa','#fbbf24','#34d399','#f472b6'][i % 4] }} />
                               ))}
                             </div>
                             <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                              {items.map(([label, value], i) => (
+                              {items.map(([, value], i) => (
                                 <div key={i} className="flex items-center gap-2">
                                   <span className="inline-block w-2 h-2 rounded" style={{ backgroundColor: ['#60a5fa','#fbbf24','#34d399','#f472b6'][i % 4] }} />
-                                  {label}: {value}%
+                                  {items[i][0]}: {value}%
                                 </div>
                               ))}
                             </div>
@@ -258,7 +268,7 @@ export default async function PublicTripsPage(
           <Card id="itinerary" className="glass-card mb-8">
             <CardHeader>
               <CardTitle className="text-2xl">Daily Itinerary</CardTitle>
-              <CardDescription>Explore each day's plan</CardDescription>
+              <CardDescription>Explore each day&rsquo;s plan</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="relative">

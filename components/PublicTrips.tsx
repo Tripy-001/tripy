@@ -5,11 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import AutoCarousel from "@/components/AutoCarousel";
 
 type PublicTrip = {
   source_trip_id?: string;
   summary?: string;
   thumbnail_url?: string;
+  destination_photos?: string[];
   title?: string;
   updated_at?: string;
 };
@@ -65,6 +67,7 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
       setIsLoading(false);
       setIsFirstLoad(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buildUrl, nextCursor]); // Removed isLoading from dependencies
 
   useEffect(() => {
@@ -87,13 +90,16 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
         {trips.map((trip, idx) => (
           <Link href={`/explore/trip/${trip.source_trip_id}`} key={`${trip.source_trip_id}-${idx}`}>
           <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-            {trip.thumbnail_url ? (
+            {Array.isArray(trip.destination_photos) && trip.destination_photos.length > 0 ? (
+              <AutoCarousel images={trip.destination_photos} className="w-full aspect-[4/3]" />
+            ) : trip.thumbnail_url ? (
               <div className="w-full aspect-[4/3] bg-muted/40 overflow-hidden">
                 {/* Using img to avoid external domain config for Next/Image */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={trip.thumbnail_url}
                   alt={trip.title || "Trip thumbnail"}
-                  className="w-full h-full object-cover"
+                  className="block w-full h-full object-cover"
                   loading="lazy"
                 />
               </div>

@@ -26,7 +26,22 @@ export async function GET(req: NextRequest, context: RouteParams): Promise<NextR
       return NextResponse.json({ error: 'Public trip not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ trip: { id: tripSnap.id, ...tripSnap.data() } }, { status: 200 });
+    const raw = tripSnap.data() as Record<string, unknown>;
+    const photosRaw = (raw?.destination_photos ?? undefined) as unknown;
+    const destination_photos = Array.isArray(photosRaw)
+      ? photosRaw.filter((p): p is string => typeof p === 'string')
+      : undefined;
+
+    return NextResponse.json(
+      {
+        trip: {
+          id: tripSnap.id,
+          ...raw,
+          destination_photos,
+        },
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('API Error /api/public_trips/[id] GET:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
