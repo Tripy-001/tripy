@@ -46,6 +46,7 @@ export const TripCreationForm = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const { startItineraryGeneration } = useAppStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<TripPlanRequest>({
     resolver: zodResolver(TripPlanRequestSchema) as Resolver<TripPlanRequest>,
@@ -108,6 +109,7 @@ export const TripCreationForm = () => {
 
   const onSubmit = async (data: TripPlanRequest) => {
     try {
+      setIsSubmitting(true);
       // Convert dates to proper format
       const payload = {
         ...data,
@@ -120,6 +122,9 @@ export const TripCreationForm = () => {
       router.push('/trip/ai-generation');
     } catch (error) {
       console.error('Error creating trip:', error);
+    } finally {
+      // Keep disabled state only briefly until navigation happens
+      setIsSubmitting(false);
     }
   };
 
@@ -210,7 +215,24 @@ export const TripCreationForm = () => {
           
           <CardContent className="px-8 pb-8">
             <Form {...form}>
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                onKeyDown={async (e) => {
+                  if (e.key === 'Enter') {
+                    const target = e.target as HTMLElement;
+                    // Allow newlines in textarea and modified enter
+                    if (target && (target.tagName === 'TEXTAREA' || e.shiftKey || e.metaKey || e.ctrlKey || e.altKey)) {
+                      return;
+                    }
+                    e.preventDefault();
+                    if (currentStep < STEPS.length - 1) {
+                      await nextStep();
+                    } else {
+                      await handleSubmit(onSubmit)();
+                    }
+                  }
+                }}
+              >
                 {renderStep()}
                 
                 <div className="mt-8 flex justify-between">
@@ -228,9 +250,9 @@ export const TripCreationForm = () => {
                     type={currentStep === STEPS.length - 1 ? 'submit' : 'button'}
                     onClick={currentStep === STEPS.length - 1 ? undefined : nextStep}
                     className="flex items-center gap-2"
-                    disabled={!isStepValid()}
+                    disabled={!isStepValid() || (currentStep === STEPS.length - 1 && isSubmitting)}
                   >
-                    {currentStep === STEPS.length - 1 ? 'Create Trip' : 'Continue'}
+                    {currentStep === STEPS.length - 1 ? (isSubmitting ? 'Starting...' : 'Create Trip') : 'Continue'}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
