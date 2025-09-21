@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/ban-ts-comment */
 
 import React from 'react';
 import { useEffect, useMemo, useState } from 'react';
@@ -6,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import GoogleMapsPreview from '@/components/GoogleMapsPreview';
-import { MapPin, Calendar, Clock, DollarSign, Users, Star, Download } from 'lucide-react';
+import { MapPin, Calendar, Clock, DollarSign, Users, Star, Download, Cloud, CloudRain, Sun, Wind } from 'lucide-react';
 import ScrollSpyTabs from '@/components/ScrollSpyTabs';
 import { auth } from '@/lib/firebase';
 import { useAppStore } from '@/lib/store';
@@ -35,6 +36,16 @@ export default function TripDetailPage(props: TripPageProps) {
   const [error, setError] = useState<string | null>(null);
   const [tripId, setTripId] = useState<string | null>(null);
   const { firebaseUser, authLoading } = useAppStore();
+  const [weatherLoading, setWeatherLoading] = useState(false);
+  const [weatherError, setWeatherError] = useState<string | null>(null);
+  const [weatherMap, setWeatherMap] = useState<Record<string, {
+    loading: boolean;
+    error?: string;
+    data?: {
+      current: { temperatureC: number | null; condition: string | null; precipitationProbability?: number | null } | null;
+      daily: { maxTempC: number | null; minTempC: number | null; condition: string | null; precipitationProbabilityMax: number | null } | null;
+    };
+  }>>({});
 
   useEffect(() => {
     let mounted = true;
@@ -94,7 +105,7 @@ export default function TripDetailPage(props: TripPageProps) {
   }, [tripId, firebaseUser, authLoading]);
 
   const it = useMemo(() => (trip?.itinerary ?? {}), [trip]);
-  const mapData = it?.map_data || {};
+  const mapData = useMemo(() => it?.map_data || {}, [it]);
   const currency = it?.currency || it?.budget_breakdown?.currency;
 
   const formatCurrency = (val: unknown): string => {
@@ -262,6 +273,149 @@ export default function TripDetailPage(props: TripPageProps) {
     }
   };
 
+  // Build a set of unique weather queries from itinerary
+  const weatherQueries = useMemo(() => {
+    const qs: Array<{ key: string; lat: number; lng: number; date?: string }> = [];
+    const seen = new Set<string>();
+    try {
+      const days: any[] = Array.isArray(it?.daily_itineraries) ? it.daily_itineraries : [];
+      days.forEach((day) => {
+        const date = day?.date ? new Date(day.date).toISOString().slice(0, 10) : undefined;
+        (['morning','lunch','afternoon','evening'] as const).forEach((sectionKey) => {
+          const section: any = day?.[sectionKey];
+          if (!section) return;
+          const acts: any[] = sectionKey === 'lunch' && section.restaurant ? [ { activity: section.restaurant } ] : (Array.isArray(section?.activities) ? section.activities : []);
+          acts.forEach((act: any) => {
+            const p = act?.activity || act || {};
+            const lat = p?.coordinates?.lat;
+            const lng = p?.coordinates?.lng;
+            if (typeof lat === 'number' && typeof lng === 'number') {
+              const key = `${lat.toFixed(3)},${lng.toFixed(3)}@${date ?? 'na'}`; // reduce duplicates by rounding
+              if (!seen.has(key)) {
+                seen.add(key);
+                qs.push({ key, lat, lng, date });
+              }
+            }
+          });
+        });
+      });
+    } catch {}
+    return qs;
+  }, [it]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const run = async () => {
+      if (!weatherQueries || weatherQueries.length === 0) {
+        setWeatherMap({});
+        setWeatherLoading(false);
+        setWeatherError(null);
+        return;
+      }
+      setWeatherLoading(true);
+      setWeatherError(null);
+      try {
+        const points = weatherQueries.map(q => ({ key: q.key, lat: q.lat, lng: q.lng, date: q.date }));
+        const res = await fetch('/api/weather/batch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ points }),
+        });
+        if (!res.ok) throw new Error(`Weather ${res.status}`);
+        const json = await res.json();
+        const results = json?.results || {};
+        if (cancelled) return;
+  const next: Record<string, { loading: boolean; error?: string; data?: { current: { temperatureC: number | null; condition: string | null; precipitationProbability?: number | null } | null; daily: { maxTempC: number | null; minTempC: number | null; condition: string | null; precipitationProbabilityMax: number | null } | null; } }> = {};
+        for (const q of weatherQueries) {
+          const val = (results as any)[q.key];
+          if (!val) {
+            next[q.key] = { loading: false, error: 'No data' };
+            continue;
+          }
+          if ('error' in val) {
+            next[q.key] = { loading: false, error: String(val.error || 'Error') };
+          } else {
+            const curr = val.current ? { temperatureC: val.current.temperatureC ?? null, condition: val.current.condition ?? null, precipitationProbability: val.current.precipitationProbability ?? null } : null;
+            const daily = val.daily ? {
+              maxTempC: val.daily.maxTempC ?? null,
+              minTempC: val.daily.minTempC ?? null,
+              condition: val.daily.condition ?? null,
+              precipitationProbabilityMax: val.daily.precipitationProbabilityMax ?? null,
+            } : null;
+            next[q.key] = { loading: false, data: { current: curr, daily } };
+          }
+        }
+        setWeatherMap(next);
+        setWeatherLoading(false);
+      } catch (e: any) {
+        if (cancelled) return;
+        setWeatherError(e?.message || 'Failed to fetch weather');
+        setWeatherLoading(false);
+      }
+    };
+    run();
+    return () => { cancelled = true; };
+  }, [weatherQueries]);
+
+  const WeatherIcon = ({ condition }: { condition?: string | null }) => {
+    const c = (condition || '').toLowerCase();
+    if (c.includes('clear') || c.includes('sun')) return <Sun className="w-4 h-4 text-yellow-500" />;
+    if (c.includes('rain') || c.includes('shower')) return <CloudRain className="w-4 h-4 text-blue-500" />;
+    if (c.includes('cloud')) return <Cloud className="w-4 h-4 text-gray-500" />;
+    return <Wind className="w-4 h-4 text-muted-foreground" />;
+  };
+
+  type WeatherEntry = {
+    loading: boolean;
+    error?: string;
+    data?: {
+      current: { temperatureC: number | null; condition: string | null; precipitationProbability?: number | null } | null;
+      daily: { maxTempC: number | null; minTempC: number | null; condition: string | null; precipitationProbabilityMax: number | null } | null;
+    };
+  };
+
+  const CompactWeatherCard = ({ date, w }: { date?: string; w?: WeatherEntry }) => {
+    if (!w) return null;
+    const condition = w.data?.daily?.condition || w.data?.current?.condition || '—';
+    const max = w.data?.daily?.maxTempC;
+    const min = w.data?.daily?.minTempC;
+    const precipDay = w.data?.daily?.precipitationProbabilityMax;
+    const hasDetails = condition !== '—' || typeof max === 'number' || typeof min === 'number' || typeof precipDay === 'number';
+    return (
+      <div className="mt-3">
+        <div className="rounded-lg border p-3 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <WeatherIcon condition={w.data?.current?.condition || w.data?.daily?.condition} />
+              <span className="font-medium text-foreground">Weather</span>
+              {date && (
+                <Badge variant="secondary" className="ml-1">{new Date(date).toLocaleDateString()}</Badge>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              {w.loading && <Badge variant="outline">Loading…</Badge>}
+              {w.error && <Badge variant="destructive">Error</Badge>}
+            </div>
+          </div>
+          {hasDetails && (
+            <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+              <span className="text-foreground font-medium mr-1">{condition}</span>
+              {typeof max === 'number' && (
+                <Badge variant="outline" className="px-2 py-0.5">Max {Math.round(max)}°C</Badge>
+              )}
+              {typeof min === 'number' && (
+                <Badge variant="outline" className="px-2 py-0.5">Min {Math.round(min)}°C</Badge>
+              )}
+              {typeof precipDay === 'number' && (
+                <Badge variant="secondary" className="px-2 py-0.5">Precip (day) {precipDay}%</Badge>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   const sectionLinks: Array<{ href: string; label: string }> = useMemo(() => {
     const links: Array<{ href: string; label: string }> = [];
     links.push({ href: '#overview', label: 'Overview' });
@@ -299,7 +453,7 @@ export default function TripDetailPage(props: TripPageProps) {
         <Card className="shadow-2xl border-0">
           <CardContent className="p-12 text-center">
             <h2 className="text-2xl font-bold text-foreground mb-4">{error || 'Trip not found'}</h2>
-            <p className="text-muted-foreground">We couldn't load this trip.</p>
+            <p className="text-muted-foreground">We couldn&apos;t load this trip.</p>
           </CardContent>
         </Card>
       </div>
@@ -463,17 +617,20 @@ export default function TripDetailPage(props: TripPageProps) {
                         return (
                           <div>
                             <div className="flex h-2 w-full overflow-hidden rounded bg-muted">
-                              {items.map(([label, value], i) => (
+                              {items.map(([, value], i) => (
                                 <div key={i} className="h-full" style={{ width: `${value}%`, backgroundColor: ['#60a5fa','#fbbf24','#34d399','#f472b6'][i % 4] }} />
                               ))}
                             </div>
                             <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                              {items.map(([label, value], i) => (
-                                <div key={i} className="flex items-center gap-2">
-                                  <span className="inline-block w-2 h-2 rounded" style={{ backgroundColor: ['#60a5fa','#fbbf24','#34d399','#f472b6'][i % 4] }} />
-                                  {label}: {value}%
-                                </div>
-                              ))}
+                              {items.map((pair, i) => {
+                                const [label, value] = pair as [string, number];
+                                return (
+                                  <div key={i} className="flex items-center gap-2">
+                                    <span className="inline-block w-2 h-2 rounded" style={{ backgroundColor: ['#60a5fa','#fbbf24','#34d399','#f472b6'][i % 4] }} />
+                                    {label}: {value}%
+                                  </div>
+                                );
+                              })}
                             </div>
                           </div>
                         );
@@ -497,7 +654,13 @@ export default function TripDetailPage(props: TripPageProps) {
           <Card id="itinerary" className="glass-card mb-8">
             <CardHeader>
               <CardTitle className="text-2xl">Daily Itinerary</CardTitle>
-              <CardDescription>Explore each day's plan</CardDescription>
+                <CardDescription>Explore each day&apos;s plan</CardDescription>
+                {weatherLoading && (
+                  <div className="mt-2"><Badge variant="outline">Fetching weather…</Badge></div>
+                )}
+                {weatherError && (
+                  <div className="mt-2"><Badge variant="destructive">{weatherError}</Badge></div>
+                )}
             </CardHeader>
             <CardContent>
             <div className="relative">
@@ -535,6 +698,11 @@ export default function TripDetailPage(props: TripPageProps) {
                               
                               if (sectionKey === 'lunch' && section.restaurant) {
                                 const r = section.restaurant;
+                                const lat = r?.coordinates?.lat;
+                                const lng = r?.coordinates?.lng;
+                                const dateKey = day?.date ? new Date(day.date).toISOString().slice(0,10) : 'na';
+                                const wKey = (typeof lat === 'number' && typeof lng === 'number') ? `${lat.toFixed(3)},${lng.toFixed(3)}@${dateKey}` : undefined;
+                                const w = wKey ? weatherMap[wKey] : undefined;
                                 return (
                                   <div key={sectionKey} className="space-y-4">
                                   <div className="flex items-center gap-3 pb-2 border-b border-border/50">
@@ -545,6 +713,7 @@ export default function TripDetailPage(props: TripPageProps) {
                                       <div className="mb-2 font-medium">{r?.name || 'Lunch'}</div>
                                       {r?.address && <div className="text-sm text-muted-foreground mb-2">{r.address}</div>}
                                       <GoogleMapsPreview lat={r?.coordinates?.lat} lng={r?.coordinates?.lng} placeId={r?.place_id} name={r?.name} ratio={16/6} className="w-full" />
+                                          {wKey && <CompactWeatherCard date={day?.date} w={w} />}
                                     </div>
                                   </div>
                                 );
@@ -568,6 +737,11 @@ export default function TripDetailPage(props: TripPageProps) {
                                   <div className="grid gap-4">
                                     {section.activities.map((act: any, aIdx: number) => {
                                       const p = act.activity || {};
+                                      const lat = p?.coordinates?.lat;
+                                      const lng = p?.coordinates?.lng;
+                                      const dateKey = day?.date ? new Date(day.date).toISOString().slice(0,10) : 'na';
+                                      const wKey = (typeof lat === 'number' && typeof lng === 'number') ? `${lat.toFixed(3)},${lng.toFixed(3)}@${dateKey}` : undefined;
+                                      const w = wKey ? weatherMap[wKey] : undefined;
                                       return (
                                         <div key={aIdx} className="p-6 rounded-xl border">
                                           <div className="font-medium mb-1">{p?.name || act?.activity_type}</div>
@@ -611,6 +785,7 @@ export default function TripDetailPage(props: TripPageProps) {
                                               {typeof act?.weather_dependent !== 'undefined' && (
                                                 <div><span className="font-medium text-foreground">Weather dependent:</span> {act.weather_dependent ? 'Yes' : 'No'}</div>
                                               )}
+                                              {wKey && <CompactWeatherCard date={day?.date} w={w} />}
                                             </div>
                                           </div>
                                         </div>

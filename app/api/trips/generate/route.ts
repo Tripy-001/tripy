@@ -27,10 +27,10 @@ export async function POST(request: NextRequest) {
     };
     await tripRef.set(newTrip);
     const tripId = tripRef.id;
-
+    console.log(newTrip);
     // 4. Trigger the FastAPI backend (fire and forget)
     // Ensure FASTAPI_URL is in your .env.local
-    fetch(`${process.env.FASTAPI_URL}/api/v1/generate-trip`, {
+    const response = fetch(`http://localhost:8000/api/v1/generate-trip`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       // Log this error server-side, but don't block the user response
       console.error('Error triggering FastAPI backend:', error);
     });
-
+    console.log(response);
     // 5. Immediately return the tripId to the frontend
     return NextResponse.json({ success: true, tripId: tripId });
   } catch (error: unknown) {
