@@ -6,9 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import GoogleMapsPreview from '@/components/GoogleMapsPreview';
-import { MapPin, Calendar, Clock, DollarSign, Users, Star, Utensils } from 'lucide-react';
+import { MapPin, Calendar, Clock, DollarSign, Users, Star, Download } from 'lucide-react';
 import ScrollSpyTabs from '@/components/ScrollSpyTabs';
 import { auth } from '@/lib/firebase';
+import { useAppStore } from '@/lib/store';
 
 type Trip = any;
 
@@ -33,6 +34,7 @@ export default function TripDetailPage(props: TripPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tripId, setTripId] = useState<string | null>(null);
+  const { firebaseUser, authLoading } = useAppStore();
 
   useEffect(() => {
     let mounted = true;
@@ -47,13 +49,14 @@ export default function TripDetailPage(props: TripPageProps) {
 
   useEffect(() => {
     if (!tripId) return;
+    if (authLoading) return;
     let cancelled = false;
     setLoading(true);
     setError(null);
 
     const doFetch = async () => {
       try {
-        const user = auth.currentUser;
+        const user = firebaseUser || auth.currentUser;
         if (!user) {
           setError('You must be signed in to view this trip.');
           setLoading(false);
@@ -88,10 +91,176 @@ export default function TripDetailPage(props: TripPageProps) {
     return () => {
       cancelled = true;
     };
-  }, [tripId]);
+  }, [tripId, firebaseUser, authLoading]);
 
   const it = useMemo(() => (trip?.itinerary ?? {}), [trip]);
   const mapData = it?.map_data || {};
+  const currency = it?.currency || it?.budget_breakdown?.currency;
+
+  const formatCurrency = (val: unknown): string => {
+    if (val === null || val === undefined) return '';
+    const num = typeof val === 'number' ? val : parseFloat(String(val));
+    if (!isFinite(num)) return String(val);
+    return `${num} ${currency || ''}`.trim();
+  };
+
+  const handleDownloadPdf = async () => {
+    try {
+      const { jsPDF } = await import('jspdf');
+      const autoTable = (await import('jspdf-autotable')).default;
+
+      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+
+      const title = `Trip Itinerary${it?.destination ? ` - ${it.destination}` : ''}`;
+      doc.setFontSize(16);
+      doc.text(title, 40, 40);
+
+      // Overview table
+      const overviewRows: Array<[string, string]> = [];
+      if (it?.origin || it?.destination) overviewRows.push(['Route', `${it?.origin || ''} → ${it?.destination || ''}`]);
+      if (trip?.request?.start_date || trip?.request?.end_date) overviewRows.push(['Dates', `${trip?.request?.start_date || ''} – ${trip?.request?.end_date || ''}`]);
+      if (it?.trip_duration_days) overviewRows.push(['Duration', `${it.trip_duration_days} day(s)`]);
+      if (it?.group_size || trip?.request?.group_size) overviewRows.push(['Group size', String(it?.group_size ?? trip?.request?.group_size)]);
+      if (it?.total_budget || it?.budget_breakdown?.total_budget) overviewRows.push(['Budget', formatCurrency(it?.total_budget ?? it?.budget_breakdown?.total_budget)]);
+      if (it?.travel_style || trip?.request?.primary_travel_style) overviewRows.push(['Travel style', String(it?.travel_style ?? trip?.request?.primary_travel_style)]);
+      if (it?.activity_level || trip?.request?.activity_level) overviewRows.push(['Activity level', String(it?.activity_level ?? trip?.request?.activity_level)]);
+
+      autoTable(doc, {
+        startY: 60,
+        head: [['Field', 'Value']],
+        body: overviewRows,
+        styles: { fontSize: 10, cellPadding: 5 },
+        headStyles: { fillColor: [32, 90, 167] },
+      });
+
+      // Budget breakdown
+      if (it?.budget_breakdown) {
+        const bb = it.budget_breakdown as Record<string, unknown>;
+        const budgetRows = [
+          ['Accommodation', formatCurrency(bb.accommodation_cost)],
+          ['Food', formatCurrency(bb.food_cost)],
+          ['Activities', formatCurrency(bb.activities_cost)],
+          ['Transport', formatCurrency(bb.transport_cost)],
+          ['Misc', formatCurrency(bb.miscellaneous_cost)],
+          ['Daily suggestion', formatCurrency(bb.daily_budget_suggestion)],
+          ['Total budget', formatCurrency(bb.total_budget)],
+        ].filter((r) => r[1]);
+        if (budgetRows.length) {
+          // @ts-ignore types from plugin
+          autoTable(doc, {
+            startY: (doc as any).lastAutoTable ? (doc as any).lastAutoTable.finalY + 8 : undefined,
+            head: [['Budget item', 'Amount']],
+            body: budgetRows as any,
+            styles: { fontSize: 10, cellPadding: 5 },
+            headStyles: { fillColor: [32, 90, 167] },
+          });
+        }
+      }
+
+      // Daily itineraries
+      if (Array.isArray(it?.daily_itineraries)) {
+        it.daily_itineraries.forEach((day: any, idx: number) => {
+          doc.addPage();
+          const dayTitle = `Day ${day?.day_number || idx + 1}${day?.theme ? ` - ${day.theme}` : ''}`;
+          doc.setFontSize(14);
+          doc.text(dayTitle, 40, 40);
+          doc.setFontSize(10);
+          if (day?.date) doc.text(`Date: ${new Date(day.date).toLocaleDateString()}`, 40, 58);
+          let currentY = 72;
+          // Day route link from map_data.daily_route_maps if available
+          try {
+            const drm = mapData?.daily_route_maps;
+            const key = `Day ${day?.day_number || idx + 1}`;
+            const routeUrl = drm?.[key];
+            if (routeUrl) {
+              doc.text(`Route map: ${routeUrl}`, 40, currentY, { maxWidth: 520 });
+              currentY += 12;
+            }
+          } catch {}
+          const sectionKeys = ['morning', 'afternoon', 'evening', 'lunch'] as const;
+          sectionKeys.forEach((sectionKey) => {
+            const section: any = day?.[sectionKey];
+            if (!section) return;
+
+            const headerRows: Array<[string, string]> = [];
+            if (section?.total_duration_hours) headerRows.push(['Total duration (hrs)', String(section.total_duration_hours)]);
+            if (section?.estimated_cost) headerRows.push(['Estimated cost', formatCurrency(section.estimated_cost)]);
+            if (section?.transportation_notes) headerRows.push(['Transport notes', String(section.transportation_notes)]);
+
+            if (headerRows.length) {
+              // @ts-ignore
+              autoTable(doc, {
+                startY: currentY,
+                head: [[`${String(sectionKey).toUpperCase()} SUMMARY`, '']],
+                body: headerRows,
+                styles: { fontSize: 9, cellPadding: 4 },
+                headStyles: { fillColor: [240, 240, 240], textColor: [0, 0, 0] },
+              });
+              // @ts-ignore
+              currentY = (doc as any).lastAutoTable.finalY + 6;
+            }
+
+            if (Array.isArray(section?.activities) && section.activities.length) {
+              const rows = section.activities.map((act: any) => {
+                const p = act?.activity || {};
+                const type = act?.activity_type || p?.subcategory || p?.category || '';
+                const duration = p?.duration_hours ?? act?.duration_hours ?? '';
+                const cost = act?.estimated_cost_per_person ?? p?.estimated_cost ?? '';
+                const addr = p?.address || '';
+                // Prefer concise coordinate map URL when possible
+                const lat = p?.coordinates?.lat;
+                const lng = p?.coordinates?.lng;
+                const placeId = p?.place_id;
+                const mapUrl = typeof lat === 'number' && typeof lng === 'number'
+                  ? `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`
+                  : (placeId ? `https://www.google.com/maps/place/?q=place_id:${placeId}` : '');
+                return [p?.name || type || 'Activity', type, String(duration || ''), formatCurrency(cost), addr, mapUrl];
+              });
+
+              // @ts-ignore
+              autoTable(doc, {
+                startY: currentY,
+                head: [[`${String(sectionKey).toUpperCase()} ACTIVITIES`, 'Type', 'Duration (hrs)', 'Cost', 'Address', 'Map']],
+                body: rows,
+                styles: { fontSize: 9, cellPadding: 4 },
+                columnStyles: { 4: { cellWidth: 200 }, 5: { cellWidth: 160 } },
+                headStyles: { fillColor: [32, 90, 167] },
+              });
+              // @ts-ignore
+              currentY = (doc as any).lastAutoTable.finalY + 6;
+
+              // Optional descriptions block
+              const descRows = section.activities
+                .map((act: any) => {
+                  const p = act?.activity || {};
+                  const desc = p?.description || '';
+                  if (!desc) return null;
+                  return [p?.name || 'Activity', desc];
+                })
+                .filter(Boolean) as Array<[string, string]>;
+              if (descRows.length) {
+                // @ts-ignore
+                autoTable(doc, {
+                  startY: currentY,
+                  head: [['Activity', 'Description']],
+                  body: descRows,
+                  styles: { fontSize: 9, cellPadding: 4 },
+                  columnStyles: { 1: { cellWidth: 350 } },
+                  headStyles: { fillColor: [240, 240, 240], textColor: [0, 0, 0] },
+                });
+                // @ts-ignore
+                currentY = (doc as any).lastAutoTable.finalY + 6;
+              }
+            }
+          });
+        });
+      }
+
+      doc.save(`Trip-Itinerary-${(it?.destination || 'trip').toString().replace(/\s+/g, '-')}-${trip?.id || 'id'}.pdf`);
+    } catch (err) {
+      console.error('PDF generation failed', err);
+    }
+  };
 
   const sectionLinks: Array<{ href: string; label: string }> = useMemo(() => {
     const links: Array<{ href: string; label: string }> = [];
@@ -161,6 +330,10 @@ export default function TripDetailPage(props: TripPageProps) {
               {response?.updatedAt && (
                 <Badge variant="outline">Updated {new Date(response.updatedAt).toLocaleDateString()}</Badge>
               )}
+              <button onClick={handleDownloadPdf} className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm font-medium hover:bg-muted transition-colors">
+                <Download className="w-4 h-4" />
+                Download PDF
+              </button>
             </div>
           </div>
         </div>
@@ -364,14 +537,14 @@ export default function TripDetailPage(props: TripPageProps) {
                                 const r = section.restaurant;
                                 return (
                                   <div key={sectionKey} className="space-y-4">
-                                    <div className="flex items-center gap-3 pb-2 border-b border-border/50">
+                                  <div className="flex items-center gap-3 pb-2 border-b border-border/50">
                                       <span className="text-lg">🍽️</span>
                                       <h4 className="text-lg font-semibold capitalize text-foreground">{sectionKey}</h4>
                                     </div>
                                     <div className="p-6 rounded-xl border">
                                       <div className="mb-2 font-medium">{r?.name || 'Lunch'}</div>
                                       {r?.address && <div className="text-sm text-muted-foreground mb-2">{r.address}</div>}
-                                      <GoogleMapsPreview lat={r?.coordinates?.lat} lng={r?.coordinates?.lng} placeId={r?.place_id} name={r?.name} ratio={16/10} className="w-full" />
+                                      <GoogleMapsPreview lat={r?.coordinates?.lat} lng={r?.coordinates?.lng} placeId={r?.place_id} name={r?.name} ratio={16/6} className="w-full" />
                                     </div>
                                   </div>
                                 );
@@ -385,6 +558,13 @@ export default function TripDetailPage(props: TripPageProps) {
                                     <span className="text-lg">{sectionKey === 'morning' ? '🌅' : sectionKey === 'afternoon' ? '☀️' : '🌆'}</span>
                                     <h4 className="text-lg font-semibold capitalize text-foreground">{sectionKey}</h4>
                                   </div>
+                                  {(section?.total_duration_hours || section?.estimated_cost || section?.transportation_notes) && (
+                                    <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                                      {section?.total_duration_hours && <Badge variant="outline">Duration: {section.total_duration_hours} hrs</Badge>}
+                                      {section?.estimated_cost && <Badge variant="outline">Cost: {formatCurrency(section.estimated_cost)}</Badge>}
+                                      {section?.transportation_notes && <span className="opacity-80">{section.transportation_notes}</span>}
+                                    </div>
+                                  )}
                                   <div className="grid gap-4">
                                     {section.activities.map((act: any, aIdx: number) => {
                                       const p = act.activity || {};
@@ -392,7 +572,47 @@ export default function TripDetailPage(props: TripPageProps) {
                                         <div key={aIdx} className="p-6 rounded-xl border">
                                           <div className="font-medium mb-1">{p?.name || act?.activity_type}</div>
                                           {p?.address && <div className="text-sm text-muted-foreground mb-2">{p.address}</div>}
-                                          <GoogleMapsPreview lat={p?.coordinates?.lat} lng={p?.coordinates?.lng} placeId={p?.place_id} name={p?.name} ratio={16/10} className="w-full" />
+                                          <GoogleMapsPreview lat={p?.coordinates?.lat} lng={p?.coordinates?.lng} placeId={p?.place_id} name={p?.name} ratio={16/6} className="w-full" />
+                                          <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                            <div className="space-y-1 text-muted-foreground">
+                                              {p?.description && <div><span className="font-medium text-foreground">Why:</span> {p.description}</div>}
+                                              {(p?.category || p?.subcategory || act?.activity_type) && (
+                                                <div><span className="font-medium text-foreground">Type:</span> {(act?.activity_type || p?.subcategory || p?.category)}</div>
+                                              )}
+                                              {(p?.duration_hours || act?.duration_hours) && (
+                                                <div><span className="font-medium text-foreground">Duration:</span> {(p?.duration_hours || act?.duration_hours)} hrs</div>
+                                              )}
+                                              {(typeof p?.rating === 'number') && (
+                                                <div><span className="font-medium text-foreground">Rating:</span> {p.rating}{p?.user_ratings_total ? ` (${p.user_ratings_total})` : ''}</div>
+                                              )}
+                                              {p?.price_level && (
+                                                <div><span className="font-medium text-foreground">Price level:</span> {p.price_level}</div>
+                                              )}
+                                            </div>
+                                            <div className="space-y-1 text-muted-foreground">
+                                              {(typeof act?.estimated_cost_per_person !== 'undefined' || typeof p?.estimated_cost !== 'undefined') && (
+                                                <div><span className="font-medium text-foreground">Cost per person:</span> {formatCurrency(act?.estimated_cost_per_person ?? p?.estimated_cost)}</div>
+                                              )}
+                                              {typeof act?.group_cost !== 'undefined' && (
+                                                <div><span className="font-medium text-foreground">Group cost:</span> {formatCurrency(act.group_cost)}</div>
+                                              )}
+                                              {Array.isArray(act?.age_suitability) && act.age_suitability.length > 0 && (
+                                                <div><span className="font-medium text-foreground">Ages:</span> {act.age_suitability.join(', ')}</div>
+                                              )}
+                                              {act?.difficulty_level && (
+                                                <div><span className="font-medium text-foreground">Difficulty:</span> {act.difficulty_level}</div>
+                                              )}
+                                              {(act?.advance_booking_required || p?.booking_required) && (
+                                                <div><span className="font-medium text-foreground">Booking:</span> {act?.advance_booking_required || p?.booking_required ? 'Required' : 'Optional'}</div>
+                                              )}
+                                              {(p?.booking_url) && (
+                                                <div><a href={p.booking_url} target="_blank" rel="noreferrer" className="underline">Booking link</a></div>
+                                              )}
+                                              {typeof act?.weather_dependent !== 'undefined' && (
+                                                <div><span className="font-medium text-foreground">Weather dependent:</span> {act.weather_dependent ? 'Yes' : 'No'}</div>
+                                              )}
+                                            </div>
+                                          </div>
                                         </div>
                                       );
                                     })}
@@ -759,30 +979,15 @@ export default function TripDetailPage(props: TripPageProps) {
               <CardDescription>Static map, daily routes and all locations</CardDescription>
             </CardHeader>
             <CardContent>
-              {mapData.static_map_url && (
-                <div className="rounded-xl overflow-hidden border bg-white">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={mapData.static_map_url} alt="Static map" className="w-full h-auto" />
-                </div>
-              )}
               {mapData.daily_route_maps && (
-                <div className="mt-4">
-                  <div className="font-medium mb-2">Daily route maps</div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                <div className="">
+                  <div className="font-medium mb-2">Day-wise routes</div>
+                  <div className="flex flex-wrap gap-2">
                     {Object.entries(mapData.daily_route_maps).map(([day, url]: any, i: number) => (
-                      <a key={i} href={url as string} target="_blank" rel="noreferrer" className="p-3 rounded-md border hover:bg-muted transition-colors">
+                      <a key={i} href={url as string} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm hover:bg-muted transition-colors">
+                        <span className="w-2 h-2 rounded-full theme-bg" />
                         {day}
                       </a>
-                    ))}
-                  </div>
-                            </div>
-                          )}
-              {Array.isArray(mapData.all_locations) && mapData.all_locations.length > 0 && (
-                <div className="mt-4">
-                  <div className="font-medium mb-2">All locations</div>
-                  <div className="flex flex-wrap gap-2">
-                    {mapData.all_locations.map((loc: any, i: number) => (
-                      <Badge key={i} variant="secondary" className="capitalize">{loc.name}</Badge>
                     ))}
                   </div>
                 </div>
