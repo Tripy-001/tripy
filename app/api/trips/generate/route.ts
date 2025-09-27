@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb, adminAuth } from '@/lib/firebaseAdmin';
 import { Timestamp } from 'firebase-admin/firestore';
+import axios from 'axios';
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,22 +28,24 @@ export async function POST(request: NextRequest) {
     };
     await tripRef.set(newTrip);
     const tripId = tripRef.id;
-    console.log(newTrip);
-    // 4. Trigger the FastAPI backend (fire and forget)
-    // Ensure FASTAPI_URL is in your .env.local
-    const response = fetch(`http://localhost:8000/api/v1/generate-trip`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        tripId: tripId,
-        userInput: userInput,
-      }),
-      // Do not await
-    }).catch((error) => {
-      // Log this error server-side, but don't block the user response
-      console.error('Error triggering FastAPI backend:', error);
-    });
-    console.log(response);
+     const outboundPayload = {
+      tripId: tripId,
+      userInput: userInput,
+    };
+    const base = (process.env.FASTAPI_URL || '').trim();
+    const normalizedBase = base.replace(/\/$/, '');
+    const endpoint = `${normalizedBase}/api/v1/generate-trip`;
+
+    // Fire-and-forget axios request (no await, no status mutation here). Backend will update the trip document later.
+    if (!base) {
+      console.error('[generate-trip] FASTAPI_URL not set; skipping backend trigger');
+    } else {
+      // Intentionally not awaiting; minimal error logging only.
+      axios.post(endpoint, outboundPayload).catch((err: unknown) => {
+        const message = (typeof err === 'object' && err && 'message' in err) ? String((err as { message?: unknown }).message) : 'Unknown axios error';
+        console.error('[generate-trip] Fire-and-forget axios error:', message);
+      });
+    }
     // 5. Immediately return the tripId to the frontend
     return NextResponse.json({ success: true, tripId: tripId });
   } catch (error: unknown) {
