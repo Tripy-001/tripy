@@ -105,7 +105,7 @@ export default function TripDetailPage(props: TripPageProps) {
   }, [tripId, firebaseUser, authLoading]);
 
   const it = useMemo(() => (trip?.itinerary ?? {}), [trip]);
-  const mapData = useMemo(() => it?.map_data || {}, [it]);å
+  const mapData = useMemo(() => it?.map_data || {}, [it]);
   const currency = it?.currency || it?.budget_breakdown?.currency;
 
   const formatCurrency = (val: unknown): string => {
