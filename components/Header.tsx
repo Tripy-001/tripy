@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, Sun, Moon, MapPin, Plane } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { Menu, Sun, Moon, MapPin, Plane } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     // Check for saved theme preference or default to light mode
@@ -43,6 +44,18 @@ const Header = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  // Helper function to determine if a link is active
+  const isActiveLink = (href: string) => {
+    if (href === '/') {
+      return pathname === '/';
+    }
+    if (href.startsWith('/#')) {
+      // For hash links, check if we're on the home page
+      return pathname === '/';
+    }
+    return pathname.startsWith(href);
+  };
+
   return (
     <header className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
       {/* Enhanced glassmorphic background */}
@@ -63,27 +76,55 @@ const Header = () => {
           <nav className="hidden md:flex items-center space-x-6 lg:space-x-8 flex-1 justify-center">
             <Link
               href="/#home"
-              className="text-foreground/80 hover:text-foreground transition-colors duration-200 font-medium whitespace-nowrap"
+              className={`transition-colors duration-200 font-medium whitespace-nowrap relative pb-1 ${
+                isActiveLink('/#home')
+                  ? 'text-primary font-semibold'
+                  : 'text-foreground/80 hover:text-foreground'
+              }`}
             >
               Home
+              {isActiveLink('/#home') && (
+                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary rounded-full"></span>
+              )}
             </Link>
             <Link
               href="/#features"
-              className="text-foreground/80 hover:text-foreground transition-colors duration-200 font-medium whitespace-nowrap"
+              className={`transition-colors duration-200 font-medium whitespace-nowrap relative pb-1 ${
+                isActiveLink('/#features')
+                  ? 'text-primary font-semibold'
+                  : 'text-foreground/80 hover:text-foreground'
+              }`}
             >
               Features
+              {isActiveLink('/#features') && (
+                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary rounded-full"></span>
+              )}
             </Link>
             <Link
               href="/about"
-              className="text-foreground/80 hover:text-foreground transition-colors duration-200 font-medium whitespace-nowrap"
+              className={`transition-colors duration-200 font-medium whitespace-nowrap relative pb-1 ${
+                isActiveLink('/about')
+                  ? 'text-primary font-semibold'
+                  : 'text-foreground/80 hover:text-foreground'
+              }`}
             >
               About
+              {isActiveLink('/about') && (
+                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary rounded-full"></span>
+              )}
             </Link>
             <Link
               href="/contact"
-              className="text-foreground/80 hover:text-foreground transition-colors duration-200 font-medium whitespace-nowrap"
+              className={`transition-colors duration-200 font-medium whitespace-nowrap relative pb-1 ${
+                isActiveLink('/contact')
+                  ? 'text-primary font-semibold'
+                  : 'text-foreground/80 hover:text-foreground'
+              }`}
             >
               Contact
+              {isActiveLink('/contact') && (
+                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary rounded-full"></span>
+              )}
             </Link>
           </nav>
 
@@ -144,31 +185,59 @@ const Header = () => {
                   <div className="flex flex-col px-6 py-8 space-y-2 flex-1">
                     <Link
                       href="/#home"
-                      className="flex items-center text-lg font-medium text-foreground hover:text-primary transition-colors py-4 px-4 rounded-xl hover:bg-accent/50 group"
+                      className={`flex items-center text-lg font-medium transition-colors py-4 px-4 rounded-xl group relative ${
+                        isActiveLink('/#home')
+                          ? 'text-primary bg-primary/10 font-semibold'
+                          : 'text-foreground hover:text-primary hover:bg-accent/50'
+                      }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <span className="group-hover:translate-x-1 transition-transform">Home</span>
+                      {isActiveLink('/#home') && (
+                        <span className="absolute -bottom-1 left-4 right-4 h-0.5 bg-primary rounded-full"></span>
+                      )}
                     </Link>
                     <Link
                       href="/#features"
-                      className="flex items-center text-lg font-medium text-foreground hover:text-primary transition-colors py-4 px-4 rounded-xl hover:bg-accent/50 group"
+                      className={`flex items-center text-lg font-medium transition-colors py-4 px-4 rounded-xl group relative ${
+                        isActiveLink('/#features')
+                          ? 'text-primary bg-primary/10 font-semibold'
+                          : 'text-foreground hover:text-primary hover:bg-accent/50'
+                      }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <span className="group-hover:translate-x-1 transition-transform">Features</span>
+                      {isActiveLink('/#features') && (
+                        <span className="absolute -bottom-1 left-4 right-4 h-0.5 bg-primary rounded-full"></span>
+                      )}
                     </Link>
                     <Link
                       href="/about"
-                      className="flex items-center text-lg font-medium text-foreground hover:text-primary transition-colors py-4 px-4 rounded-xl hover:bg-accent/50 group"
+                      className={`flex items-center text-lg font-medium transition-colors py-4 px-4 rounded-xl group relative ${
+                        isActiveLink('/about')
+                          ? 'text-primary bg-primary/10 font-semibold'
+                          : 'text-foreground hover:text-primary hover:bg-accent/50'
+                      }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <span className="group-hover:translate-x-1 transition-transform">About</span>
+                      {isActiveLink('/about') && (
+                        <span className="absolute -bottom-1 left-4 right-4 h-0.5 bg-primary rounded-full"></span>
+                      )}
                     </Link>
                     <Link
                       href="/contact"
-                      className="flex items-center text-lg font-medium text-foreground hover:text-primary transition-colors py-4 px-4 rounded-xl hover:bg-accent/50 group"
+                      className={`flex items-center text-lg font-medium transition-colors py-4 px-4 rounded-xl group relative ${
+                        isActiveLink('/contact')
+                          ? 'text-primary bg-primary/10 font-semibold'
+                          : 'text-foreground hover:text-primary hover:bg-accent/50'
+                      }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <span className="group-hover:translate-x-1 transition-transform">Contact</span>
+                      {isActiveLink('/contact') && (
+                        <span className="absolute -bottom-1 left-4 right-4 h-0.5 bg-primary rounded-full"></span>
+                      )}
                     </Link>
                   </div>
                   

@@ -4,16 +4,14 @@ import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogFooter } from '@/components/ui/dialog';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
   Menu, 
   X, 
   Globe, 
-  Home, 
   Plus, 
-  User,
   LogOut,
   Settings
 } from 'lucide-react';
@@ -26,7 +24,8 @@ interface NavigationProps {
 
 const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps) => {
   const router = useRouter();
-  const { user, isAuthenticated, firebaseUser, signInWithGoogle, signOut, setCurrentStep, authLoading } = useAppStore();
+  const pathname = usePathname();
+  const { user, isAuthenticated, firebaseUser, signOut, setCurrentStep, authLoading } = useAppStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -60,6 +59,14 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
     router.push('/signup');
   };
 
+  // Helper function to determine if a link is active
+  const isActiveLink = (href: string) => {
+    if (href === '/') {
+      return pathname === '/';
+    }
+    return pathname.startsWith(href);
+  };
+
   if (authLoading) {
     return (
       <header className="bg-white/80 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
@@ -90,19 +97,31 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
           <div className="hidden md:flex items-center space-x-6">
             <Link 
               href="/" 
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className={`text-sm font-medium transition-colors ${
+                isActiveLink('/')
+                  ? 'text-primary font-semibold'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
             >
               Home
             </Link>
             <Link 
               href="/about" 
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className={`text-sm font-medium transition-colors ${
+                isActiveLink('/about')
+                  ? 'text-primary font-semibold'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
             >
               About
             </Link>
             <Link 
               href="/contact" 
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className={`text-sm font-medium transition-colors ${
+                isActiveLink('/contact')
+                  ? 'text-primary font-semibold'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
             >
               Contact
             </Link>
@@ -110,7 +129,11 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
             {isAuthenticated && (
               <Link 
                 href="/dashboard" 
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className={`text-sm font-medium transition-colors ${
+                  isActiveLink('/dashboard')
+                    ? 'text-primary font-semibold'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
               >
                 Dashboard
               </Link>
@@ -138,13 +161,6 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
                       <AvatarFallback>{user?.displayName?.charAt(0) || firebaseUser?.displayName?.charAt(0) || 'U'}</AvatarFallback>
                     </Avatar>
                     <div className="flex items-center space-x-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => router.push('/dashboard')}
-                      >
-                        <Settings className="w-4 h-4" />
-                      </Button>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -192,21 +208,33 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
             <div className="space-y-4">
               <Link 
                 href="/" 
-                className="block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className={`block text-sm font-medium transition-colors py-2 px-3 rounded-lg ${
+                  isActiveLink('/')
+                    ? 'text-primary bg-primary/10 font-semibold'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Home
               </Link>
               <Link 
                 href="/about" 
-                className="block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className={`block text-sm font-medium transition-colors py-2 px-3 rounded-lg ${
+                  isActiveLink('/about')
+                    ? 'text-primary bg-primary/10 font-semibold'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 About
               </Link>
               <Link 
                 href="/contact" 
-                className="block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className={`block text-sm font-medium transition-colors py-2 px-3 rounded-lg ${
+                  isActiveLink('/contact')
+                    ? 'text-primary bg-primary/10 font-semibold'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Contact
@@ -215,7 +243,11 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
               {isAuthenticated && (
                 <Link 
                   href="/dashboard" 
-                  className="block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  className={`block text-sm font-medium transition-colors py-2 px-3 rounded-lg ${
+                    isActiveLink('/dashboard')
+                      ? 'text-primary bg-primary/10 font-semibold'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                  }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Dashboard
@@ -247,17 +279,6 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
                           </Avatar>
                           <span className="text-sm font-medium">{user?.displayName || firebaseUser?.displayName || 'User'}</span>
                         </div>
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start"
-                          onClick={() => {
-                            router.push('/dashboard');
-                            setIsMobileMenuOpen(false);
-                          }}
-                        >
-                          <Settings className="w-4 h-4 mr-2" />
-                          Settings
-                        </Button>
                         <Button
                           variant="ghost"
                           className="w-full justify-start"
