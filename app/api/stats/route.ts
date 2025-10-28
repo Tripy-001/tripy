@@ -1,6 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { NextResponse } from 'next/server';
+import { adminDb } from '@/lib/firebaseAdmin';
 
 interface TripData {
   id: string;
@@ -8,26 +7,29 @@ interface TripData {
   destination?: {
     country?: string;
   };
-  [key: string]: any;
+  dates?: {
+    startDate?: unknown;
+    endDate?: unknown;
+  };
+  visibility?: string;
+  [key: string]: unknown;
 }
 
 interface UserData {
   id: string;
-  createdAt?: any;
-  [key: string]: any;
+  createdAt?: unknown;
+  [key: string]: unknown;
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Get all trips to calculate statistics
-    const tripsRef = collection(db, 'trips');
-    const tripsSnapshot = await getDocs(tripsRef);
-    const trips: TripData[] = tripsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const tripsSnapshot = await adminDb.collection('trips').get();
+    const trips: TripData[] = tripsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as object }));
 
     // Get all users to calculate user count
-    const usersRef = collection(db, 'users');
-    const usersSnapshot = await getDocs(usersRef);
-    const users: UserData[] = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const usersSnapshot = await adminDb.collection('users').get();
+    const users: UserData[] = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as object }));
 
     // Calculate statistics
     const totalTrips = trips.length;
@@ -57,8 +59,15 @@ export async function GET(request: NextRequest) {
     
     const activeUsers = users.filter(user => {
       if (!user.createdAt) return false;
-      const userCreatedAt = user.createdAt.toDate ? user.createdAt.toDate() : new Date(user.createdAt);
-      return userCreatedAt >= thirtyDaysAgo;
+      try {
+        const createdAt = user.createdAt as { toDate?: () => Date } | string | number;
+        const userCreatedAt = (typeof createdAt === 'object' && createdAt.toDate) 
+          ? createdAt.toDate() 
+          : new Date(createdAt as string | number);
+        return userCreatedAt >= thirtyDaysAgo;
+      } catch {
+        return false;
+      }
     }).length;
 
     // Calculate public trips (trips with visibility 'public')
@@ -68,9 +77,19 @@ export async function GET(request: NextRequest) {
     const tripsWithDuration = trips.filter(trip => trip.dates?.startDate && trip.dates?.endDate);
     const avgDuration = tripsWithDuration.length > 0 ? 
       tripsWithDuration.reduce((sum, trip) => {
-        const start = trip.dates.startDate.toDate ? trip.dates.startDate.toDate() : new Date(trip.dates.startDate);
-        const end = trip.dates.endDate.toDate ? trip.dates.endDate.toDate() : new Date(trip.dates.endDate);
-        return sum + Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+        try {
+          const startDate = trip.dates!.startDate as { toDate?: () => Date } | string | number;
+          const endDate = trip.dates!.endDate as { toDate?: () => Date } | string | number;
+          const start = (typeof startDate === 'object' && startDate.toDate) 
+            ? startDate.toDate() 
+            : new Date(startDate as string | number);
+          const end = (typeof endDate === 'object' && endDate.toDate) 
+            ? endDate.toDate() 
+            : new Date(endDate as string | number);
+          return sum + Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+        } catch {
+          return sum;
+        }
       }, 0) / tripsWithDuration.length : 7; // Default 7 days
 
     const stats = {

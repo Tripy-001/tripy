@@ -1,7 +1,7 @@
 // /app/api/auth/signin/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '../../../../lib/firebase';
-import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { adminDb } from '../../../../lib/firebaseAdmin';
+import { Timestamp } from 'firebase-admin/firestore';
 
 interface SignInRequestBody {
   uid: string;
@@ -19,12 +19,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ message: 'Missing required fields: uid and email.' }, { status: 400 });
     }
 
-    const userDocRef = doc(db, 'users', uid);
+    const userDocRef = adminDb.collection('users').doc(uid);
 
     // Check if user already exists
-    const existingUser = await getDoc(userDocRef);
+    const existingUser = await userDocRef.get();
     
-    if (existingUser.exists()) {
+    if (existingUser.exists) {
       // Return existing user profile
       return NextResponse.json({ 
         message: 'User profile found.',
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       email,
       displayName,
       photoURL,
-      createdAt: serverTimestamp(),
+      createdAt: Timestamp.now(),
       // Default preferences and stats for a new user
       preferences: {
         travelStyle: null, 
@@ -51,13 +51,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       }
     };
 
-    // Use `setDoc` with `merge: true` to create or update.
+    // Use `set` with `merge: true` to create or update.
     // This is an "upsert" operation. It won't overwrite existing data
     // on subsequent logins, which is exactly what we want.
-    await setDoc(userDocRef, newUserProfile, { merge: true });
+    await userDocRef.set(newUserProfile, { merge: true });
 
     // Get the created user to return
-    const createdUser = await getDoc(userDocRef);
+    const createdUser = await userDocRef.get();
 
     return NextResponse.json({ 
       message: 'User profile synchronized successfully.',

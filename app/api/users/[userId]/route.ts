@@ -1,7 +1,7 @@
 // /app/api/users/[userId]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '../../../../lib/firebase';
-import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { adminDb } from '../../../../lib/firebaseAdmin';
+import { Timestamp } from 'firebase-admin/firestore';
 
 interface RouteParams {
   params: {
@@ -15,10 +15,10 @@ export async function GET(req: NextRequest, context: RouteParams): Promise<NextR
     // Await params if it's a Promise (Next.js 15+)
   const params = context?.params instanceof Promise ? await context.params : context.params;
     const { userId } = params;
-    const userRef = doc(db, 'users', userId);
-    const userSnap = await getDoc(userRef);
+    const userRef = adminDb.collection('users').doc(userId);
+    const userSnap = await userRef.get();
 
-    if (!userSnap.exists()) {
+    if (!userSnap.exists) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
@@ -40,23 +40,23 @@ export async function PUT(req: NextRequest, context: RouteParams): Promise<NextR
     const { userId } = params;
     const updateData = await req.json();
 
-    const userRef = doc(db, 'users', userId);
+    const userRef = adminDb.collection('users').doc(userId);
     // Check if user exists first
-    const userSnap = await getDoc(userRef);
-    if (!userSnap.exists()) {
+    const userSnap = await userRef.get();
+    if (!userSnap.exists) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // Add updated timestamp
     const updatedUser = {
       ...updateData,
-      updatedAt: serverTimestamp()
+      updatedAt: Timestamp.now()
     };
 
-    await updateDoc(userRef, updatedUser);
+    await userRef.update(updatedUser);
 
     // Get updated user data
-    const updatedUserSnap = await getDoc(userRef);
+    const updatedUserSnap = await userRef.get();
 
     return NextResponse.json({ 
       message: 'User profile updated successfully',

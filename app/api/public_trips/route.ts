@@ -1,7 +1,6 @@
 // /app/api/public_trips/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '../../../lib/firebase';
-import { collection, doc, getDoc, getDocs, limit as limitFn, orderBy, query, startAfter } from 'firebase/firestore';
+import { adminDb } from '../../../lib/firebaseAdmin';
 
 // GET /api/public_trips
 // Query params:
@@ -23,24 +22,19 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: "Invalid 'orderBy'. Use 'updated_at' or 'created_at'." }, { status: 400 });
     }
 
-    const tripsRef = collection(db, 'public_trips');
+    const tripsRef = adminDb.collection('public_trips');
 
-    let q = query(
-      tripsRef,
-      orderBy(orderByField, 'desc'),
-      limitFn(limitParam + 1) // fetch one extra to know if there's another page
-    );
+    let q = tripsRef.orderBy(orderByField, 'desc').limit(limitParam + 1);
 
     if (cursor) {
-      const cursorRef = doc(db, 'public_trips', cursor);
-      const cursorSnap = await getDoc(cursorRef);
-      if (!cursorSnap.exists()) {
+      const cursorSnap = await tripsRef.doc(cursor).get();
+      if (!cursorSnap.exists) {
         return NextResponse.json({ error: 'Invalid cursor' }, { status: 400 });
       }
-      q = query(tripsRef, orderBy(orderByField, 'desc'), startAfter(cursorSnap), limitFn(limitParam + 1));
+      q = tripsRef.orderBy(orderByField, 'desc').startAfter(cursorSnap).limit(limitParam + 1);
     }
 
-    const snapshot = await getDocs(q);
+    const snapshot = await q.get();
     const docs = snapshot.docs;
 
     const hasMore = docs.length > limitParam;

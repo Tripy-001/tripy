@@ -1,7 +1,6 @@
 // /app/api/public_trips/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '../../../../lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { adminDb } from '../../../../lib/firebaseAdmin';
 
 interface RouteParams {
   params: {
@@ -19,10 +18,10 @@ export async function GET(req: NextRequest, context: RouteParams): Promise<NextR
       return NextResponse.json({ error: 'Missing public trip id' }, { status: 400 });
     }
 
-    const tripRef = doc(db, 'public_trips', id);
-    const tripSnap = await getDoc(tripRef);
+    const tripRef = adminDb.collection('public_trips').doc(id);
+    const tripSnap = await tripRef.get();
 
-    if (!tripSnap.exists()) {
+    if (!tripSnap.exists) {
       return NextResponse.json({ error: 'Public trip not found' }, { status: 404 });
     }
 

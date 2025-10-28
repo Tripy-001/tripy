@@ -35,5 +35,14 @@ service cloud.firestore {
         allow read: if request.auth != null;
         allow write: if false; // Disable client-side writes completely
     }
+
+    // Rule for the 'public_trips' collection
+    // These are publicly shared trip itineraries.
+    // Anyone (authenticated or not) can read them.
+    // Only server-side (admin SDK) can write to this collection.
+    match /public_trips/{publicTripId} {
+        allow read: if true; // Public read access
+        allow write: if false; // Only admin SDK can write
+    }
   }
 }
