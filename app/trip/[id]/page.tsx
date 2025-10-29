@@ -1119,7 +1119,7 @@ export default function TripDetailPage(props: TripPageProps) {
                       ))}
                     </div>
                     {it.transportation.local_transport_guide?.notes && (
-                      <p className="text-muted-foreground">{it.transportation.local_transport_guide.notes}</p>
+                      <p className="text-muted-foreground break-words">{it.transportation.local_transport_guide.notes}</p>
                     )}
                   </div>
                 )}
@@ -1131,19 +1131,19 @@ export default function TripDetailPage(props: TripPageProps) {
                         <div key={i}>{k}: {v} {it.currency}</div>
                       ))}
                     </div>
-                    {Array.isArray(it.transportation.recommended_apps) && it.transportation.recommended_apps.length > 0 && (
-                      <div className="mt-3">
-                        <div className="font-medium">Recommended apps</div>
-                        <div className="flex flex-wrap gap-2 mt-1">
-                          {it.transportation.recommended_apps.map((app: string, i: number) => (
-                            <Badge key={i} variant="outline">{app}</Badge>
-                          ))}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 )}
             </div>
+            {Array.isArray(it.transportation.recommended_apps) && it.transportation.recommended_apps.length > 0 && (
+              <div className="mt-6 pt-6 border-t">
+                <div className="font-medium mb-2 text-sm">Recommended apps</div>
+                <div className="flex flex-wrap gap-2">
+                  {it.transportation.recommended_apps.map((app: string, i: number) => (
+                    <Badge key={i} variant="outline" className="text-xs">{app}</Badge>
+                  ))}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
         )}

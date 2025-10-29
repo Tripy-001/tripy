@@ -8,7 +8,6 @@ import GoogleMapsPreview from '@/components/GoogleMapsPreview';
 import { AI_RESPONSE as SAMPLE_CONST } from '@/app/constant';
 import { MapPin, Calendar, Clock, DollarSign, Users, Star } from 'lucide-react';
 import ScrollSpyTabs from '@/components/ScrollSpyTabs';
-import { Button } from '@/components/ui/button';
 import AutoCarousel from '@/components/AutoCarousel';
 
 type PublicTrip = unknown;
@@ -54,6 +53,14 @@ export default async function PublicTripsPage(
   const response = trip as any;
   const it = (response?.itinerary || {}) as any;
   const mapData = (it?.map_data || {}) as any;
+
+  const currency = it?.currency || it?.budget_breakdown?.currency;
+  const formatCurrency = (val: unknown): string => {
+    if (val === null || val === undefined) return '';
+    const num = typeof val === 'number' ? val : parseFloat(String(val));
+    if (!isFinite(num)) return String(val);
+    return `${num} ${currency || ''}`.trim();
+  };
 
   const sectionLinks: Array<{ href: string; label: string }> = [];
   sectionLinks.push({ href: '#overview', label: 'Overview' });
@@ -314,10 +321,49 @@ export default async function PublicTripsPage(
                                       <span className="text-lg">🍽️</span>
                                       <h4 className="text-lg font-semibold capitalize text-foreground">{sectionKey}</h4>
                                     </div>
+                                    {(section?.estimated_cost || section?.duration_hours) && (
+                                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                                        {section?.duration_hours && <Badge variant="outline">Duration: {section.duration_hours} hrs</Badge>}
+                                        {section?.estimated_cost && <Badge variant="outline">Cost: {formatCurrency(section.estimated_cost)}</Badge>}
+                                      </div>
+                                    )}
                                     <div className="p-6 rounded-xl border">
                                       <div className="mb-2 font-medium">{r?.name || 'Lunch'}</div>
                                       {r?.address && <div className="text-sm text-muted-foreground mb-2">{r.address}</div>}
-                                      <GoogleMapsPreview lat={r?.coordinates?.lat} lng={r?.coordinates?.lng} placeId={r?.place_id} name={r?.name} ratio={16/10} className="w-full" />
+                                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-3">
+                                        <GoogleMapsPreview lat={r?.coordinates?.lat} lng={r?.coordinates?.lng} placeId={r?.place_id} name={r?.name} ratio={16/9} className="w-full" />
+                                        {Array.isArray(r?.photo_urls) && r.photo_urls.length > 0 && (
+                                          <AutoCarousel images={r.photo_urls} className="w-full aspect-video" rounded="rounded-lg" showControls intervalMs={4000} imgAlt={r?.name || 'Restaurant'} />
+                                        )}
+                                      </div>
+                                      <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                        <div className="space-y-1 text-muted-foreground">
+                                          {r?.description && <div><span className="font-medium text-foreground">About:</span> {r.description}</div>}
+                                          {Array.isArray(r?.cuisine_type) && r.cuisine_type.length > 0 && (
+                                            <div><span className="font-medium text-foreground">Cuisine:</span> {r.cuisine_type.join(', ')}</div>
+                                          )}
+                                          {(typeof r?.rating === 'number') && (
+                                            <div><span className="font-medium text-foreground">Rating:</span> {r.rating}{r?.user_ratings_total ? ` (${r.user_ratings_total})` : ''}</div>
+                                          )}
+                                          {r?.price_level && (
+                                            <div><span className="font-medium text-foreground">Price level:</span> {r.price_level}</div>
+                                          )}
+                                        </div>
+                                        <div className="space-y-1 text-muted-foreground">
+                                          {typeof r?.estimated_cost !== 'undefined' && (
+                                            <div><span className="font-medium text-foreground">Cost per person:</span> {formatCurrency(r.estimated_cost)}</div>
+                                          )}
+                                          {r?.opening_hours && (
+                                            <div><span className="font-medium text-foreground">Hours:</span> {r.opening_hours}</div>
+                                          )}
+                                          {r?.reservation_required && (
+                                            <div><span className="font-medium text-foreground">Reservation:</span> {r.reservation_required ? 'Required' : 'Optional'}</div>
+                                          )}
+                                          {Array.isArray(r?.dietary_options) && r.dietary_options.length > 0 && (
+                                            <div><span className="font-medium text-foreground">Dietary:</span> {r.dietary_options.join(', ')}</div>
+                                          )}
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
                                 );
@@ -331,6 +377,13 @@ export default async function PublicTripsPage(
                                     <span className="text-lg">{sectionKey === 'morning' ? '🌅' : sectionKey === 'afternoon' ? '☀️' : '🌆'}</span>
                                     <h4 className="text-lg font-semibold capitalize text-foreground">{sectionKey}</h4>
                                   </div>
+                                  {(section?.total_duration_hours || section?.estimated_cost || section?.transportation_notes) && (
+                                    <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                                      {section?.total_duration_hours && <Badge variant="outline">Duration: {section.total_duration_hours} hrs</Badge>}
+                                        {section?.estimated_cost && <Badge variant="outline">Cost: {formatCurrency(section.estimated_cost)}</Badge>}
+                                        {section?.transportation_notes && <span className="opacity-80">{section.transportation_notes}</span>}
+                                    </div>
+                                  )}
                                   <div className="grid gap-4">
                                     {section.activities.map((act: unknown, aIdx: number) => {
                                       const p = act.activity || {};
@@ -338,7 +391,49 @@ export default async function PublicTripsPage(
                                         <div key={aIdx} className="p-6 rounded-xl border">
                                           <div className="font-medium mb-1">{p?.name || act?.activity_type}</div>
                                           {p?.address && <div className="text-sm text-muted-foreground mb-2">{p.address}</div>}
-                                          <GoogleMapsPreview lat={p?.coordinates?.lat} lng={p?.coordinates?.lng} placeId={p?.place_id} name={p?.name} ratio={16/10} className="w-full" />
+                                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-3">
+                                            <GoogleMapsPreview lat={p?.coordinates?.lat} lng={p?.coordinates?.lng} placeId={p?.place_id} name={p?.name} ratio={16/9} className="w-full" />
+                                            {Array.isArray(p?.photo_urls) && p.photo_urls.length > 0 && (
+                                              <AutoCarousel images={p.photo_urls} className="w-full aspect-video" rounded="rounded-lg" showControls intervalMs={4000} imgAlt={p?.name || 'Activity'} />
+                                            )}
+                                          </div>
+                                          <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                            <div className="space-y-1 text-muted-foreground">
+                                              {p?.description && <div><span className="font-medium text-foreground">Why:</span> {p.description}</div>}
+                                              {(p?.category || p?.subcategory || act?.activity_type) && (
+                                                <div><span className="font-medium text-foreground">Type:</span> {(act?.activity_type || p?.subcategory || p?.category)}</div>
+                                              )}
+                                              {(p?.duration_hours || act?.duration_hours) && (
+                                                <div><span className="font-medium text-foreground">Duration:</span> {(p?.duration_hours || act?.duration_hours)} hrs</div>
+                                              )}
+                                              {(typeof p?.rating === 'number') && (
+                                                <div><span className="font-medium text-foreground">Rating:</span> {p.rating}{p?.user_ratings_total ? ` (${p.user_ratings_total})` : ''}</div>
+                                              )}
+                                              {p?.price_level && (
+                                                <div><span className="font-medium text-foreground">Price level:</span> {p.price_level}</div>
+                                              )}
+                                            </div>
+                                            <div className="space-y-1 text-muted-foreground">
+                                              {(typeof act?.estimated_cost_per_person !== 'undefined' || typeof p?.estimated_cost !== 'undefined') && (
+                                                <div><span className="font-medium text-foreground">Cost per person:</span> {formatCurrency(act?.estimated_cost_per_person ?? p?.estimated_cost)}</div>
+                                              )}
+                                              {typeof act?.group_cost !== 'undefined' && (
+                                                <div><span className="font-medium text-foreground">Group cost:</span> {formatCurrency(act.group_cost)}</div>
+                                              )}
+                                              {Array.isArray(act?.age_suitability) && act.age_suitability.length > 0 && (
+                                                <div><span className="font-medium text-foreground">Ages:</span> {act.age_suitability.join(', ')}</div>
+                                              )}
+                                              {act?.difficulty_level && (
+                                                <div><span className="font-medium text-foreground">Difficulty:</span> {act.difficulty_level}</div>
+                                              )}
+                                              {(act?.advance_booking_required || p?.booking_required) && (
+                                                <div><span className="font-medium text-foreground">Booking:</span> {act?.advance_booking_required || p?.booking_required ? 'Required' : 'Optional'}</div>
+                                              )}
+                                              {typeof act?.weather_dependent !== 'undefined' && (
+                                                <div><span className="font-medium text-foreground">Weather dependent:</span> {act.weather_dependent ? 'Yes' : 'No'}</div>
+                                              )}
+                                            </div>
+                                          </div>
                                         </div>
                                       );
                                     })}
@@ -373,13 +468,6 @@ export default async function PublicTripsPage(
                       {opt.estimated_cost && <Badge variant="secondary">{opt.estimated_cost} {it.currency}</Badge>}
                     </div>
                     {opt.details && (<p className="text-sm text-muted-foreground mt-1">{opt.details}</p>)}
-                    {opt.booking_link && (
-                      <div className="mt-2">
-                        <Button size="sm" className="theme-bg theme-bg-hover text-primary-foreground shadow-sm" asChild>
-                          <a href={opt.booking_link} target="_blank" rel="noreferrer">Book now</a>
-                        </Button>
-                      </div>
-                    )}
                     {Array.isArray(opt.legs) && opt.legs.length > 0 && (
                       <div className="mt-3 space-y-2 text-sm">
                         {opt.legs.map((leg: unknown, j: number) => (
@@ -391,13 +479,6 @@ export default async function PublicTripsPage(
                             <div className="text-muted-foreground">{leg.from_location} → {leg.to_location}</div>
                             <div className="text-muted-foreground">{typeof leg.duration_hours === 'number' ? `${leg.duration_hours} hrs` : ''}</div>
                             {leg.notes && <div className="text-xs text-muted-foreground mt-1">{leg.notes}</div>}
-                            {leg.booking_link && (
-                              <div className="mt-2">
-                                <Button size="sm" variant="outline" className="shadow-sm" asChild>
-                                  <a href={leg.booking_link} target="_blank" rel="noreferrer">Book leg</a>
-                                </Button>
-                              </div>
-                            )}
                           </div>
                         ))}
                       </div>
@@ -517,8 +598,11 @@ export default async function PublicTripsPage(
                       )}
                     </div>
                     {gem.description && <p className="text-sm text-muted-foreground mt-2">{gem.description}</p>}
-                    <div className="mt-3">
-                      <GoogleMapsPreview lat={gem?.coordinates?.lat} lng={gem?.coordinates?.lng} placeId={gem?.place_id} name={gem?.name} ratio={16/10} className="w-full" />
+                    <div className="mt-3 grid grid-cols-1 lg:grid-cols-2 gap-3">
+                      <GoogleMapsPreview lat={gem?.coordinates?.lat} lng={gem?.coordinates?.lng} placeId={gem?.place_id} name={gem?.name} ratio={16/9} className="w-full" />
+                      {Array.isArray(gem?.photo_urls) && gem.photo_urls.length > 0 && (
+                        <AutoCarousel images={gem.photo_urls} className="w-full aspect-video" rounded="rounded-lg" showControls intervalMs={4000} imgAlt={gem?.name || 'Hidden gem'} />
+                      )}
                     </div>
                   </div>
                 ))}
@@ -542,8 +626,11 @@ export default async function PublicTripsPage(
                       {typeof spot.rating === 'number' && <Badge variant="secondary">{spot.rating}★</Badge>}
                     </div>
                     {spot.description && <p className="text-sm text-muted-foreground mt-1">{spot.description}</p>}
-                    <div className="mt-3">
-                      <GoogleMapsPreview lat={spot?.coordinates?.lat} lng={spot?.coordinates?.lng} placeId={spot?.place_id} name={spot?.name} ratio={16/10} className="w-full" />
+                    <div className="mt-3 grid grid-cols-1 lg:grid-cols-2 gap-3">
+                      <GoogleMapsPreview lat={spot?.coordinates?.lat} lng={spot?.coordinates?.lng} placeId={spot?.place_id} name={spot?.name} ratio={16/9} className="w-full" />
+                      {Array.isArray(spot?.photo_urls) && spot.photo_urls.length > 0 && (
+                        <AutoCarousel images={spot.photo_urls} className="w-full aspect-video" rounded="rounded-lg" showControls intervalMs={4000} imgAlt={spot?.name || 'Photography spot'} />
+                      )}
                     </div>
                   </div>
                 ))}
@@ -677,7 +764,7 @@ export default async function PublicTripsPage(
                       ))}
                     </div>
                     {it.transportation.local_transport_guide?.notes && (
-                      <p className="text-muted-foreground">{it.transportation.local_transport_guide.notes}</p>
+                      <p className="text-muted-foreground break-words">{it.transportation.local_transport_guide.notes}</p>
                     )}
                   </div>
                 )}
@@ -689,19 +776,19 @@ export default async function PublicTripsPage(
                         <div key={i}>{k}: {v} {it.currency}</div>
                       ))}
                     </div>
-                    {Array.isArray(it.transportation.recommended_apps) && it.transportation.recommended_apps.length > 0 && (
-                      <div className="mt-3">
-                        <div className="font-medium">Recommended apps</div>
-                        <div className="flex flex-wrap gap-2 mt-1">
-                          {it.transportation.recommended_apps.map((app: string, i: number) => (
-                            <Badge key={i} variant="outline">{app}</Badge>
-                          ))}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 )}
               </div>
+              {Array.isArray(it.transportation.recommended_apps) && it.transportation.recommended_apps.length > 0 && (
+                <div className="mt-6 pt-6 border-t">
+                  <div className="font-medium mb-2 text-sm">Recommended apps</div>
+                  <div className="flex flex-wrap gap-2">
+                    {it.transportation.recommended_apps.map((app: string, i: number) => (
+                      <Badge key={i} variant="outline" className="text-xs">{app}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
@@ -718,15 +805,9 @@ export default async function PublicTripsPage(
           <Card id="maps" className="glass-card mb-8">
             <CardHeader>
               <CardTitle className="text-lg">Maps & locations</CardTitle>
-              <CardDescription>Static map, daily routes and all locations</CardDescription>
+              <CardDescription>Daily routes and all locations</CardDescription>
             </CardHeader>
             <CardContent>
-              {mapData.static_map_url && (
-                <div className="rounded-xl overflow-hidden border bg-white">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={mapData.static_map_url} alt="Static map" className="w-full h-auto" />
-                </div>
-              )}
               {mapData.daily_route_maps && (
                 <div className="mt-4">
                   <div className="font-medium mb-2">Daily route maps</div>
