@@ -185,10 +185,23 @@ const TripsPage = () => {
 
         {/* Results Count */}
         {!isLoading && !error && (
-          <div className="mb-4">
-            <p className="text-sm text-muted-foreground">
-              Showing {filteredTrips.length} of {trips.length} trip{trips.length !== 1 ? 's' : ''}
+          <div className="mb-6 flex items-center justify-between">
+            <p className="text-sm font-medium text-muted-foreground">
+              Showing <span className="text-foreground font-semibold">{filteredTrips.length}</span> of <span className="text-foreground font-semibold">{trips.length}</span> trip{trips.length !== 1 ? 's' : ''}
             </p>
+            {(searchQuery || statusFilter !== 'all') && (
+              <Button
+                onClick={() => {
+                  setSearchQuery('');
+                  setStatusFilter('all');
+                }}
+                variant="ghost"
+                size="sm"
+                className="text-xs"
+              >
+                Clear Filters
+              </Button>
+            )}
           </div>
         )}
 
