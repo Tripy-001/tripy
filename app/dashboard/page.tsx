@@ -200,10 +200,16 @@ const DashboardPage = () => {
                 <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
                 Refresh
               </Button>
-              <Button variant="outline" size="sm">
-                View All
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+              {trips.length > 6 && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => router.push('/trips')}
+                >
+                  View All
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              )}
             </div>
           </div>
 
@@ -302,7 +308,6 @@ const DashboardPage = () => {
                       
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center text-muted-foreground">
-                          <DollarSign className="w-4 h-4 mr-1" />
                           ₹{trip.totalCost.toLocaleString()}
                         </div>
                         <div className="flex items-center text-muted-foreground">
