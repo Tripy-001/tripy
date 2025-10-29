@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import GoogleMapsPreview from '@/components/GoogleMapsPreview';
+import AutoCarousel from '@/components/AutoCarousel';
 import { MapPin, Calendar, Clock, DollarSign, Users, Star, Download, Cloud, CloudRain, Sun, Wind } from 'lucide-react';
 import ScrollSpyTabs from '@/components/ScrollSpyTabs';
 import { auth } from '@/lib/firebase';
@@ -702,7 +703,12 @@ export default function TripDetailPage(props: TripPageProps) {
                                     <div className="p-6 rounded-xl border">
                                       <div className="mb-2 font-medium">{r?.name || 'Lunch'}</div>
                                       {r?.address && <div className="text-sm text-muted-foreground mb-2">{r.address}</div>}
-                                      <GoogleMapsPreview lat={r?.coordinates?.lat} lng={r?.coordinates?.lng} placeId={r?.place_id} name={r?.name} ratio={16/6} className="w-full" />
+                                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                        <GoogleMapsPreview lat={r?.coordinates?.lat} lng={r?.coordinates?.lng} placeId={r?.place_id} name={r?.name} ratio={16/9} className="w-full" />
+                                        {Array.isArray(r?.photo_urls) && r.photo_urls.length > 0 && (
+                                          <AutoCarousel images={r.photo_urls} className="w-full aspect-video" rounded="rounded-lg" showControls intervalMs={4000} imgAlt={r?.name || 'Restaurant'} />
+                                        )}
+                                      </div>
                                           {wKey && <CompactWeatherCard date={day?.date} w={w} />}
                                     </div>
                                   </div>
@@ -736,7 +742,12 @@ export default function TripDetailPage(props: TripPageProps) {
                                         <div key={aIdx} className="p-6 rounded-xl border">
                                           <div className="font-medium mb-1">{p?.name || act?.activity_type}</div>
                                           {p?.address && <div className="text-sm text-muted-foreground mb-2">{p.address}</div>}
-                                          <GoogleMapsPreview lat={p?.coordinates?.lat} lng={p?.coordinates?.lng} placeId={p?.place_id} name={p?.name} ratio={16/6} className="w-full" />
+                                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-3">
+                                            <GoogleMapsPreview lat={p?.coordinates?.lat} lng={p?.coordinates?.lng} placeId={p?.place_id} name={p?.name} ratio={16/9} className="w-full" />
+                                            {Array.isArray(p?.photo_urls) && p.photo_urls.length > 0 && (
+                                              <AutoCarousel images={p.photo_urls} className="w-full aspect-video" rounded="rounded-lg" showControls intervalMs={4000} imgAlt={p?.name || 'Activity'} />
+                                            )}
+                                          </div>
                                           <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                                             <div className="space-y-1 text-muted-foreground">
                                               {p?.description && <div><span className="font-medium text-foreground">Why:</span> {p.description}</div>}
@@ -948,8 +959,11 @@ export default function TripDetailPage(props: TripPageProps) {
                       )}
                     </div>
                     {gem.description && <p className="text-sm text-muted-foreground mt-2">{gem.description}</p>}
-                    <div className="mt-3">
-                      <GoogleMapsPreview lat={gem?.coordinates?.lat} lng={gem?.coordinates?.lng} placeId={gem?.place_id} name={gem?.name} ratio={16/10} className="w-full" />
+                    <div className="mt-3 grid grid-cols-1 lg:grid-cols-2 gap-3">
+                      <GoogleMapsPreview lat={gem?.coordinates?.lat} lng={gem?.coordinates?.lng} placeId={gem?.place_id} name={gem?.name} ratio={16/9} className="w-full" />
+                      {Array.isArray(gem?.photo_urls) && gem.photo_urls.length > 0 && (
+                        <AutoCarousel images={gem.photo_urls} className="w-full aspect-video" rounded="rounded-lg" showControls intervalMs={4000} imgAlt={gem?.name || 'Hidden gem'} />
+                      )}
                     </div>
                   </div>
                 ))}
@@ -972,8 +986,11 @@ export default function TripDetailPage(props: TripPageProps) {
                       {typeof spot.rating === 'number' && <Badge variant="secondary">{spot.rating}★</Badge>}
                     </div>
                     {spot.description && <p className="text-sm text-muted-foreground mt-1">{spot.description}</p>}
-                    <div className="mt-3">
-                      <GoogleMapsPreview lat={spot?.coordinates?.lat} lng={spot?.coordinates?.lng} placeId={spot?.place_id} name={spot?.name} ratio={16/10} className="w-full" />
+                    <div className="mt-3 grid grid-cols-1 lg:grid-cols-2 gap-3">
+                      <GoogleMapsPreview lat={spot?.coordinates?.lat} lng={spot?.coordinates?.lng} placeId={spot?.place_id} name={spot?.name} ratio={16/9} className="w-full" />
+                      {Array.isArray(spot?.photo_urls) && spot.photo_urls.length > 0 && (
+                        <AutoCarousel images={spot.photo_urls} className="w-full aspect-video" rounded="rounded-lg" showControls intervalMs={4000} imgAlt={spot?.name || 'Photography spot'} />
+                      )}
                     </div>
                   </div>
                 ))}
