@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import GoogleMapsPreview from '@/components/GoogleMapsPreview';
 import AutoCarousel from '@/components/AutoCarousel';
+import ChatAssistant from '@/components/ChatAssistant';
 import { MapPin, Calendar, Clock, DollarSign, Users, Star, Download, Cloud, CloudRain, Sun, Wind } from 'lucide-react';
 import ScrollSpyTabs from '@/components/ScrollSpyTabs';
 import { auth } from '@/lib/firebase';
@@ -1178,6 +1179,9 @@ export default function TripDetailPage(props: TripPageProps) {
               </Card>
           )}
       </div>
+
+      {/* AI Travel Assistant - Only show when trip is loaded */}
+      {tripId && <ChatAssistant tripId={tripId} />}
     </div>
   );
 }

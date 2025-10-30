@@ -160,6 +160,21 @@ export interface AppState {
   // AI itinerary actions
   startItineraryGeneration?: (userInput: TripPlanRequest) => Promise<void>;
   listenToTripUpdates?: (tripId: string) => () => void;
+
+  // Chat state
+  chatMessages: Array<{ id: string; sender: 'user' | 'ai'; text: string; timestamp: Date }>;
+  isChatConnected: boolean;
+  webSocket: WebSocket | null;
+  chatError: string | null;
+  isTyping: boolean;
+
+  // Chat actions
+  connectChat: (tripId: string) => Promise<void>;
+  disconnectChat: () => void;
+  sendChatMessage: (messageText: string) => void;
+  addAiChatMessage: (messageText: string) => void;
+  clearChatMessages: () => void;
+  setChatError: (error: string | null) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -183,6 +198,13 @@ export const useAppStore = create<AppState>()(
       onboardingData: {},
       tripCreationStep: 0,
       tripCreationData: {},
+      
+      // Chat initial state
+      chatMessages: [],
+      isChatConnected: false,
+      webSocket: null,
+      chatError: null,
+      isTyping: false,
       
       // User actions
       setUser: (user) => set({ user }),
@@ -593,6 +615,154 @@ export const useAppStore = create<AppState>()(
         });
 
         return unsubscribe;
+      },
+
+      // Chat actions
+      connectChat: async (tripId: string) => {
+        try {
+          // Get current Firebase user
+          const firebaseUser = clientAuth.currentUser;
+          if (!firebaseUser) {
+            set({ chatError: 'User not authenticated' });
+            return;
+          }
+
+          // Get Firebase ID token
+          const idToken = await firebaseUser.getIdToken();
+
+          // Close existing connection if any
+          const { webSocket } = get();
+          if (webSocket && webSocket.readyState !== WebSocket.CLOSED) {
+            webSocket.close();
+          }
+
+          // Construct WebSocket URL
+          const wsBaseUrl = process.env.NEXT_PUBLIC_FASTAPI_WS_URL;
+          const wsUrl = `${wsBaseUrl}/ws/${tripId}?token=${idToken}`;
+
+          // Create new WebSocket connection
+          const ws = new WebSocket(wsUrl);
+
+          ws.onopen = () => {
+            console.log('[Chat] WebSocket connected');
+            set({ isChatConnected: true, chatError: null, webSocket: ws });
+          };
+
+          ws.onmessage = (event) => {
+            try {
+              const data = JSON.parse(event.data);
+              
+              // Handle typing indicator
+              if (data.type === 'typing') {
+                set({ isTyping: data.isTyping });
+                return;
+              }
+
+              // Handle AI message
+              if (data.type === 'message' && data.message) {
+                const aiMessage = {
+                  id: crypto.randomUUID(),
+                  sender: 'ai' as const,
+                  text: data.message,
+                  timestamp: new Date(),
+                };
+                set((state) => ({
+                  chatMessages: [...state.chatMessages, aiMessage],
+                  isTyping: false,
+                }));
+              }
+            } catch (error) {
+              console.error('[Chat] Error parsing message:', error);
+            }
+          };
+
+          ws.onerror = (error) => {
+            console.error('[Chat] WebSocket error:', error);
+            set({ chatError: 'Connection error occurred', isChatConnected: false });
+          };
+
+          ws.onclose = (event) => {
+            console.log('[Chat] WebSocket closed:', event.code, event.reason);
+            set({ isChatConnected: false, webSocket: null });
+            
+            // Attempt reconnection after 3 seconds if not a normal closure
+            if (event.code !== 1000 && event.code !== 1001) {
+              setTimeout(() => {
+                const currentState = get();
+                if (!currentState.isChatConnected && !currentState.webSocket) {
+                  console.log('[Chat] Attempting to reconnect...');
+                  get().connectChat(tripId);
+                }
+              }, 3000);
+            }
+          };
+
+          set({ webSocket: ws });
+        } catch (error) {
+          console.error('[Chat] Failed to connect:', error);
+          set({ chatError: 'Failed to connect to chat server', isChatConnected: false });
+        }
+      },
+
+      disconnectChat: () => {
+        const { webSocket } = get();
+        if (webSocket) {
+          webSocket.close(1000, 'User disconnected');
+          set({ webSocket: null, isChatConnected: false, isTyping: false });
+        }
+      },
+
+      sendChatMessage: (messageText: string) => {
+        const { webSocket, isChatConnected } = get();
+
+        if (!messageText.trim()) return;
+
+        // Add user message to chat
+        const userMessage = {
+          id: crypto.randomUUID(),
+          sender: 'user' as const,
+          text: messageText.trim(),
+          timestamp: new Date(),
+        };
+
+        set((state) => ({
+          chatMessages: [...state.chatMessages, userMessage],
+        }));
+
+        // Send message over WebSocket if connected
+        if (webSocket && isChatConnected && webSocket.readyState === WebSocket.OPEN) {
+          try {
+            webSocket.send(JSON.stringify({
+              type: 'message',
+              message: messageText.trim(),
+            }));
+          } catch (error) {
+            console.error('[Chat] Failed to send message:', error);
+            set({ chatError: 'Failed to send message' });
+          }
+        } else {
+          set({ chatError: 'Not connected to chat server' });
+        }
+      },
+
+      addAiChatMessage: (messageText: string) => {
+        const aiMessage = {
+          id: crypto.randomUUID(),
+          sender: 'ai' as const,
+          text: messageText,
+          timestamp: new Date(),
+        };
+        set((state) => ({
+          chatMessages: [...state.chatMessages, aiMessage],
+        }));
+      },
+
+      clearChatMessages: () => {
+        set({ chatMessages: [] });
+      },
+
+      setChatError: (error: string | null) => {
+        set({ chatError: error });
       },
     }),
     {

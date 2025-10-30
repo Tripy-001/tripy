@@ -18,7 +18,7 @@ service cloud.firestore {
     // Anyone can read a trip if its visibility is set to 'public'.
     match /trips/{tripId} {
       allow create: if request.auth != null;
-      allow read: if resource.data.visibility == 'public' || (request.auth != null && request.auth.uid == resource.data.userId);
+      allow read: if request.auth != null && request.auth.uid == resource.data.userId;
       allow update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
 
         // Rule for the 'days' subcollection
