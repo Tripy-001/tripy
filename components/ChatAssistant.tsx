@@ -44,6 +44,7 @@ export default function ChatAssistant({ tripId, className }: ChatAssistantProps)
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const lastMessageCountRef = useRef(0);
 
   // Connect to chat when component mounts or tripId changes
   useEffect(() => {
@@ -57,25 +58,23 @@ export default function ChatAssistant({ tripId, className }: ChatAssistantProps)
     };
   }, [tripId, connectChat, disconnectChat]);
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll to bottom when new messages arrive and handle unread count
   useEffect(() => {
     if (isOpen && !isMinimized) {
       scrollToBottom();
-    } else if (!isOpen) {
-      // Count unread messages when chat is closed
-      const lastMessage = chatMessages[chatMessages.length - 1];
-      if (lastMessage && lastMessage.sender === 'ai') {
-        setUnreadCount((prev) => prev + 1);
+      // Reset unread count when chat is open and visible
+      setUnreadCount(0);
+      lastMessageCountRef.current = chatMessages.length;
+    } else if (!isOpen && chatMessages.length > lastMessageCountRef.current) {
+      // Only increment unread count for NEW messages while chat is closed
+      const newMessages = chatMessages.slice(lastMessageCountRef.current);
+      const newAiMessages = newMessages.filter(msg => msg.sender === 'ai').length;
+      if (newAiMessages > 0) {
+        setUnreadCount((prev) => prev + newAiMessages);
       }
+      lastMessageCountRef.current = chatMessages.length;
     }
   }, [chatMessages, isOpen, isMinimized]);
-
-  // Reset unread count when opening chat
-  useEffect(() => {
-    if (isOpen) {
-      setUnreadCount(0);
-    }
-  }, [isOpen]);
 
   // Focus input when chat opens
   useEffect(() => {
