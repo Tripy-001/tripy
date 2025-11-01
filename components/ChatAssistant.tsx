@@ -147,7 +147,7 @@ export default function ChatAssistant({ tripId, className }: ChatAssistantProps)
           onClick={toggleChat}
           size="lg"
           className="h-16 w-16 rounded-full shadow-2xl theme-bg theme-bg-hover relative hover:scale-105 transition-transform"
-          aria-label="Open AI Travel Assistant"
+          aria-label="Tripy Guide"
         >
           <MessageCircle className="h-7 w-7 text-white" />
           {unreadCount > 0 && (
@@ -178,7 +178,7 @@ export default function ChatAssistant({ tripId, className }: ChatAssistantProps)
               <Bot className="h-5 w-5 text-white" />
             </div>
             <div>
-              <CardTitle className="text-base font-bold">AI Travel Assistant</CardTitle>
+              <CardTitle className="text-base font-bold">Tripy Guide</CardTitle>
               <div className="flex items-center space-x-1 mt-0.5">
                 {isChatConnected ? (
                   <>
@@ -294,7 +294,7 @@ export default function ChatAssistant({ tripId, className }: ChatAssistantProps)
                               : 'bg-muted text-foreground rounded-tl-md'
                           )}
                         >
-                          <p className="text-sm whitespace-pre-wrap leading-relaxed break-words">
+                          <p className="text-sm whitespace-pre-line leading-relaxed break-words">
                             {message.text}
                           </p>
                         </div>

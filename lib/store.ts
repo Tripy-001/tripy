@@ -660,10 +660,27 @@ export const useAppStore = create<AppState>()(
 
               // Handle AI message
               if (data.type === 'message' && data.message) {
+                // Decode the message if it contains escaped sequences
+                let decodedMessage = data.message;
+                
+                // Check if the message contains escaped sequences like \n or \u
+                if (typeof decodedMessage === 'string' && (decodedMessage.includes('\\n') || decodedMessage.includes('\\u'))) {
+                  try {
+                    // Try to parse it as a JSON string to decode escape sequences
+                    decodedMessage = JSON.parse(`"${decodedMessage.replace(/"/g, '\\"')}"`);
+                  } catch {
+                    // If parsing fails, try replacing common escape sequences manually
+                    decodedMessage = decodedMessage
+                      .replace(/\\n/g, '\n')
+                      .replace(/\\t/g, '\t')
+                      .replace(/\\r/g, '\r');
+                  }
+                }
+                
                 const aiMessage = {
                   id: crypto.randomUUID(),
                   sender: 'ai' as const,
-                  text: data.message,
+                  text: decodedMessage,
                   timestamp: new Date(),
                 };
                 set((state) => ({
