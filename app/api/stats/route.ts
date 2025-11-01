@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
-
+// TODO: move to common file
 interface TripData {
   id: string;
   rating?: number;
