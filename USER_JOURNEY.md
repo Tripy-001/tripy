@@ -82,13 +82,21 @@ flowchart TD
    K --> L[Payment and reservation]
    E --> M[Export to PDF or share link]
 
-  style A fill:#f9fafb,stroke:#e6edf3
-  style C fill:#fff7ed,stroke:#ffd8a8
-  style E fill:#ecfdf5,stroke:#bbf7d0
-  style F fill:#eef2ff,stroke:#c7d2fe
-  style H fill:#fff0f6,stroke:#fbcfe8
-  style I fill:#f0f9ff,stroke:#bae6fd
-  style K fill:#fff7ed,stroke:#ffd8a8
+  /* Use a high-contrast palette (white fill, dark stroke, dark text) so the diagram
+     is readable in both GitHub light and dark themes. */
+  style A fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
+  style B fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
+  style C fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
+  style D fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
+  style E fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
+  style F fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
+  style G fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
+  style H fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
+  style I fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
+  style J fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
+  style K fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
+  style L fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
+  style M fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
 ```
 
 ---
