@@ -8,20 +8,20 @@ This doc contains two diagrams and a short explanation of how Tripy's main parts
 
 ```mermaid
 flowchart LR
-  User[User (Browser / Mobile)] --> Frontend[Next.js 15 (React) Frontend]
-  Frontend -->|Firebase SDK| FirebaseClient[Firebase Auth & Firestore (client SDK)]
-  Frontend -->|HTTP| NextAPI[Next.js API Routes (app/api)]
-  NextAPI -->|Admin SDK| FirebaseAdmin[Firebase Admin]
-  NextAPI -->|HTTP| FastAPI[FastAPI Agent Service]
-  FastAPI -->|LLM API| LLM[LLM Provider (OpenAI / Anthropic / others)]
-  FastAPI -->|External| Tools[Maps, Places, Payment, Inventory]
-  NextAPI --> Storage[Cloud Storage / CDN]
-  FirebaseAdmin --> Firestore[Firestore Database]
-  Firestore -->|Realtime onSnapshot| Frontend
-  Tools -->|Webhooks| NextAPI
+  A[User] --> B[Frontend - Next.js]
+  B --> C[Firebase Client SDK]
+  B --> D[Next.js API Routes]
+  D --> E[Firebase Admin]
+  D --> F[FastAPI Agent]
+  F --> G[LLM Provider]
+  F --> H[External Tools]
+  D --> I[Cloud Storage]
+  E --> J[Firestore]
+  J -->|realtime| B
+  H -->|webhooks| D
 
   classDef infra fill:#f8fafc,stroke:#111827,color:#111827
-  class FirebaseAdmin,Firestore,Storage,Tools infra
+  class E,J,I,H infra
 ```
 
 ---
