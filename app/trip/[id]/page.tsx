@@ -9,6 +9,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import GoogleMapsPreview from '@/components/GoogleMapsPreview';
 import AutoCarousel from '@/components/AutoCarousel';
 import ChatAssistant from '@/components/ChatAssistant';
+import TripTodoList from '@/components/TripTodoList';
+import TodoWidget from '@/components/TodoWidget';
+import { useTripTodos } from '@/lib/hooks/useTripTodos';
 import { MapPin, Calendar, Clock, DollarSign, Users, Star, Download, Cloud, CloudRain, Sun, Wind, Plane, Home, Package, Sparkles, Camera, Info, TrendingUp, Shield, Languages } from 'lucide-react';
 import ScrollSpyTabs from '@/components/ScrollSpyTabs';
 import { auth } from '@/lib/firebase';
@@ -48,6 +51,18 @@ export default function TripDetailPage(props: TripPageProps) {
       daily: { maxTempC: number | null; minTempC: number | null; condition: string | null; precipitationProbabilityMax: number | null } | null;
     };
   }>>({});
+
+  // Todo list hook
+  const {
+    todoDays,
+    loading: todosLoading,
+    initialized: todosInitialized,
+    initializeTodos,
+    toggleTodo,
+    addTodo,
+    updateTodo,
+    deleteTodo,
+  } = useTripTodos(tripId);
 
   useEffect(() => {
     let mounted = true;
@@ -106,15 +121,39 @@ export default function TripDetailPage(props: TripPageProps) {
     };
   }, [tripId, firebaseUser, authLoading]);
 
-  const it = useMemo(() => (trip?.itinerary ?? {}), [trip]);
+  const itineraryData = useMemo(() => (trip?.itinerary ?? {}), [trip]);
+  const it = itineraryData;
   const mapData = useMemo(() => it?.map_data || {}, [it]);
   const currency = it?.currency || it?.budget_breakdown?.currency;
+
+  // Auto-initialize todos from itinerary when trip loads (runs once per trip)
+  useEffect(() => {
+    if (!trip || !tripId || todosLoading || todosInitialized) return;
+    
+    // Only initialize if trip has itinerary data
+    const hasItinerary = Array.isArray(trip?.itinerary?.daily_itineraries) && 
+                        trip.itinerary.daily_itineraries.length > 0;
+    if (!hasItinerary) return;
+
+    console.log('[TodoList] Auto-initializing todos from itinerary');
+    initializeTodos().catch(err => {
+      console.error('[TodoList] Failed to initialize:', err);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trip?.id, tripId, todosLoading, todosInitialized]); // Only re-run if trip ID changes or initialization status changes
 
   const formatCurrency = (val: unknown): string => {
     if (val === null || val === undefined) return '';
     const num = typeof val === 'number' ? val : parseFloat(String(val));
     if (!isFinite(num)) return String(val);
     return `${num} ${currency || ''}`.trim();
+  };
+
+  const scrollToChecklist = () => {
+    const checklistElement = document.getElementById('checklist');
+    if (checklistElement) {
+      checklistElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   const handleDownloadPdf = async () => {
@@ -430,6 +469,7 @@ export default function TripDetailPage(props: TripPageProps) {
     if (it?.accommodations) links.push({ href: '#stay', label: 'Stay' });
     if (it?.transportation) links.push({ href: '#transport', label: 'Transport' });
     if (mapData?.static_map_url || mapData?.daily_route_maps || mapData?.all_locations) links.push({ href: '#maps', label: 'Maps' });
+    if (tripId) links.push({ href: '#checklist', label: 'Checklist' });
     return links;
   }, [trip, it, mapData]);
 
@@ -1722,10 +1762,33 @@ export default function TripDetailPage(props: TripPageProps) {
             </AccordionItem>
           </Accordion>
         )}
+        
+        {/* Trip Checklist */}
+        {tripId && (
+          <div id="checklist" className="mb-8">
+            <TripTodoList
+              tripId={tripId}
+              initialDays={todoDays}
+              onTodoToggle={toggleTodo}
+              onTodoAdd={addTodo}
+              onTodoUpdate={updateTodo}
+              onTodoDelete={deleteTodo}
+            />
+          </div>
+        )}
       </div>
 
       {/* AI Travel Assistant - Only show when trip is loaded */}
       {tripId && <ChatAssistant tripId={tripId} />}
+
+      {/* Floating Todo Widget */}
+      {tripId && todoDays.length > 0 && (
+        <TodoWidget
+          todoDays={todoDays}
+          onToggleTodo={toggleTodo}
+          onScrollToChecklist={scrollToChecklist}
+        />
+      )}
     </div>
   );
 }

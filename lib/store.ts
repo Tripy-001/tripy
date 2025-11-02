@@ -606,9 +606,40 @@ export const useAppStore = create<AppState>()(
         const unsubscribe = onSnapshot(tripRef, (docSnap) => {
           if (docSnap.exists()) {
             const tripData = docSnap.data() as { status?: string; itinerary?: unknown; error?: string };
+            
             if (tripData.status === 'completed' && tripData.itinerary) {
-              set({ currentItinerary: tripData.itinerary, isGenerating: false, error: null });
+              // Trip generation completed successfully
+              set({ 
+                currentItinerary: tripData.itinerary, 
+                isGenerating: false, 
+                error: null 
+              });
+              
+              // Fetch the complete trip data and add to trips list
+              const fetchCompleteTrip = async () => {
+                try {
+                  const response = await fetch(`/api/trips/${tripId}`);
+                  if (response.ok) {
+                    const tripDataFull = await response.json();
+                    const { trips } = get();
+                    
+                    // Update or add the trip to the trips list
+                    const existingIndex = trips.findIndex(t => t.id === tripId);
+                    if (existingIndex >= 0) {
+                      trips[existingIndex] = tripDataFull;
+                      set({ trips: [...trips] });
+                    } else {
+                      set({ trips: [...trips, tripDataFull] });
+                    }
+                  }
+                } catch (error) {
+                  console.error('Error fetching completed trip:', error);
+                }
+              };
+              
+              fetchCompleteTrip();
             } else if (tripData.status === 'failed') {
+              // Trip generation failed
               set({ error: tripData.error || 'Itinerary generation failed.', isGenerating: false });
             }
           }

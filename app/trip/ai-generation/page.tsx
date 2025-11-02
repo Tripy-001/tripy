@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -17,19 +17,51 @@ import { useAppStore } from '@/lib/store';
 
 const AIGenerationPage = () => {
   const router = useRouter();
-  const { isGenerating, currentTripId, listenToTripUpdates, resetCurrentTrip, error } = useAppStore();
+  const { isGenerating, currentTripId, currentItinerary, listenToTripUpdates, error } = useAppStore();
   const [progress, setProgress] = useState(0);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [statusText, setStatusText] = useState('Initializing...');
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
-  const generationPhases = [
+  const generationPhases = useMemo(() => [
     { id: 'analyzing', label: 'Analyzing Reddit discussions...', icon: Globe },
     { id: 'weather', label: 'Checking weather patterns...', icon: TrendingUp },
     { id: 'routes', label: 'Optimizing routes...', icon: MapPin },
     { id: 'personalizing', label: 'Personalizing based on your preferences...', icon: Sparkles },
     { id: 'finalizing', label: 'Finalizing your perfect itinerary...', icon: CheckCircle },
-  ];
+  ], []);
 
+  // Listen for trip completion and redirect
+  useEffect(() => {
+    if (!isGenerating && currentItinerary && currentTripId && !isRedirecting) {
+      // Trip generation completed!
+      setIsRedirecting(true);
+      setProgress(100);
+      setStatusText('Trip completed! Redirecting...');
+      
+      // Short delay to show completion, then redirect
+      setTimeout(() => {
+        router.push(`/trip/${currentTripId}`);
+      }, 1500);
+    }
+  }, [isGenerating, currentItinerary, currentTripId, router, isRedirecting]);
+
+  // Subscribe to Firestore trip updates
+  useEffect(() => {
+    if (!currentTripId || !listenToTripUpdates) return;
+    
+    console.log('[AI Generation] Listening to trip updates for:', currentTripId);
+    const unsubscribe = listenToTripUpdates(currentTripId);
+    
+    return () => {
+      if (unsubscribe) {
+        console.log('[AI Generation] Unsubscribing from trip updates');
+        unsubscribe();
+      }
+    };
+  }, [currentTripId, listenToTripUpdates]);
+
+  // Progress animation
   useEffect(() => {
     // Slowly increase progress to 90% over ~3 minutes, then hover around until completion
     const progressInterval = setInterval(() => {
@@ -45,8 +77,11 @@ const AIGenerationPage = () => {
     return () => clearInterval(progressInterval);
   }, []);
 
+  // Status text rotation
   useEffect(() => {
-    // Rotate status text through phases while waiting
+    // Rotate status text through phases while waiting (unless redirecting)
+    if (isRedirecting) return;
+    
     const phaseInterval = setInterval(() => {
       setStatusText((prev) => {
         const idx = generationPhases.findIndex((p) => p.label === prev);
@@ -56,24 +91,7 @@ const AIGenerationPage = () => {
     }, 4000);
     setStatusText(generationPhases[0].label);
     return () => clearInterval(phaseInterval);
-  }, []);
-
-  useEffect(() => {
-    // Subscribe to Firestore trip doc updates when we have an ID
-    if (!currentTripId || !listenToTripUpdates) return;
-    const unsubscribe = listenToTripUpdates(currentTripId);
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
-  }, [currentTripId, listenToTripUpdates]);
-
-  const handleSkip = () => {
-    if (tripCreationData && tripCreationData.title && tripCreationData.destination) {
-      createTrip(tripCreationData as Omit<Trip, 'id' | 'createdAt' | 'updatedAt'>);
-      setAppCurrentStep('dashboard');
-      router.push('/dashboard');
-    }
-  };
+  }, [isRedirecting, generationPhases]);
 
   return (
     <div className="min-h-screen bg-muted/30 flex items-center justify-center p-4">
