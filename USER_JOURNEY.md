@@ -80,11 +80,11 @@ flowchart TD
    J --> F
    E --> K[Finalize and book]
    K --> L[Payment and reservation]
-   E --> M[Export to PDF or share link]
+     E --> M[Export to PDF or share link]
 
-  /* Use a high-contrast palette (white fill, dark stroke, dark text) so the diagram
-     is readable in both GitHub light and dark themes. */
-  style A fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
+     %% Use a high-contrast palette (white fill, dark stroke, dark text)
+     %% so the diagram is readable in both GitHub light and dark themes.
+     style A fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
   style B fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
   style C fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
   style D fill:#ffffff,stroke:#374151,color:#0f172a,stroke-width:1px
