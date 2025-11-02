@@ -66,21 +66,21 @@ Tripy converts a short user prompt (or quick form) into a full, day-by-day trip 
 
 ```mermaid
 flowchart TD
-  A[User: Start / Sign in] --> B[Provide inputs: destination, dates, budget, preferences]
-  B --> C[Trigger AI generation]
-  C --> D[Show progress & status]
-  D --> E[Trip generated: Day-by-day itinerary]
-  E --> F[Auto-initialize checklist (todos)]
-  E --> G[Display trip page: maps, costs, details]
-  F --> H[Floating Todo Widget]
-  G --> H
-  G --> I[User edits / Chat Assistant]
-  I --> E
-  H --> J[Mark tasks / Add custom tasks]
-  J --> F
-  E --> K[Finalize & Book]
-  K --> L[Payment & reservation (inventory)]
-  E --> M[Export to PDF / Share public link]
+   A[User: Sign in] --> B[Provide inputs: destination, dates, budget, preferences]
+   B --> C[Trigger AI generation]
+   C --> D[Show progress and status]
+   D --> E[Trip generated: day-by-day itinerary]
+   E --> F[Auto-initialize checklist]
+   E --> G[Display trip page: maps, costs, details]
+   F --> H[Floating Todo widget]
+   G --> H
+   G --> I[User edits or Chat Assistant]
+   I --> E
+   H --> J[Mark tasks or add custom tasks]
+   J --> F
+   E --> K[Finalize and book]
+   K --> L[Payment and reservation]
+   E --> M[Export to PDF or share link]
 
   style A fill:#f9fafb,stroke:#e6edf3
   style C fill:#fff7ed,stroke:#ffd8a8
