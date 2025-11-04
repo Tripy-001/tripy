@@ -667,15 +667,23 @@ export const useAppStore = create<AppState>()(
             webSocket.close();
           }
 
-          // Construct WebSocket URL
+          // Validate WebSocket URL configuration
           const wsBaseUrl = process.env.NEXT_PUBLIC_FASTAPI_WS_URL;
+          if (!wsBaseUrl) {
+            console.error('[Chat] WebSocket URL not configured');
+            set({ chatError: 'Chat service URL not configured', isChatConnected: false });
+            return;
+          }
+
+          // Construct WebSocket URL
           const wsUrl = `${wsBaseUrl}/ws/${tripId}?token=${idToken}`;
+          console.log('[Chat] Connecting to:', wsUrl.replace(/token=.*/, 'token=***'));
 
           // Create new WebSocket connection
           const ws = new WebSocket(wsUrl);
 
           ws.onopen = () => {
-            console.log('[Chat] WebSocket connected');
+            console.log('[Chat] WebSocket connected successfully');
             set({ isChatConnected: true, chatError: null, webSocket: ws });
           };
 
@@ -726,15 +734,17 @@ export const useAppStore = create<AppState>()(
 
           ws.onerror = (error) => {
             console.error('[Chat] WebSocket error:', error);
-            set({ chatError: 'Connection error occurred', isChatConnected: false });
+            const errorMessage = 'Failed to connect to chat service. Please check your connection.';
+            set({ chatError: errorMessage, isChatConnected: false });
           };
 
           ws.onclose = (event) => {
-            console.log('[Chat] WebSocket closed:', event.code, event.reason);
+            console.log('[Chat] WebSocket closed. Code:', event.code, 'Reason:', event.reason || 'No reason provided');
             set({ isChatConnected: false, webSocket: null });
             
             // Attempt reconnection after 3 seconds if not a normal closure
             if (event.code !== 1000 && event.code !== 1001) {
+              console.log('[Chat] Connection closed unexpectedly, will attempt to reconnect in 3 seconds...');
               setTimeout(() => {
                 const currentState = get();
                 if (!currentState.isChatConnected && !currentState.webSocket) {
@@ -748,7 +758,8 @@ export const useAppStore = create<AppState>()(
           set({ webSocket: ws });
         } catch (error) {
           console.error('[Chat] Failed to connect:', error);
-          set({ chatError: 'Failed to connect to chat server', isChatConnected: false });
+          const errorMessage = error instanceof Error ? error.message : 'Failed to connect to chat server';
+          set({ chatError: errorMessage, isChatConnected: false });
         }
       },
 
