@@ -18,7 +18,8 @@ import {
   ArrowLeft,
   Filter,
   Star,
-  Plane
+  Plane,
+  CreditCard
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import {
@@ -38,6 +39,11 @@ const TripsPage = () => {
 
   const handleViewTrip = (tripId: string) => {
     router.push(`/trip/${tripId}`);
+  };
+
+  const handleBookNow = (tripId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    router.push(`/booking/${tripId}`);
   };
 
   const getStatusColor = (status: string) => {
@@ -353,6 +359,20 @@ const TripsPage = () => {
                         />
                       </div>
                     </div>
+
+                    {/* Book Now Button */}
+                    {trip.status === 'planning' && (
+                      <div className="pt-3 mt-3 border-t border-border">
+                        <Button
+                          onClick={(e) => handleBookNow(trip.id, e)}
+                          className="w-full theme-bg theme-bg-hover text-primary-foreground"
+                          size="sm"
+                        >
+                          <CreditCard className="w-4 h-4 mr-2" />
+                          Book Now
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>

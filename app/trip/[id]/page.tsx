@@ -12,10 +12,11 @@ import ChatAssistant from '@/components/ChatAssistant';
 import TripTodoList from '@/components/TripTodoList';
 import TodoWidget from '@/components/TodoWidget';
 import { useTripTodos } from '@/lib/hooks/useTripTodos';
-import { MapPin, Calendar, Clock, DollarSign, Users, Star, Download, Cloud, CloudRain, Sun, Wind, Plane, Home, Package, Sparkles, Camera, Info, TrendingUp, Shield, Languages } from 'lucide-react';
+import { MapPin, Calendar, Clock, DollarSign, Users, Star, Download, Cloud, CloudRain, Sun, Wind, Plane, Home, Package, Sparkles, Camera, Info, TrendingUp, Shield, Languages, CreditCard } from 'lucide-react';
 import ScrollSpyTabs from '@/components/ScrollSpyTabs';
 import { auth } from '@/lib/firebase';
 import { useAppStore } from '@/lib/store';
+import { useRouter } from 'next/navigation';
 
 type Trip = unknown;
 
@@ -36,6 +37,7 @@ const resolveParams = async (input: TripPageProps['params']): Promise<{ id: stri
 };
 
 export default function TripDetailPage(props: TripPageProps) {
+  const router = useRouter();
   const [trip, setTrip] = useState<Trip | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -522,6 +524,13 @@ export default function TripDetailPage(props: TripPageProps) {
               {response?.updatedAt && (
                 <Badge variant="outline">Updated {new Date(response.updatedAt).toLocaleDateString()}</Badge>
               )}
+              <button 
+                onClick={() => tripId && router.push(`/booking/${tripId}`)} 
+                className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-3 py-1.5 text-sm font-medium hover:bg-primary/90 transition-colors"
+              >
+                <CreditCard className="w-4 h-4" />
+                Book Now
+              </button>
               <button onClick={handleDownloadPdf} className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm font-medium hover:bg-muted transition-colors">
                 <Download className="w-4 h-4" />
                 Download PDF
