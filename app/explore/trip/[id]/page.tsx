@@ -1267,21 +1267,6 @@ export default async function PublicTripsPage(
                   </div>
                 </div>
               )}
-              {Array.isArray(mapData.all_locations) && mapData.all_locations.length > 0 && (
-                <div className="mt-6 p-5 rounded-xl bg-gradient-to-br from-purple-50/50 to-pink-50/30 dark:from-purple-950/20 dark:to-pink-950/10 border-2 border-purple-200 dark:border-purple-800">
-                  <div className="flex items-center gap-2 mb-4">
-                    <MapPin className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                    <h4 className="font-bold text-foreground">All Locations</h4>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {mapData.all_locations.map((loc: unknown, i: number) => (
-                      <Badge key={i} className="px-3 py-1.5 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800 capitalize">
-                        {loc.name}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
             </CardContent>
                 </AccordionContent>
               </Card>
