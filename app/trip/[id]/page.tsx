@@ -324,7 +324,8 @@ export default function TripDetailPage(props: TripPageProps) {
           if (!section) return;
           const acts: any[] = sectionKey === 'lunch' && section.restaurant ? [ { activity: section.restaurant } ] : (Array.isArray(section?.activities) ? section.activities : []);
           acts.forEach((act: any) => {
-            const p = act?.activity || act || {};
+            // Extract the place/activity object - it can be directly act.activity or just act
+            const p = (act as any)?.activity || (act as any) || {};
             const lat = p?.coordinates?.lat;
             const lng = p?.coordinates?.lng;
             if (typeof lat === 'number' && typeof lng === 'number') {
@@ -337,7 +338,9 @@ export default function TripDetailPage(props: TripPageProps) {
           });
         });
       });
-    } catch {}
+    } catch (err) {
+      console.error('Error building weather queries:', err);
+    }
     return qs;
   }, [it]);
 
@@ -407,8 +410,8 @@ export default function TripDetailPage(props: TripPageProps) {
     loading: boolean;
     error?: string;
     data?: {
-      current: { time: string; temperatureC: number | null; condition: string | null; precipitationProbability?: number | null } | null;
-      daily: { date: string; maxTempC: number | null; minTempC: number | null; condition: string | null; precipitationProbabilityMax: number | null } | null;
+      current: { temperatureC: number | null; condition: string | null; precipitationProbability?: number | null } | null;
+      daily: { maxTempC: number | null; minTempC: number | null; condition: string | null; precipitationProbabilityMax: number | null } | null;
     };
   };
 
@@ -429,28 +432,35 @@ export default function TripDetailPage(props: TripPageProps) {
       );
     }
 
-    if (w.error || !w.data?.current) {
+    // Show error only if there's an explicit error (not just missing current data)
+    if (w.error) {
       return (
         <div className="mt-3">
           <div className="rounded-lg border p-3 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800">
             <div className="flex items-center gap-2">
-              
               <span className="font-medium text-foreground">Weather</span>
-              <Badge variant="destructive" className="ml-auto">Error</Badge>
+              <Badge variant="destructive" className="ml-auto">Error: {w.error}</Badge>
             </div>
           </div>
         </div>
       );
     }
+
+    // If we have no data at all, don't render
+    if (!w.data?.current && !w.data?.daily) {
+      return null;
+    }
     
-    // Use current weather data from API
-    const condition = w.data.current.condition || 'Unknown';
-    const currentTemp = w.data.current.temperatureC;
-    const precipProb = w.data.current.precipitationProbability ?? 0;
+    // Use current weather data if available, otherwise use daily
+    const current = w.data?.current;
+    const daily = w.data?.daily;
+    const condition = current?.condition || daily?.condition || 'Unknown';
+    const currentTemp = current?.temperatureC;
+    const precipProb = current?.precipitationProbability ?? daily?.precipitationProbabilityMax ?? 0;
     
     // Get daily max/min temps
-    const maxTemp = w.data.daily?.maxTempC;
-    const minTemp = w.data.daily?.minTempC;
+    const maxTemp = daily?.maxTempC;
+    const minTemp = daily?.minTempC;
     
     // Use current time from Date.now()
     const currentTime = new Date().toLocaleTimeString([], { 
@@ -803,7 +813,7 @@ export default function TripDetailPage(props: TripPageProps) {
                       <div className="relative pl-16 pb-8">
                           <div className="rounded-2xl border bg-gradient-to-br from-white/80 to-gray-50/50 dark:from-gray-900/80 dark:to-gray-800/50 backdrop-blur-sm p-6 shadow-lg">
                             {(['morning','lunch','afternoon','evening'] as const).map((sectionKey) => {
-                              const section: unknown = day?.[sectionKey];
+                              const section: any = (day as any)?.[sectionKey];
                               if (!section) return null;
                               
                               if (sectionKey === 'lunch' && section.restaurant) {
@@ -830,14 +840,14 @@ export default function TripDetailPage(props: TripPageProps) {
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                           <GoogleMapsPreview lat={r?.coordinates?.lat} lng={r?.coordinates?.lng} placeId={r?.place_id} name={r?.name} ratio={16/9} className="w-full" />
                                           {Array.isArray(r?.photo_urls) && r.photo_urls.length > 0 && (
-                                            <AutoCarousel images={r.photo_urls} className="w-full aspect-video" rounded="rounded-lg" showControls intervalMs={4000} imgAlt={r?.name || 'Restaurant'} />
+                                            <AutoCarousel images={r.photo_urls} className="w-full aspect-video" rounded="rounded-lg" showControls imgAlt={r?.name || 'Restaurant'} />
                                           )}
                                         </div>
 
                                         {/* Weather Card */}
                                         {wKey && (
                                           <div className="pt-2">
-                                            <CompactWeatherCard date={day?.date} w={w} />
+                                            <CompactWeatherCard date={(day as any)?.date} w={w} />
                                           </div>
                                         )}
                                       </div>
@@ -863,7 +873,8 @@ export default function TripDetailPage(props: TripPageProps) {
                                   )}
                                   <div className="grid gap-4">
                                     {section.activities.map((act: unknown, aIdx: number) => {
-                                      const p = act.activity || {};
+                                      // Extract the place/activity object - it can be directly (act as any).activity or just (act as any)
+                                      const p = (act as any)?.activity || (act as any) || {};
                                       const lat = p?.coordinates?.lat;
                                       const lng = p?.coordinates?.lng;
                                       const wKey = (typeof lat === 'number' && typeof lng === 'number') ? `${lat.toFixed(3)},${lng.toFixed(3)}` : undefined;
@@ -873,7 +884,7 @@ export default function TripDetailPage(props: TripPageProps) {
                                           <div className="space-y-4">
                                             {/* Title and Address */}
                                             <div>
-                                              <h5 className="font-semibold text-lg text-foreground mb-1.5">{p?.name || act?.activity_type}</h5>
+                                              <h5 className="font-semibold text-lg text-foreground mb-1.5">{p?.name || (act as any)?.activity_type}</h5>
                                               {p?.address && <p className="text-sm text-muted-foreground flex items-center gap-1.5">{p.address}</p>}
                                             </div>
 
