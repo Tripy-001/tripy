@@ -208,18 +208,22 @@ export default async function PublicTripsPage(
               )}
             </div>
 
-            {/* Map embed if available */}
-            {it?.map_data?.interactive_map_embed_url && (
-              <div className="rounded-2xl overflow-hidden border">
-                <iframe
-                  src={it.map_data.interactive_map_embed_url}
-                  className="w-full h-[200px] sm:h-[220px] md:h-[280px] lg:h-[320px]"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Trip map"
-                />
-              </div>
-            )}
+            {/* Map embed */}
+            {(() => {
+              const mapUrl =
+                (it?.destination ? `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(it.destination)}` : null);
+              return mapUrl ? (
+                <div className="rounded-2xl overflow-hidden border">
+                  <iframe
+                    src={mapUrl}
+                    className="w-full h-[200px] sm:h-[220px] md:h-[280px] lg:h-[320px]"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Trip map"
+                  />
+                </div>
+              ) : null;
+            })()}
 
             {/* Meta timestamps */}
             <div className="mt-4 text-xs text-muted-foreground flex flex-wrap gap-4">

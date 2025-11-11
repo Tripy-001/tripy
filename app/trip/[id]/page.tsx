@@ -314,12 +314,11 @@ export default function TripDetailPage(props: TripPageProps) {
 
   // Build a set of unique weather queries from itinerary
   const weatherQueries = useMemo(() => {
-    const qs: Array<{ key: string; lat: number; lng: number; date?: string }> = [];
+    const qs: Array<{ key: string; lat: number; lng: number }> = [];
     const seen = new Set<string>();
     try {
       const days: any[] = Array.isArray(it?.daily_itineraries) ? it.daily_itineraries : [];
       days.forEach((day) => {
-        const date = day?.date ? new Date(day.date).toISOString().slice(0, 10) : undefined;
         (['morning','lunch','afternoon','evening'] as const).forEach((sectionKey) => {
           const section: any = day?.[sectionKey];
           if (!section) return;
@@ -329,10 +328,10 @@ export default function TripDetailPage(props: TripPageProps) {
             const lat = p?.coordinates?.lat;
             const lng = p?.coordinates?.lng;
             if (typeof lat === 'number' && typeof lng === 'number') {
-              const key = `${lat.toFixed(3)},${lng.toFixed(3)}@${date ?? 'na'}`; // reduce duplicates by rounding
+              const key = `${lat.toFixed(3)},${lng.toFixed(3)}`; // use location only as key
               if (!seen.has(key)) {
                 seen.add(key);
-                qs.push({ key, lat, lng, date });
+                qs.push({ key, lat, lng });
               }
             }
           });
@@ -354,7 +353,7 @@ export default function TripDetailPage(props: TripPageProps) {
       setWeatherLoading(true);
       setWeatherError(null);
       try {
-        const points = weatherQueries.map(q => ({ key: q.key, lat: q.lat, lng: q.lng, date: q.date }));
+        const points = weatherQueries.map(q => ({ key: q.key, lat: q.lat, lng: q.lng }));
         const res = await fetch('/api/weather/batch', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -408,48 +407,101 @@ export default function TripDetailPage(props: TripPageProps) {
     loading: boolean;
     error?: string;
     data?: {
-      current: { temperatureC: number | null; condition: string | null; precipitationProbability?: number | null } | null;
-      daily: { maxTempC: number | null; minTempC: number | null; condition: string | null; precipitationProbabilityMax: number | null } | null;
+      current: { time: string; temperatureC: number | null; condition: string | null; precipitationProbability?: number | null } | null;
+      daily: { date: string; maxTempC: number | null; minTempC: number | null; condition: string | null; precipitationProbabilityMax: number | null } | null;
     };
   };
 
   const CompactWeatherCard = ({ date, w }: { date?: string; w?: WeatherEntry }) => {
     if (!w) return null;
-    const condition = w.data?.daily?.condition || w.data?.current?.condition || '—';
-    const max = w.data?.daily?.maxTempC;
-    const min = w.data?.daily?.minTempC;
-    const precipDay = w.data?.daily?.precipitationProbabilityMax;
-    const hasDetails = condition !== '—' || typeof max === 'number' || typeof min === 'number' || typeof precipDay === 'number';
+    
+    // Show loading or error state
+    if (w.loading) {
+      return (
+        <div className="mt-3">
+          <div className="rounded-lg border p-3 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800">
+            <div className="flex items-center gap-2">
+              <span className="font-medium text-foreground">Weather</span>
+              <Badge variant="outline" className="ml-auto">Loading…</Badge>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (w.error || !w.data?.current) {
+      return (
+        <div className="mt-3">
+          <div className="rounded-lg border p-3 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800">
+            <div className="flex items-center gap-2">
+              
+              <span className="font-medium text-foreground">Weather</span>
+              <Badge variant="destructive" className="ml-auto">Error</Badge>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    // Use current weather data from API
+    const condition = w.data.current.condition || 'Unknown';
+    const currentTemp = w.data.current.temperatureC;
+    const precipProb = w.data.current.precipitationProbability ?? 0;
+    
+    // Get daily max/min temps
+    const maxTemp = w.data.daily?.maxTempC;
+    const minTemp = w.data.daily?.minTempC;
+    
+    // Use current time from Date.now()
+    const currentTime = new Date().toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: true 
+    });
+    
     return (
       <div className="mt-3">
         <div className="rounded-lg border p-3 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800">
-          <div className="flex flex-wrap items-center justify-between gap-2">
+          {/* Header with icon and time */}
+          <div className="flex items-center justify-between gap-2 mb-2">
             <div className="flex items-center gap-2">
-              <WeatherIcon condition={w.data?.current?.condition || w.data?.daily?.condition} />
               <span className="font-medium text-foreground">Weather</span>
-              {date && (
-                <Badge variant="secondary" className="ml-1">{new Date(date).toLocaleDateString()}</Badge>
-              )}
             </div>
+            <Badge variant="secondary" className="text-xs">
+              ⏰ {currentTime}
+            </Badge>
+          </div>
+          
+          {/* Weather details */}
+          <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              {w.loading && <Badge variant="outline">Loading…</Badge>}
-              {w.error && <Badge variant="destructive">Error</Badge>}
+              <span className="text-sm font-semibold text-foreground flex items-center gap-1">
+              <WeatherIcon condition={condition} /> {condition}
+              </span>
+              <Badge variant="secondary" className="text-sm">
+                💧 Precip {precipProb}%
+              </Badge>
+            </div>
+            
+            {/* Temperature details */}
+            <div className="flex flex-wrap items-center gap-2">
+              {typeof currentTemp === 'number' && (
+                <Badge variant="default" className="text-sm font-semibold bg-blue-600 hover:bg-blue-700">
+                  🌡️ Current {Math.round(currentTemp)}°C
+                </Badge>
+              )}
+              {typeof maxTemp === 'number' && (
+                <Badge variant="outline" className="text-sm font-medium border-red-300 text-red-700 dark:border-red-700 dark:text-red-400">
+                  ↑ Max {Math.round(maxTemp)}°C
+                </Badge>
+              )}
+              {typeof minTemp === 'number' && (
+                <Badge variant="outline" className="text-sm font-medium border-blue-300 text-blue-700 dark:border-blue-700 dark:text-blue-400">
+                  ↓ Min {Math.round(minTemp)}°C
+                </Badge>
+              )}
             </div>
           </div>
-          {hasDetails && (
-            <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <span className="text-foreground font-medium mr-1">{condition}</span>
-              {typeof max === 'number' && (
-                <Badge variant="outline" className="px-2 py-0.5">Max {Math.round(max)}°C</Badge>
-              )}
-              {typeof min === 'number' && (
-                <Badge variant="outline" className="px-2 py-0.5">Min {Math.round(min)}°C</Badge>
-              )}
-              {typeof precipDay === 'number' && (
-                <Badge variant="secondary" className="px-2 py-0.5">Precip (day) {precipDay}%</Badge>
-              )}
-            </div>
-          )}
         </div>
       </div>
     );
@@ -668,17 +720,22 @@ export default function TripDetailPage(props: TripPageProps) {
                     )}
                   </div>
 
-            {it?.map_data?.interactive_map_embed_url && (
-              <div className="rounded-2xl overflow-hidden border mb-4">
-                <iframe
-                  src={it.map_data.interactive_map_embed_url}
-                  className="w-full h-[200px] sm:h-[220px] md:h-[280px] lg:h-[320px]"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Trip map"
-                />
-              </div>
-            )}
+            {/* Map embed */}
+            {(() => {
+              const mapUrl =
+                (it?.destination ? `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(it.destination)}` : null);
+              return mapUrl ? (
+                <div className="rounded-2xl overflow-hidden border mb-4">
+                  <iframe
+                    src={mapUrl}
+                    className="w-full h-[200px] sm:h-[220px] md:h-[280px] lg:h-[320px]"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Trip map"
+                  />
+                </div>
+              ) : null;
+            })()}
 
             <div className="mt-4 text-xs text-muted-foreground flex flex-wrap gap-4">
               {response?.createdAt && (<span>Created: {new Date(response.createdAt).toLocaleString()}</span>)}
@@ -753,8 +810,7 @@ export default function TripDetailPage(props: TripPageProps) {
                                 const r = section.restaurant;
                                 const lat = r?.coordinates?.lat;
                                 const lng = r?.coordinates?.lng;
-                                const dateKey = day?.date ? new Date(day.date).toISOString().slice(0,10) : 'na';
-                                const wKey = (typeof lat === 'number' && typeof lng === 'number') ? `${lat.toFixed(3)},${lng.toFixed(3)}@${dateKey}` : undefined;
+                                const wKey = (typeof lat === 'number' && typeof lng === 'number') ? `${lat.toFixed(3)},${lng.toFixed(3)}` : undefined;
                                 const w = wKey ? weatherMap[wKey] : undefined;
                                 return (
                                   <div key={sectionKey} className="space-y-4">
@@ -810,8 +866,7 @@ export default function TripDetailPage(props: TripPageProps) {
                                       const p = act.activity || {};
                                       const lat = p?.coordinates?.lat;
                                       const lng = p?.coordinates?.lng;
-                                      const dateKey = day?.date ? new Date(day.date).toISOString().slice(0,10) : 'na';
-                                      const wKey = (typeof lat === 'number' && typeof lng === 'number') ? `${lat.toFixed(3)},${lng.toFixed(3)}@${dateKey}` : undefined;
+                                      const wKey = (typeof lat === 'number' && typeof lng === 'number') ? `${lat.toFixed(3)},${lng.toFixed(3)}` : undefined;
                                       const w = wKey ? weatherMap[wKey] : undefined;
                                       return (
                                         <div key={aIdx} className="p-5 rounded-xl border bg-gradient-to-br from-background to-muted/20 shadow-sm hover:shadow-md transition-shadow">
