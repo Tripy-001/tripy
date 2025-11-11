@@ -1,4 +1,4 @@
-// Server-side Firebase Admin initialization and exports
+// Server-side Firebase Admin initialization and export
 import { getApps, initializeApp, cert, applicationDefault } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
