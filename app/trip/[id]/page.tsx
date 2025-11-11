@@ -410,8 +410,8 @@ export default function TripDetailPage(props: TripPageProps) {
     loading: boolean;
     error?: string;
     data?: {
-      current: { temperatureC: number | null; condition: string | null; precipitationProbability?: number | null } | null;
-      daily: { maxTempC: number | null; minTempC: number | null; condition: string | null; precipitationProbabilityMax: number | null } | null;
+      current: { time: string; temperatureC: number | null; condition: string | null; precipitationProbability?: number | null } | null;
+      daily: { date: string; maxTempC: number | null; minTempC: number | null; condition: string | null; precipitationProbabilityMax: number | null } | null;
     };
   };
 
