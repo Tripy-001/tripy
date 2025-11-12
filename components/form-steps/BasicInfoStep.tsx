@@ -3,7 +3,6 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -12,6 +11,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/comp
 import { Search, Calendar as CalendarIcon, MapPin } from 'lucide-react';
 import { format } from 'date-fns';
 import { TripPlanRequest } from '@/lib/schemas/trip-plan';
+import { PlaceAutocomplete } from '@/components/PlaceAutocomplete';
 
 interface BasicInfoStepProps {
   form: UseFormReturn<TripPlanRequest>;
@@ -30,12 +30,8 @@ export const BasicInfoStep = ({ form }: BasicInfoStepProps) => {
     return `${year}-${month}-${day}`;
   };
 
-  // Get today's date in local timezone
-  const today = new Date();
-  const todayString = formatDateForInput(today);
-
   // Validate date relationships
-  const validateDates = () => {
+  const validateDates = React.useCallback(() => {
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
@@ -49,12 +45,12 @@ export const BasicInfoStep = ({ form }: BasicInfoStepProps) => {
         clearErrors('end_date');
       }
     }
-  };
+  }, [startDate, endDate, setError, clearErrors]);
 
   // Validate dates whenever they change
   React.useEffect(() => {
     validateDates();
-  }, [startDate, endDate]);
+  }, [validateDates]);
 
   return (
     <div className="space-y-6">
@@ -66,14 +62,12 @@ export const BasicInfoStep = ({ form }: BasicInfoStepProps) => {
             <FormItem>
               <FormLabel>Origin City</FormLabel>
               <FormControl>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                  <Input
-                    placeholder="Where are you traveling from?"
-                    className="pl-10"
-                    {...field}
-                  />
-                </div>
+                <PlaceAutocomplete
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Where are you traveling from?"
+                  icon={<Search className="w-4 h-4" />}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -87,14 +81,12 @@ export const BasicInfoStep = ({ form }: BasicInfoStepProps) => {
             <FormItem>
               <FormLabel>Destination</FormLabel>
               <FormControl>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                  <Input
-                    placeholder="Where do you want to go?"
-                    className="pl-10"
-                    {...field}
-                  />
-                </div>
+                <PlaceAutocomplete
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Where do you want to go?"
+                  icon={<MapPin className="w-4 h-4" />}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
