@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Globe, Users, Shield, Star, TrendingUp, Clock, MapPin, CheckCircle, CalendarDays, CloudSun, Sliders, Sparkles, Play, Zap, Target, Compass, Plane } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,15 +8,110 @@ import { Badge } from '@/components/ui/badge';
 import PublicTrips from '@/components/PublicTrips';
 
 const HomePage = () => {
+  const [scrollY, setScrollY] = useState(0);
+  const heroRef = useRef<HTMLElement>(null);
+  const featuresRef = useRef<HTMLElement>(null);
+  const howItWorksRef = useRef<HTMLElement>(null);
+  const tripsRef = useRef<HTMLElement>(null);
+  const benefitsRef = useRef<HTMLElement>(null);
+  const ctaRef = useRef<HTMLElement>(null);
+
+  // Track scroll position for parallax with throttling
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrollY(window.scrollY);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Intersection Observer for scroll animations
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px',
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in-view');
+        }
+      });
+    }, observerOptions);
+
+    const sections = [
+      heroRef.current,
+      featuresRef.current,
+      howItWorksRef.current,
+      tripsRef.current,
+      benefitsRef.current,
+      ctaRef.current,
+    ].filter(Boolean) as Element[];
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => {
+      sections.forEach((section) => observer.unobserve(section));
+    };
+  }, []);
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-background">
-        {/* Animated Background Elements */}
+      <section 
+        ref={heroRef}
+        id="home" 
+        className="relative min-h-screen flex items-center overflow-hidden bg-background section-animate"
+      >
+        {/* Animated Background Elements with Parallax */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-          <div className="absolute top-1/2 left-0 w-64 h-64 bg-primary/5 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '1s' }} />
+          <div 
+            className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse-glow parallax-slow"
+            style={{ transform: `translateY(${scrollY * 0.3}px)` }}
+          />
+          <div 
+            className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse-glow parallax-medium"
+            style={{ 
+              animationDelay: '2s',
+              transform: `translateY(${scrollY * -0.2}px)`
+            }} 
+          />
+          <div 
+            className="absolute top-1/2 left-0 w-64 h-64 bg-primary/5 rounded-full blur-2xl animate-float-slow parallax-fast"
+            style={{ 
+              animationDelay: '1s',
+              transform: `translateX(${scrollY * 0.4}px)`
+            }} 
+          />
+          {/* Additional floating elements with continuous loops */}
+          <div 
+            className="absolute top-1/4 right-1/3 w-32 h-32 bg-accent/5 rounded-full blur-xl animate-float-slow"
+            style={{ transform: `translateY(${scrollY * 0.25}px)` }}
+          />
+          <div 
+            className="absolute bottom-1/4 left-1/3 w-40 h-40 bg-primary/5 rounded-full blur-xl animate-float-reverse"
+            style={{ transform: `translateY(${scrollY * -0.15}px)` }}
+          />
+          {/* Rotating decorative elements */}
+          <div 
+            className="absolute top-1/3 right-1/4 w-24 h-24 bg-accent/5 rounded-full blur-lg animate-rotate-slow"
+            style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+          />
+          <div 
+            className="absolute bottom-1/3 left-1/4 w-28 h-28 bg-primary/5 rounded-full blur-lg animate-rotate-slow"
+            style={{ 
+              animationDirection: 'reverse',
+              transform: `translateY(${scrollY * -0.1}px)`
+            }}
+          />
         </div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
@@ -111,8 +207,15 @@ const HomePage = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-32 bg-gradient-to-b from-background to-muted/20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+      <section 
+        ref={featuresRef}
+        id="features" 
+        className="py-32 bg-gradient-to-b from-background to-muted/20 relative overflow-hidden section-animate"
+      >
+        <div 
+          className="absolute inset-0 bg-grid-pattern opacity-5 parallax-slow"
+          style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+        />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-20">
             <Badge className="mb-4 px-4 py-1.5 text-sm font-semibold bg-primary/10 text-primary border-primary/20">
@@ -130,7 +233,7 @@ const HomePage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            <Card className="group border-2 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 rounded-2xl overflow-hidden relative">
+            <Card className="group border-2 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 rounded-2xl overflow-hidden relative card-animate animate-delay-100">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <CardHeader className="pb-4 relative z-10">
                 <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-primary/30 group-hover:scale-110 group-hover:rotate-3 transition-all shadow-lg">
@@ -146,7 +249,7 @@ const HomePage = () => {
               </CardContent>
             </Card>
 
-            <Card className="group border-2 border-border/50 hover:border-accent/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 rounded-2xl overflow-hidden relative">
+            <Card className="group border-2 border-border/50 hover:border-accent/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 rounded-2xl overflow-hidden relative card-animate animate-delay-200">
               <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <CardHeader className="pb-4 relative z-10">
                 <div className="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-accent/30 group-hover:scale-110 group-hover:rotate-3 transition-all shadow-lg">
@@ -162,7 +265,7 @@ const HomePage = () => {
               </CardContent>
             </Card>
 
-            <Card className="group border-2 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 rounded-2xl overflow-hidden relative">
+            <Card className="group border-2 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 rounded-2xl overflow-hidden relative card-animate animate-delay-300">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <CardHeader className="pb-4 relative z-10">
                 <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-primary/30 group-hover:scale-110 group-hover:rotate-3 transition-all shadow-lg">
@@ -178,7 +281,7 @@ const HomePage = () => {
               </CardContent>
             </Card>
 
-            <Card className="group border-2 border-border/50 hover:border-accent/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 rounded-2xl overflow-hidden relative">
+            <Card className="group border-2 border-border/50 hover:border-accent/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 rounded-2xl overflow-hidden relative card-animate animate-delay-400">
               <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <CardHeader className="pb-4 relative z-10">
                 <div className="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-accent/30 group-hover:scale-110 group-hover:rotate-3 transition-all shadow-lg">
@@ -198,8 +301,14 @@ const HomePage = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-32 bg-background relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-muted/20 to-background" />
+      <section 
+        ref={howItWorksRef}
+        className="py-32 bg-background relative overflow-hidden section-animate"
+      >
+        <div 
+          className="absolute inset-0 bg-gradient-to-b from-muted/20 to-background parallax-slow"
+          style={{ transform: `translateY(${scrollY * 0.15}px)` }}
+        />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-20">
             <Badge className="mb-4 px-4 py-1.5 text-sm font-semibold bg-accent/10 text-accent border-accent/20">
@@ -218,9 +327,9 @@ const HomePage = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 relative">
             {/* Connecting Line */}
-            <div className="hidden md:block absolute top-20 left-1/2 transform -translate-x-1/2 w-full h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+            <div className="hidden md:block absolute top-20 left-1/2 transform -translate-x-1/2 w-full h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent step-line-animate" />
             
-            <div className="text-center group relative">
+            <div className="text-center group relative step-animate animate-delay-100">
               <div className="relative">
                 <div className="w-24 h-24 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl group-hover:scale-110 group-hover:rotate-3 transition-all">
                   <span className="text-4xl font-bold text-primary-foreground">1</span>
@@ -233,7 +342,7 @@ const HomePage = () => {
               </p>
             </div>
             
-            <div className="text-center group relative">
+            <div className="text-center group relative step-animate animate-delay-200">
               <div className="relative">
                 <div className="w-24 h-24 bg-gradient-to-br from-accent to-accent/80 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl group-hover:scale-110 group-hover:rotate-3 transition-all">
                   <span className="text-4xl font-bold text-accent-foreground">2</span>
@@ -246,7 +355,7 @@ const HomePage = () => {
               </p>
             </div>
             
-            <div className="text-center group relative">
+            <div className="text-center group relative step-animate animate-delay-300">
               <div className="relative">
                 <div className="w-24 h-24 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl group-hover:scale-110 group-hover:rotate-3 transition-all">
                   <span className="text-4xl font-bold text-primary-foreground">3</span>
@@ -264,8 +373,14 @@ const HomePage = () => {
 
 
       {/* Public Trips Section */}
-      <section className="py-32 bg-gradient-to-b from-background via-muted/10 to-background relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+      <section 
+        ref={tripsRef}
+        className="py-32 bg-gradient-to-b from-background via-muted/10 to-background relative overflow-hidden section-animate"
+      >
+        <div 
+          className="absolute inset-0 bg-grid-pattern opacity-5 parallax-slow"
+          style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+        />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
             <Badge className="mb-4 px-4 py-1.5 text-sm font-semibold bg-primary/10 text-primary border-primary/20">
@@ -286,8 +401,14 @@ const HomePage = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-32 bg-background relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+      <section 
+        ref={benefitsRef}
+        className="py-32 bg-background relative overflow-hidden section-animate"
+      >
+        <div 
+          className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 parallax-medium"
+          style={{ transform: `translateY(${scrollY * 0.12}px)` }}
+        />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
             <Badge className="mb-4 px-4 py-1.5 text-sm font-semibold bg-accent/10 text-accent border-accent/20">
@@ -298,14 +419,14 @@ const HomePage = () => {
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 Tripy?
               </span>
-            </h2>
+              </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              We combine cutting-edge AI technology with real travel expertise to create personalized experiences that exceed your expectations.
-            </p>
-          </div>
-          
+                We combine cutting-edge AI technology with real travel expertise to create personalized experiences that exceed your expectations.
+              </p>
+                </div>
+                
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="group border-2 border-border/50 bg-card/50 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 rounded-2xl overflow-hidden relative">
+            <Card className="group border-2 border-border/50 bg-card/50 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 rounded-2xl overflow-hidden relative card-animate animate-delay-100">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <CardContent className="p-8 relative z-10">
                 <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all shadow-lg">
@@ -313,37 +434,43 @@ const HomePage = () => {
                 </div>
                 <h3 className="text-2xl font-bold text-foreground mb-3">Personalized Recommendations</h3>
                 <p className="text-base text-muted-foreground leading-relaxed">AI learns your preferences to suggest destinations and activities you&apos;ll love.</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="group border-2 border-border/50 bg-card/50 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 rounded-2xl overflow-hidden relative">
+                  </CardContent>
+                </Card>
+                
+            <Card className="group border-2 border-border/50 bg-card/50 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 rounded-2xl overflow-hidden relative card-animate animate-delay-200">
               <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <CardContent className="p-8 relative z-10">
                 <div className="w-20 h-20 bg-gradient-to-br from-accent/20 to-accent/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all shadow-lg">
                   <Zap className="w-10 h-10 text-accent" />
-                </div>
+                    </div>
                 <h3 className="text-2xl font-bold text-foreground mb-3">Save Time Planning</h3>
                 <p className="text-base text-muted-foreground leading-relaxed">Get complete itineraries in minutes instead of spending hours researching.</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="group border-2 border-border/50 bg-card/50 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 rounded-2xl overflow-hidden relative">
+                  </CardContent>
+                </Card>
+                
+            <Card className="group border-2 border-border/50 bg-card/50 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 rounded-2xl overflow-hidden relative card-animate animate-delay-300">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <CardContent className="p-8 relative z-10">
                 <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all shadow-lg">
                   <Compass className="w-10 h-10 text-primary" />
-                </div>
+                    </div>
                 <h3 className="text-2xl font-bold text-foreground mb-3">Best Value Guaranteed</h3>
                 <p className="text-base text-muted-foreground leading-relaxed">We find the best deals and ensure you get maximum value for your budget.</p>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 bg-gradient-to-b from-background to-muted/20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+      <section 
+        ref={ctaRef}
+        className="py-32 bg-gradient-to-b from-background to-muted/20 relative overflow-hidden section-animate"
+      >
+        <div 
+          className="absolute inset-0 bg-grid-pattern opacity-5 parallax-slow"
+          style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+        />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <div className="relative p-12 lg:p-20 bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5 rounded-3xl border-2 border-primary/20 shadow-2xl overflow-hidden">
             {/* Decorative elements */}
@@ -360,19 +487,19 @@ const HomePage = () => {
                 <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                   World?
                 </span>
-              </h2>
+            </h2>
               <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
-                Join thousands of travelers who have discovered their perfect destinations with Tripy
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              Join thousands of travelers who have discovered their perfect destinations with Tripy
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" className="group text-lg px-10 py-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 font-semibold">
-                  Get Started Today
+                Get Started Today
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
+              </Button>
                 <Button variant="outline" size="lg" className="text-lg px-10 py-6 border-2 border-border hover:border-accent hover:bg-accent/10 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-                  <MapPin className="mr-2 w-5 h-5" />
-                  View Destinations
-                </Button>
+                <MapPin className="mr-2 w-5 h-5" />
+                View Destinations
+              </Button>
               </div>
             </div>
           </div>
