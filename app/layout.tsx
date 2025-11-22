@@ -25,6 +25,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Tripy - AI-Powered Trip Suggestions",
   description: "Discover your next adventure with AI-powered trip suggestions tailored to your preferences",
+  other: {
+    'preload-logo': '/images/tripy-app-logo.png',
+  },
 };
 
 export default function RootLayout({
@@ -34,6 +37,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preload" as="image" href="/images/tripy-app-logo.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${lexend.variable} antialiased`}
       >

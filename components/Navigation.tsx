@@ -32,6 +32,15 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  // Preload logo image immediately
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = '/images/tripy-app-logo.png';
+    document.head.appendChild(link);
+  }, []);
+
   // Initialize theme on mount
   useEffect(() => {
     // Check for saved theme preference, default to light theme
@@ -102,30 +111,38 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
     return pathname.startsWith(href);
   };
 
-  if (authLoading) {
-    return (
-      <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg">
-              <Loader2 className="w-5 h-5 text-primary-foreground animate-spin" />
-            </div>
-            <span className="text-xl font-bold text-foreground">Tripy</span>
-          </div>
-        </div>
-      </header>
-    );
-  }
+  // if (authLoading) {
+  //   return (
+  //     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
+  //       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+  //         <div className="flex items-center space-x-3">
+  //           <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg">
+  //             <Loader2 className="w-5 h-5 text-primary-foreground animate-spin" />
+  //           </div>
+  //           <span className="text-xl font-bold text-foreground">Tripy</span>
+  //         </div>
+  //       </div>
+  //     </header>
+  //   );
+  // }
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-              <Globe className="w-5 h-5 text-primary-foreground" />
+            <div className="relative w-10 h-10 lg:w-12 lg:h-12 flex-shrink-0 group-hover:scale-110 transition-transform">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/tripy-app-logo.png"
+                alt="Tripy Logo"
+                className="w-full h-full object-contain"
+                loading="eager"
+                decoding="sync"
+                fetchPriority="high"
+              />
             </div>
-            <span className="text-xl font-bold text-foreground tracking-tight">Tripy</span>
+            <span className="text-xl font-bold text-foreground tracking-tight hidden sm:inline">Tripy</span>
           </Link>
 
           {/* Desktop Navigation */}
