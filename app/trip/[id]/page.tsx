@@ -624,7 +624,7 @@ export default function TripDetailPage(props: TripPageProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-muted/20 via-background to-background scroll-smooth">
       <header className="bg-white/95 dark:bg-gray-950/95 backdrop-blur-lg border-b border-border/50 sticky top-0 z-50 shadow-sm transition-shadow duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
           <div className="flex items-center justify-between h-20 gap-4">
             <div className="flex items-center gap-3 min-w-0 flex-1 group">
               <div className="w-10 h-10 theme-bg rounded-xl flex items-center justify-center shadow-md flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
@@ -676,8 +676,8 @@ export default function TripDetailPage(props: TripPageProps) {
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent transition-opacity duration-300" />
-            <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8">
-              <div className="max-w-7xl mx-auto text-white">
+            <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 pb-6 sm:pb-8">
+              <div className="w-full text-white">
                 <div className="text-2xl sm:text-3xl font-bold drop-shadow-lg mb-2 transition-transform duration-300 group-hover:translate-y-[-2px]">{it?.destination || response?.title}</div>
                 <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm opacity-95">
                   {response?.id && <Badge variant="secondary" className="bg-white/20 text-white border-white/30 backdrop-blur-sm transition-all duration-200 hover:bg-white/30 hover:scale-105">ID: {response.id}</Badge>}
@@ -693,15 +693,15 @@ export default function TripDetailPage(props: TripPageProps) {
       )}
 
       <div className="bg-white/80 dark:bg-gray-950/80 backdrop-blur-md sticky top-20 z-40 border-b border-border/50 shadow-sm transition-shadow duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
           <ScrollSpyTabs links={sectionLinks} />
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-        <div className="flex flex-col lg:flex-row gap-6 items-start">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-6 sm:py-8 lg:py-10">
+        <div className="flex flex-col lg:flex-row gap-6 lg:items-start">
           {/* Left Column - 70% - Scrollable */}
-          <div className="w-full lg:flex-[0.7] space-y-6 lg:overflow-y-auto lg:[scrollbar-width:none] lg:[-ms-overflow-style:none] lg:[&::-webkit-scrollbar]:hidden lg:max-h-[calc(100vh-10rem)]">
+          <div className="w-full lg:flex-[0.7] space-y-6">
           <Accordion type="multiple" defaultValue={["overview"]} className="w-full">
           <AccordionItem value="overview" className="border-0">
             <Card id="overview" className="border border-border/50 shadow-lg hover:shadow-xl transition-all duration-300 bg-card/50 backdrop-blur-sm hover:border-blue-300/50 dark:hover:border-blue-700/50">
@@ -1894,8 +1894,8 @@ export default function TripDetailPage(props: TripPageProps) {
         )}
           </div>
 
-          {/* Right Column - 30% - Fixed/Sticky */}
-          <div className="w-full lg:flex-[0.3] space-y-6 lg:sticky lg:top-24 lg:self-start">
+          {/* Right Column - 30% - Sticky with overflow */}
+          <div className="w-full lg:flex-[0.3] space-y-6 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600 dark:hover:[&::-webkit-scrollbar-thumb]:bg-gray-500">
             {/* Maps & Locations Section */}
             {(mapData?.static_map_url || mapData?.daily_route_maps || mapData?.all_locations) && (
               <Accordion type="multiple" defaultValue={["maps"]} className="w-full">
