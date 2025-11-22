@@ -11,6 +11,8 @@ import AutoCarousel from '@/components/AutoCarousel';
 import ChatAssistant from '@/components/ChatAssistant';
 import TripTodoList from '@/components/TripTodoList';
 import TodoWidget from '@/components/TodoWidget';
+import CollaboratorsList from '@/components/CollaboratorsList';
+import ExpenseManager from '@/components/ExpenseManager';
 import { useTripTodos } from '@/lib/hooks/useTripTodos';
 import { MapPin, Calendar, Clock, DollarSign, Users, Star, Download, Cloud, CloudRain, Sun, Wind, Plane, Home, Package, Sparkles, Camera, Info, TrendingUp, Shield, Languages, CreditCard } from 'lucide-react';
 import ScrollSpyTabs from '@/components/ScrollSpyTabs';
@@ -53,6 +55,8 @@ export default function TripDetailPage(props: TripPageProps) {
       daily: { maxTempC: number | null; minTempC: number | null; condition: string | null; precipitationProbabilityMax: number | null } | null;
     };
   }>>({});
+  const [tripMembers, setTripMembers] = useState<Array<{ id: string; name: string; email: string; isOwner: boolean }>>([]);
+  const [isOwner, setIsOwner] = useState(false);
 
   // Todo list hook
   const {
@@ -76,6 +80,39 @@ export default function TripDetailPage(props: TripPageProps) {
       mounted = false;
     };
   }, [props.params]);
+
+  // Fetch trip members (owner + collaborators) for expense management
+  const fetchTripMembers = React.useCallback(async (
+    tripIdParam: string,
+    currentUserId: string,
+    ownerId: string,
+    collaboratorIds: string[]
+  ) => {
+    if (!firebaseUser) return;
+    
+    try {
+      const token = await firebaseUser.getIdToken();
+      const res = await fetch(`/api/trips/${tripIdParam}/collaborators`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const allMembers = data.owner ? [data.owner, ...(data.collaborators || [])] : (data.collaborators || []);
+        setTripMembers(allMembers);
+      }
+    } catch (error) {
+      console.error('Error fetching trip members:', error);
+      // Fallback: build members list from owner and collaborators
+      const members = [
+        { id: ownerId, name: 'Trip Owner', email: '', isOwner: true },
+        ...collaboratorIds.map((id) => ({ id, name: 'Collaborator', email: '', isOwner: false })),
+      ];
+      setTripMembers(members);
+    }
+  }, [firebaseUser]);
 
   useEffect(() => {
     if (!tripId) return;
@@ -108,10 +145,23 @@ export default function TripDetailPage(props: TripPageProps) {
         if (!cancelled) {
           setTrip(data?.trip || null);
           setLoading(false);
+          
+          // Check if user is owner
+          const tripData = data?.trip;
+          if (tripData && user) {
+            const userId = user.uid;
+            const isTripOwner = tripData.userId === userId;
+            setIsOwner(isTripOwner);
+            
+            // Fetch collaborators to build trip members list
+            if (tripId) {
+              fetchTripMembers(tripId, userId, tripData.userId, tripData.collaborators || []);
+            }
+          }
         }
       } catch (e: unknown) {
         if (!cancelled) {
-          setError(e?.message || 'Error loading trip');
+          setError((e as { message?: string })?.message || 'Error loading trip');
           setLoading(false);
         }
       }
@@ -121,7 +171,7 @@ export default function TripDetailPage(props: TripPageProps) {
     return () => {
       cancelled = true;
     };
-  }, [tripId, firebaseUser, authLoading]);
+  }, [tripId, firebaseUser, authLoading, fetchTripMembers]);
 
   const itineraryData = useMemo(() => (trip?.itinerary ?? {}), [trip]);
   const it = itineraryData;
@@ -523,6 +573,8 @@ export default function TripDetailPage(props: TripPageProps) {
     if (trip?.request) links.push({ href: '#request', label: 'Request' });
     if (Array.isArray(it?.daily_itineraries) && it.daily_itineraries.length) links.push({ href: '#itinerary', label: 'Itinerary' });
     if (Array.isArray(it?.travel_options) && it.travel_options.length) links.push({ href: '#travel-options', label: 'Travel options' });
+    links.push({ href: '#collaborators', label: 'Collaborators' });
+    links.push({ href: '#expenses', label: 'Expenses' });
     if (Array.isArray(it?.seasonal_considerations) && it.seasonal_considerations.length) links.push({ href: '#season', label: 'Seasonal' });
     if (it?.local_information || it?.weather_forecast_summary) links.push({ href: '#local-info', label: 'Local info' });
     if (Array.isArray(it?.hidden_gems) && it.hidden_gems.length) links.push({ href: '#gems', label: 'Hidden gems' });
@@ -1857,6 +1909,20 @@ export default function TripDetailPage(props: TripPageProps) {
               </Card>
             </AccordionItem>
           </Accordion>
+        )}
+
+        {/* Collaborators Section */}
+        {tripId && (
+          <div className="mb-6">
+            <CollaboratorsList tripId={tripId} isOwner={isOwner} />
+          </div>
+        )}
+
+        {/* Expenses Section */}
+        {tripId && tripMembers.length > 0 && (
+          <div className="mb-6">
+            <ExpenseManager tripId={tripId} tripMembers={tripMembers} />
+          </div>
         )}
         
         {/* Trip Checklist */}
