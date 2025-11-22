@@ -1,21 +1,35 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAppStore } from "@/lib/store";
+import { auth } from "@/lib/firebase";
+import { toast } from "sonner";
 
 const SigninPage = () => {
   const router = useRouter();
-  const { signInWithEmail, signInWithGoogle, error, setError, authLoading, user } = useAppStore();
+  const searchParams = useSearchParams();
+  const { signInWithEmail, signInWithGoogle, error, setError, authLoading, user, firebaseUser } = useAppStore();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  
+  // Check for invitation params
+  const invitationEmail = searchParams.get('email');
+  const invitationToken = searchParams.get('invitation');
+  const tripId = searchParams.get('tripId');
+
+  useEffect(() => {
+    if (invitationEmail) {
+      setFormData(prev => ({ ...prev, email: invitationEmail }));
+    }
+  }, [invitationEmail]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -40,6 +54,37 @@ const SigninPage = () => {
       };
       await waitForProfile();
       setLoading(false);
+      
+      // If there's an invitation, accept it after signin
+      if (invitationToken && tripId && firebaseUser) {
+        try {
+          const token = await firebaseUser.getIdToken();
+          const res = await fetch('/api/invitations/accept', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              token: invitationToken,
+              tripId,
+              userId: firebaseUser.uid,
+            }),
+          });
+
+          if (res.ok) {
+            toast.success('Invitation accepted! Redirecting to trip...');
+            setTimeout(() => {
+              router.push(`/trip/${tripId}`);
+            }, 1500);
+            return;
+          }
+        } catch (err) {
+          console.error('Error accepting invitation:', err);
+          // Continue to dashboard/onboarding even if invitation acceptance fails
+        }
+      }
+      
       // If user has preferences, go to dashboard, else onboarding
       if (user?.preferences?.travelStyle) {
         router.replace("/dashboard");
@@ -72,6 +117,37 @@ const SigninPage = () => {
       };
       await waitForProfile();
       setLoading(false);
+      
+      // If there's an invitation, accept it after Google signin
+      if (invitationToken && tripId && firebaseUser) {
+        try {
+          const token = await firebaseUser.getIdToken();
+          const res = await fetch('/api/invitations/accept', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              token: invitationToken,
+              tripId,
+              userId: firebaseUser.uid,
+            }),
+          });
+
+          if (res.ok) {
+            toast.success('Invitation accepted! Redirecting to trip...');
+            setTimeout(() => {
+              router.push(`/trip/${tripId}`);
+            }, 1500);
+            return;
+          }
+        } catch (err) {
+          console.error('Error accepting invitation:', err);
+          // Continue to dashboard/onboarding even if invitation acceptance fails
+        }
+      }
+      
       if (user?.preferences?.travelStyle) {
         router.replace("/dashboard");
       } else {
