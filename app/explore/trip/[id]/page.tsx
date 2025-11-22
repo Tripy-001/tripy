@@ -622,10 +622,33 @@ export default async function PublicTripsPage(
                       <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
                       <h4 className="font-bold text-foreground">Currency</h4>
                     </div>
-                    <div className="space-y-2 text-sm">
-                      <div className="text-foreground font-medium">{it.local_information.currency_info.name} ({it.local_information.currency_info.symbol})</div>
-                      {it.local_information.currency_info.exchange_rate_notes && (
-                        <p className="text-muted-foreground leading-relaxed">{it.local_information.currency_info.exchange_rate_notes}</p>
+                    <div className="space-y-3 text-sm">
+                      <div className="font-semibold text-lg text-foreground">
+                        {it.local_information.currency_info.currency || it.local_information.currency_info.name}
+                      </div>
+                      {it.local_information.currency_info.symbol && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground">Symbol:</span>
+                          <span className="text-2xl font-bold text-green-600 dark:text-green-400">{it.local_information.currency_info.symbol}</span>
+                        </div>
+                      )}
+                      {(it.local_information.currency_info.exchange_rate || it.local_information.currency_info.exchange_rate_notes) && (
+                        <div className="pt-2 border-t border-green-200 dark:border-green-800">
+                          <span className="text-muted-foreground font-medium">Exchange Rate:</span>
+                          <p className="text-foreground mt-1">{it.local_information.currency_info.exchange_rate || it.local_information.currency_info.exchange_rate_notes}</p>
+                        </div>
+                      )}
+                      {Array.isArray(it.local_information.currency_info.payment_methods) && it.local_information.currency_info.payment_methods.length > 0 && (
+                        <div className="pt-2 border-t border-green-200 dark:border-green-800">
+                          <span className="text-muted-foreground font-medium mb-2 block">Payment Methods:</span>
+                          <div className="flex flex-wrap gap-2">
+                            {it.local_information.currency_info.payment_methods.map((method: string, i: number) => (
+                              <Badge key={i} variant="outline" className="bg-white/60 dark:bg-gray-900/60 border-green-300 dark:border-green-700 whitespace-normal break-words text-left">
+                                {method}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
                       )}
                     </div>
                   </div>
