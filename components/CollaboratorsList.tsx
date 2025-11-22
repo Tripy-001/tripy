@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Users, UserPlus, X, Mail } from 'lucide-react';
+import { Users, UserPlus, X, Mail, Copy, Check } from 'lucide-react';
 import { auth } from '@/lib/firebase';
 import { useAppStore } from '@/lib/store';
 import { toast } from 'sonner';
@@ -31,6 +31,9 @@ export default function CollaboratorsList({ tripId, isOwner }: CollaboratorsList
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviting, setInviting] = useState(false);
+  const [lastInvitationLink, setLastInvitationLink] = useState<string | null>(null);
+  const [showInvitationLink, setShowInvitationLink] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const fetchCollaborators = async () => {
     if (!firebaseUser || !tripId) return;
@@ -69,7 +72,8 @@ export default function CollaboratorsList({ tripId, isOwner }: CollaboratorsList
     try {
       setInviting(true);
       const token = await firebaseUser.getIdToken();
-      const res = await fetch(`/api/trips/${tripId}/collaborators`, {
+      // Use invitations endpoint instead of collaborators endpoint
+      const res = await fetch(`/api/trips/${tripId}/invitations`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,9 +87,28 @@ export default function CollaboratorsList({ tripId, isOwner }: CollaboratorsList
         throw new Error(errorData.error || 'Failed to invite collaborator');
       }
 
-      toast.success('Collaborator invited successfully');
-      setInviteEmail('');
-      setInviteDialogOpen(false);
+      const data = await res.json();
+      
+      // Check if user was added directly (existing user) or invitation was sent
+      if (data.collaboratorId) {
+        toast.success('Collaborator added successfully');
+        setInviteEmail('');
+        setInviteDialogOpen(false);
+      } else {
+        // Invitation was created - show invitation link in case email wasn't sent
+        const invitationLink = data.invitationLink || 
+          `${window.location.origin}/invitations/accept?token=${data.invitationToken || 'token'}&tripId=${tripId}`;
+        setLastInvitationLink(invitationLink);
+        setShowInvitationLink(true);
+        
+        toast.success('Invitation created!', {
+          description: 'Email sent if domain is verified. You can also share the invitation link.',
+          duration: 5000,
+        });
+        
+        // Don't close dialog yet - show invitation link
+      }
+      
       fetchCollaborators();
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to invite collaborator';
@@ -145,6 +168,36 @@ export default function CollaboratorsList({ tripId, isOwner }: CollaboratorsList
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
+                  {showInvitationLink && lastInvitationLink && (
+                    <div className="p-4 bg-muted rounded-lg border-2 border-primary/20">
+                      <p className="text-sm font-medium mb-2">Invitation Link Created!</p>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        {inviteEmail} can use this link to join the trip. Share it if email wasn't sent.
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          value={lastInvitationLink}
+                          readOnly
+                          className="text-xs font-mono"
+                        />
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={async () => {
+                            await navigator.clipboard.writeText(lastInvitationLink);
+                            setLinkCopied(true);
+                            setTimeout(() => setLinkCopied(false), 2000);
+                          }}
+                        >
+                          {linkCopied ? (
+                            <Check className="w-4 h-4 text-green-500" />
+                          ) : (
+                            <Copy className="w-4 h-4" />
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                   <div className="space-y-2">
                     <label htmlFor="email" className="text-sm font-medium">
                       Email Address
@@ -154,7 +207,11 @@ export default function CollaboratorsList({ tripId, isOwner }: CollaboratorsList
                       type="email"
                       placeholder="user@example.com"
                       value={inviteEmail}
-                      onChange={(e) => setInviteEmail(e.target.value)}
+                      onChange={(e) => {
+                        setInviteEmail(e.target.value);
+                        setShowInvitationLink(false);
+                        setLastInvitationLink(null);
+                      }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && inviteEmail.trim()) {
                           handleInvite();
@@ -169,13 +226,17 @@ export default function CollaboratorsList({ tripId, isOwner }: CollaboratorsList
                     onClick={() => {
                       setInviteDialogOpen(false);
                       setInviteEmail('');
+                      setShowInvitationLink(false);
+                      setLastInvitationLink(null);
                     }}
                   >
-                    Cancel
+                    {showInvitationLink ? 'Close' : 'Cancel'}
                   </Button>
-                  <Button onClick={handleInvite} disabled={!inviteEmail.trim() || inviting}>
-                    {inviting ? 'Inviting...' : 'Invite'}
-                  </Button>
+                  {!showInvitationLink && (
+                    <Button onClick={handleInvite} disabled={!inviteEmail.trim() || inviting}>
+                      {inviting ? 'Inviting...' : 'Invite'}
+                    </Button>
+                  )}
                 </DialogFooter>
               </DialogContent>
             </Dialog>

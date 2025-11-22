@@ -1,20 +1,34 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAppStore } from "@/lib/store";
+import { auth } from "@/lib/firebase";
+import { toast } from "sonner";
 
 const SignupPage = () => {
   const router = useRouter();
-  const { signUpWithEmail, signInWithGoogle, error, setError, authLoading } = useAppStore();
+  const searchParams = useSearchParams();
+  const { signUpWithEmail, signInWithGoogle, error, setError, authLoading, firebaseUser } = useAppStore();
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [fieldErrors, setFieldErrors] = useState<{ name?: string; email?: string; password?: string }>({});
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  
+  // Check for invitation params
+  const invitationEmail = searchParams.get('email');
+  const invitationToken = searchParams.get('invitation');
+  const tripId = searchParams.get('tripId');
+
+  useEffect(() => {
+    if (invitationEmail) {
+      setFormData(prev => ({ ...prev, email: invitationEmail }));
+    }
+  }, [invitationEmail]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -28,6 +42,37 @@ const SignupPage = () => {
     setFieldErrors({});
     try {
       await signUpWithEmail(formData.email, formData.password, formData.name);
+      
+      // If there's an invitation, accept it after signup
+      if (invitationToken && tripId && firebaseUser) {
+        try {
+          const token = await firebaseUser.getIdToken();
+          const res = await fetch('/api/invitations/accept', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              token: invitationToken,
+              tripId,
+              userId: firebaseUser.uid,
+            }),
+          });
+
+          if (res.ok) {
+            toast.success('Invitation accepted! Redirecting to trip...');
+            setTimeout(() => {
+              router.push(`/trip/${tripId}`);
+            }, 1500);
+            return;
+          }
+        } catch (err) {
+          console.error('Error accepting invitation:', err);
+          // Continue to onboarding even if invitation acceptance fails
+        }
+      }
+      
       router.push("/onboarding");
     } catch (err: unknown) {
       const msg = err?.message || "";

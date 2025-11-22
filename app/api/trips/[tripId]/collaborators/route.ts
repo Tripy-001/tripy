@@ -91,7 +91,8 @@ export async function GET(req: NextRequest, context: Context): Promise<NextRespo
   }
 }
 
-// POST /api/trips/[tripId]/collaborators - Add a collaborator
+// POST /api/trips/[tripId]/collaborators - Add a collaborator (direct add, bypasses invitation)
+// Note: For inviting by email, use /api/trips/[tripId]/invitations instead
 export async function POST(req: NextRequest, context: Context): Promise<NextResponse> {
   try {
     const authorization = req.headers.get('Authorization');
@@ -103,10 +104,10 @@ export async function POST(req: NextRequest, context: Context): Promise<NextResp
     const authUid = decoded.uid;
 
     const { tripId } = await resolveParams(context);
-    const { userId: newCollaboratorId, email } = await req.json();
+    const { userId: newCollaboratorId } = await req.json();
 
-    if (!newCollaboratorId && !email) {
-      return NextResponse.json({ error: 'Either userId or email is required' }, { status: 400 });
+    if (!newCollaboratorId) {
+      return NextResponse.json({ error: 'userId is required. Use /api/trips/[tripId]/invitations to invite by email.' }, { status: 400 });
     }
 
     // Only owner can add collaborators
@@ -126,29 +127,18 @@ export async function POST(req: NextRequest, context: Context): Promise<NextResp
     const currentCollaborators = tripData.collaborators || [];
     const ownerId = tripData.userId;
 
-    // If email provided, find user by email
-    let collaboratorUserId = newCollaboratorId;
-    if (!collaboratorUserId && email) {
-      try {
-        const userRecord = await adminAuth.getUserByEmail(email);
-        collaboratorUserId = userRecord.uid;
-      } catch (error) {
-        return NextResponse.json({ error: 'User not found with the provided email' }, { status: 404 });
-      }
-    }
-
     // Prevent adding owner as collaborator
-    if (collaboratorUserId === ownerId) {
+    if (newCollaboratorId === ownerId) {
       return NextResponse.json({ error: 'Cannot add trip owner as collaborator' }, { status: 400 });
     }
 
     // Prevent duplicate collaborators
-    if (currentCollaborators.includes(collaboratorUserId)) {
+    if (currentCollaborators.includes(newCollaboratorId)) {
       return NextResponse.json({ error: 'User is already a collaborator' }, { status: 400 });
     }
 
     // Add collaborator
-    const updatedCollaborators = [...currentCollaborators, collaboratorUserId];
+    const updatedCollaborators = [...currentCollaborators, newCollaboratorId];
     await tripRef.update({
       collaborators: updatedCollaborators,
       updatedAt: Timestamp.now(),
@@ -156,7 +146,7 @@ export async function POST(req: NextRequest, context: Context): Promise<NextResp
 
     return NextResponse.json({
       message: 'Collaborator added successfully',
-      collaboratorId: collaboratorUserId,
+      collaboratorId: newCollaboratorId,
     }, { status: 200 });
   } catch (error: unknown) {
     console.error('API Error /api/trips/[tripId]/collaborators POST:', error);
