@@ -551,11 +551,16 @@ export default function TripDetailPage(props: TripPageProps) {
 
   if (!trip) {
     return (
-      <div className="min-h-screen bg-muted/30 flex items-center justify-center">
-        <Card className="shadow-2xl border-0">
+      <div className="min-h-screen bg-gradient-to-b from-muted/20 via-background to-background flex items-center justify-center">
+        <Card className="shadow-2xl border-0 animate-in fade-in duration-500">
           <CardContent className="p-12 text-center">
-            <h2 className="text-2xl font-bold text-foreground mb-4">{error || 'Trip not found'}</h2>
-            <p className="text-muted-foreground">We couldn&apos;t load this trip.</p>
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mb-2">
+                <MapPin className="w-8 h-8 text-destructive" />
+              </div>
+              <h2 className="text-2xl font-bold text-foreground mb-2">{error || 'Trip not found'}</h2>
+              <p className="text-muted-foreground">We couldn&apos;t load this trip.</p>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -565,37 +570,44 @@ export default function TripDetailPage(props: TripPageProps) {
   const response = trip;
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      <header className="bg-white/80 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
+    <div className="min-h-screen bg-gradient-to-b from-muted/20 via-background to-background scroll-smooth">
+      <header className="bg-white/95 dark:bg-gray-950/95 backdrop-blur-lg border-b border-border/50 sticky top-0 z-50 shadow-sm transition-shadow duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <div className="w-8 h-8 theme-bg rounded-lg flex items-center justify-center">
-                <MapPin className="w-5 h-5 text-white" />
+          <div className="flex items-center justify-between h-20 gap-4">
+            <div className="flex items-center gap-3 min-w-0 flex-1 group">
+              <div className="w-10 h-10 theme-bg rounded-xl flex items-center justify-center shadow-md flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+                <MapPin className="w-5 h-5 text-white transition-transform duration-300" />
               </div>
-              <h1 className="text-xl font-bold text-foreground">{response?.title || it?.destination || 'Trip'}</h1>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl sm:text-2xl font-bold text-foreground truncate transition-colors duration-200">{response?.title || it?.destination || 'Trip'}</h1>
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                  {response?.visibility && (
+                    <Badge variant="secondary" className="text-xs transition-all duration-200 hover:scale-105 cursor-default">{String(response.visibility).toUpperCase()}</Badge>
+                  )}
+                  {(response as unknown)?.updated_at && (
+                    <Badge variant="outline" className="text-xs transition-all duration-200 hover:scale-105 cursor-default">Updated {new Date((response as unknown).updated_at).toLocaleDateString()}</Badge>
+                  )}
+                  {response?.updatedAt && (
+                    <Badge variant="outline" className="text-xs transition-all duration-200 hover:scale-105 cursor-default">Updated {new Date(response.updatedAt).toLocaleDateString()}</Badge>
+                  )}
+                </div>
+              </div>
             </div>
             
-            <div className="flex items-center space-x-2">
-              {response?.visibility && (
-                <Badge className="bg-blue-100 text-blue-800">{String(response.visibility).toUpperCase()}</Badge>
-              )}
-              {(response as unknown)?.updated_at && (
-                <Badge variant="outline">Updated {new Date((response as unknown).updated_at).toLocaleDateString()}</Badge>
-              )}
-              {response?.updatedAt && (
-                <Badge variant="outline">Updated {new Date(response.updatedAt).toLocaleDateString()}</Badge>
-              )}
+            <div className="flex items-center gap-2 flex-shrink-0">
               <button 
                 onClick={() => tripId && router.push(`/booking/${tripId}`)} 
-                className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-3 py-1.5 text-sm font-medium hover:bg-primary/90 transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-semibold hover:bg-primary/90 transition-all duration-200 shadow-sm hover:shadow-lg hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               >
-                <CreditCard className="w-4 h-4" />
-                Book Now
+                <CreditCard className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                <span className="hidden sm:inline">Book Now</span>
               </button>
-              <button onClick={handleDownloadPdf} className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm font-medium hover:bg-muted transition-colors">
-                <Download className="w-4 h-4" />
-                Download PDF
+              <button 
+                onClick={handleDownloadPdf} 
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-muted transition-all duration-200 shadow-sm hover:shadow-lg hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              >
+                <Download className="w-4 h-4 transition-transform duration-200 group-hover:translate-y-0.5" />
+                <span className="hidden sm:inline">Download PDF</span>
               </button>
             </div>
           </div>
@@ -603,20 +615,24 @@ export default function TripDetailPage(props: TripPageProps) {
       </header>
 
       {response?.thumbnail_url && (
-        <div className="w-full">
-          <div className="relative h-[220px] sm:h-[280px] lg:h-[360px] overflow-hidden">
+        <div className="w-full relative group">
+          <div className="relative h-[280px] sm:h-[360px] lg:h-[420px] overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={response.thumbnail_url} alt={response?.title || 'Trip thumbnail'} className="absolute inset-0 w-full h-full object-contain bg-black/10" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-6 lg:px-8 pb-5">
+            <img 
+              src={response.thumbnail_url} 
+              alt={response?.title || 'Trip thumbnail'} 
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent transition-opacity duration-300" />
+            <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8">
               <div className="max-w-7xl mx-auto text-white">
-                <div className="text-lg font-semibold drop-shadow">{it?.destination || response?.title}</div>
-                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs opacity-90">
-                  {response?.id && <Badge variant="secondary">ID: {response.id}</Badge>}
-                  {(response as unknown)?.source_trip_id && <Badge variant="secondary">Source: {(response as unknown).source_trip_id}</Badge>}
-                  {(response as unknown)?.schema_version && <Badge variant="secondary">Schema v{(response as unknown).schema_version}</Badge>}
-                  {it?.version && <Badge variant="secondary">Itinerary v{it.version}</Badge>}
-                  {typeof it?.confidence_score === 'number' && <Badge variant="outline" className="bg-white/20 text-white border-white/40">Confidence: {Math.round(it.confidence_score * 100)}%</Badge>}
+                <div className="text-2xl sm:text-3xl font-bold drop-shadow-lg mb-2 transition-transform duration-300 group-hover:translate-y-[-2px]">{it?.destination || response?.title}</div>
+                <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm opacity-95">
+                  {response?.id && <Badge variant="secondary" className="bg-white/20 text-white border-white/30 backdrop-blur-sm transition-all duration-200 hover:bg-white/30 hover:scale-105">ID: {response.id}</Badge>}
+                  {(response as unknown)?.source_trip_id && <Badge variant="secondary" className="bg-white/20 text-white border-white/30 backdrop-blur-sm transition-all duration-200 hover:bg-white/30 hover:scale-105">Source: {(response as unknown).source_trip_id}</Badge>}
+                  {(response as unknown)?.schema_version && <Badge variant="secondary" className="bg-white/20 text-white border-white/30 backdrop-blur-sm transition-all duration-200 hover:bg-white/30 hover:scale-105">Schema v{(response as unknown).schema_version}</Badge>}
+                  {it?.version && <Badge variant="secondary" className="bg-white/20 text-white border-white/30 backdrop-blur-sm transition-all duration-200 hover:bg-white/30 hover:scale-105">Itinerary v{it.version}</Badge>}
+                  {typeof it?.confidence_score === 'number' && <Badge variant="outline" className="bg-white/20 text-white border-white/40 backdrop-blur-sm transition-all duration-200 hover:bg-white/30 hover:scale-105">Confidence: {Math.round(it.confidence_score * 100)}%</Badge>}
                 </div>
               </div>
             </div>
@@ -624,108 +640,109 @@ export default function TripDetailPage(props: TripPageProps) {
         </div>
       )}
 
-      <div className="bg-white/70 sticky top-16 z-40 border-b border-border/60">
+      <div className="bg-white/80 dark:bg-gray-950/80 backdrop-blur-md sticky top-20 z-40 border-b border-border/50 shadow-sm transition-shadow duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollSpyTabs links={sectionLinks} />
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Accordion type="multiple" defaultValue={["overview"]} className="w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+        <div className="space-y-6">
+          <Accordion type="multiple" defaultValue={["overview"]} className="w-full">
           <AccordionItem value="overview" className="border-0">
-            <Card id="overview" className="glass-card mb-8 border-2">
-              <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180">
-                <div className="w-full bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 border-b px-6 py-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/50">
-                        <MapPin className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <Card id="overview" className="border border-border/50 shadow-lg hover:shadow-xl transition-all duration-300 bg-card/50 backdrop-blur-sm hover:border-blue-300/50 dark:hover:border-blue-700/50">
+              <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180 group">
+                <div className="w-full bg-gradient-to-r from-blue-50/80 to-indigo-50/80 dark:from-blue-950/30 dark:to-indigo-950/30 border-b border-border/50 px-6 py-5 transition-all duration-300 group-hover:from-blue-100/90 group-hover:to-indigo-100/90 dark:group-hover:from-blue-950/40 dark:group-hover:to-indigo-950/40">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                      <div className="p-2.5 rounded-xl bg-blue-100 dark:bg-blue-900/50 shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                        <MapPin className="w-5 h-5 text-blue-600 dark:text-blue-400 transition-transform duration-300" />
                       </div>
-                      <div>
-                        <div className="text-2xl font-semibold">Itinerary Overview</div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xl sm:text-2xl font-bold text-foreground transition-colors duration-200">Itinerary Overview</div>
                         {response?.summary && (
-                          <div className="text-sm text-muted-foreground max-w-3xl">{response.summary}</div>
+                          <div className="text-sm text-muted-foreground mt-1 max-w-3xl line-clamp-2">{response.summary}</div>
                         )}
                       </div>
                     </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-300 group-hover:text-foreground">
                       <path d="m6 9 6 6 6-6"/>
                     </svg>
                   </div>
                 </div>
               </AccordionTrigger>
-              <AccordionContent>
-                <CardContent className="pt-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              <AccordionContent className="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up overflow-hidden">
+                <CardContent className="pt-6 pb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mb-6">
                     {it?.origin && it?.destination && (
-                      <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/20 border-2 border-blue-200 dark:border-blue-800">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900">
+                      <div className="p-5 rounded-xl bg-gradient-to-br from-blue-50/80 to-cyan-50/80 dark:from-blue-950/20 dark:to-cyan-950/10 border border-blue-200/50 dark:border-blue-800/50 hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-[1.02] cursor-default group">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/50 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
                             <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                           </div>
-                          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Route</span>
+                          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide transition-colors duration-200">Route</span>
                         </div>
-                        <div className="text-sm font-medium text-foreground">{it.origin} → {it.destination}</div>
+                        <div className="text-base font-semibold text-foreground transition-colors duration-200">{it.origin} → {it.destination}</div>
                       </div>
                     )}
                     
                     {it?.trip_duration_days && (
-                      <div className="p-4 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/20 border-2 border-purple-200 dark:border-purple-800">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900">
+                      <div className="p-5 rounded-xl bg-gradient-to-br from-purple-50/80 to-pink-50/80 dark:from-purple-950/20 dark:to-pink-950/10 border border-purple-200/50 dark:border-purple-800/50 hover:border-purple-300 dark:hover:border-purple-700 transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-[1.02] cursor-default group">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/50 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
                             <Calendar className="w-4 h-4 text-purple-600 dark:text-purple-400" />
                           </div>
-                          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Duration</span>
+                          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide transition-colors duration-200">Duration</span>
                         </div>
-                        <div className="text-sm font-medium text-foreground">{it.trip_duration_days} day(s)</div>
+                        <div className="text-base font-semibold text-foreground transition-colors duration-200">{it.trip_duration_days} day(s)</div>
                       </div>
                     )}
                     
                     {(it?.group_size || response?.request?.group_size) && (
-                      <div className="p-4 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/20 border-2 border-green-200 dark:border-green-800">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900">
+                      <div className="p-5 rounded-xl bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-950/20 dark:to-emerald-950/10 border border-green-200/50 dark:border-green-800/50 hover:border-green-300 dark:hover:border-green-700 transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-[1.02] cursor-default group">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/50 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
                             <Users className="w-4 h-4 text-green-600 dark:text-green-400" />
                           </div>
-                          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Group</span>
+                          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide transition-colors duration-200">Group</span>
                         </div>
-                        <div className="text-sm font-medium text-foreground">{it.group_size ?? response.request.group_size} people</div>
+                        <div className="text-base font-semibold text-foreground transition-colors duration-200">{it.group_size ?? response.request.group_size} people</div>
                       </div>
                     )}
                     
                     {(it?.total_budget && it?.currency) && (
-                      <div className="p-4 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/20 border-2 border-amber-200 dark:border-amber-800">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900">
+                      <div className="p-5 rounded-xl bg-gradient-to-br from-amber-50/80 to-orange-50/80 dark:from-amber-950/20 dark:to-orange-950/10 border border-amber-200/50 dark:border-amber-800/50 hover:border-amber-300 dark:hover:border-amber-700 transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-[1.02] cursor-default group">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/50 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
                             <DollarSign className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                           </div>
-                          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Budget</span>
+                          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide transition-colors duration-200">Budget</span>
                         </div>
-                        <div className="text-sm font-medium text-foreground">{it.total_budget} {it.currency}</div>
+                        <div className="text-base font-semibold text-foreground transition-colors duration-200">{it.total_budget} {it.currency}</div>
                       </div>
                     )}
                     
                     {(it?.travel_style || response?.request?.primary_travel_style) && (
-                      <div className="p-4 rounded-xl bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/20 border-2 border-rose-200 dark:border-rose-800">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="p-2 rounded-lg bg-rose-100 dark:bg-rose-900">
+                      <div className="p-5 rounded-xl bg-gradient-to-br from-rose-50/80 to-pink-50/80 dark:from-rose-950/20 dark:to-pink-950/10 border border-rose-200/50 dark:border-rose-800/50 hover:border-rose-300 dark:hover:border-rose-700 transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-[1.02] cursor-default group">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="p-2 rounded-lg bg-rose-100 dark:bg-rose-900/50 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
                             <Star className="w-4 h-4 text-rose-600 dark:text-rose-400" />
                           </div>
-                          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Style</span>
+                          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide transition-colors duration-200">Style</span>
                         </div>
-                        <div className="text-sm font-medium text-foreground capitalize">{it.travel_style ?? response.request.primary_travel_style}</div>
+                        <div className="text-base font-semibold text-foreground capitalize transition-colors duration-200">{it.travel_style ?? response.request.primary_travel_style}</div>
                       </div>
                     )}
                     
                     {(it?.activity_level || response?.request?.activity_level) && (
-                      <div className="p-4 rounded-xl bg-gradient-to-br from-indigo-50 to-violet-50 dark:from-indigo-950/30 dark:to-violet-950/20 border-2 border-indigo-200 dark:border-indigo-800">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900">
+                      <div className="p-5 rounded-xl bg-gradient-to-br from-indigo-50/80 to-violet-50/80 dark:from-indigo-950/20 dark:to-violet-950/10 border border-indigo-200/50 dark:border-indigo-800/50 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-[1.02] cursor-default group">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
                             <Clock className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                           </div>
-                          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Activity</span>
+                          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide transition-colors duration-200">Activity</span>
                         </div>
-                        <div className="text-sm font-medium text-foreground capitalize">{it.activity_level ?? response.request.activity_level}</div>
+                        <div className="text-base font-semibold text-foreground capitalize transition-colors duration-200">{it.activity_level ?? response.request.activity_level}</div>
                       </div>
                     )}
                   </div>
@@ -735,10 +752,10 @@ export default function TripDetailPage(props: TripPageProps) {
               const mapUrl =
                 (it?.destination ? `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(it.destination)}` : null);
               return mapUrl ? (
-                <div className="rounded-2xl overflow-hidden border mb-4">
+                <div className="rounded-xl overflow-hidden border border-border/50 shadow-md mb-6 transition-all duration-300 hover:shadow-lg hover:scale-[1.01] group">
                   <iframe
                     src={mapUrl}
-                    className="w-full h-[200px] sm:h-[220px] md:h-[280px] lg:h-[320px]"
+                    className="w-full h-[240px] sm:h-[280px] md:h-[320px] lg:h-[360px] transition-transform duration-300"
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                     title="Trip map"
@@ -747,7 +764,7 @@ export default function TripDetailPage(props: TripPageProps) {
               ) : null;
             })()}
 
-            <div className="mt-4 text-xs text-muted-foreground flex flex-wrap gap-4">
+            <div className="mt-6 pt-4 border-t border-border/50 text-xs sm:text-sm text-muted-foreground flex flex-wrap gap-4">
               {response?.createdAt && (<span>Created: {new Date(response.createdAt).toLocaleString()}</span>)}
               {response?.updatedAt && (<span>Updated: {new Date(response.updatedAt).toLocaleString()}</span>)}
               {it?.last_updated && (<span>Itinerary updated: {new Date(it.last_updated).toLocaleString()}</span>)}
@@ -762,56 +779,56 @@ export default function TripDetailPage(props: TripPageProps) {
         {Array.isArray(it?.daily_itineraries) && it.daily_itineraries.length > 0 && (
           <Accordion type="multiple" defaultValue={["daily-itinerary"]} className="w-full">
             <AccordionItem value="daily-itinerary" className="border-0">
-              <Card id="itinerary" className="glass-card mb-8 border-2">
-                <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180">
-                  <div className="w-full bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-950/50 dark:to-purple-950/50 border-b px-6 py-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-violet-100 dark:bg-violet-900">
-                          <Calendar className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+              <Card id="itinerary" className="border border-border/50 shadow-lg hover:shadow-xl transition-all duration-300 bg-card/50 backdrop-blur-sm hover:border-violet-300/50 dark:hover:border-violet-700/50">
+                <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180 group">
+                  <div className="w-full bg-gradient-to-r from-violet-50/80 to-purple-50/80 dark:from-violet-950/30 dark:to-purple-950/30 border-b border-border/50 px-6 py-5 transition-all duration-300 group-hover:from-violet-100/90 group-hover:to-purple-100/90 dark:group-hover:from-violet-950/40 dark:group-hover:to-purple-950/40">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="p-2.5 rounded-xl bg-violet-100 dark:bg-violet-900/50 shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                          <Calendar className="w-5 h-5 text-violet-600 dark:text-violet-400 transition-transform duration-300" />
                         </div>
                         <div>
-                          <div className="text-xl font-semibold">Daily Itinerary</div>
-                          <div className="text-sm text-muted-foreground">Explore each day&apos;s plan</div>
+                          <div className="text-xl sm:text-2xl font-bold text-foreground transition-colors duration-200">Daily Itinerary</div>
+                          <div className="text-sm text-muted-foreground mt-0.5">Explore each day&apos;s plan</div>
                         </div>
                       </div>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-200">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-all duration-300 group-hover:text-foreground">
                         <path d="m6 9 6 6 6-6"/>
                       </svg>
                     </div>
                   </div>
                 </AccordionTrigger>
-                <AccordionContent>
-                  <CardContent className="pt-6">
+                <AccordionContent className="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up overflow-hidden">
+                  <CardContent className="pt-6 pb-6">
             <div className="relative">
-              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500 opacity-30"></div>
-              <Accordion type="single" collapsible defaultValue="day-1" className="w-full space-y-4">
+              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500 opacity-20"></div>
+              <Accordion type="single" collapsible defaultValue="day-1" className="w-full space-y-5">
                   {it.daily_itineraries.map((day: unknown, idx: number) => (
                   <AccordionItem key={idx} value={`day-${idx + 1}`} className="border-0 bg-transparent">
-                    <AccordionTrigger className="relative pl-16 py-6 hover:no-underline group">
-                      <div className="absolute left-4 top-6 w-4 h-4 rounded-full theme-bg border-4 border-white dark:border-gray-900 shadow-lg z-10 group-hover:scale-110 transition-transform"></div>
+                    <AccordionTrigger className="relative pl-16 py-5 hover:no-underline group">
+                      <div className="absolute left-3.5 top-5 w-5 h-5 rounded-full theme-bg border-4 border-background shadow-md z-10 group-hover:scale-125 group-hover:shadow-lg transition-all duration-300"></div>
                       <div className="flex items-center justify-between w-full pr-4">
-                        <div className="flex flex-col items-start gap-2">
-                          <div className="flex items-center gap-3">
-                              {day?.day_number && <Badge variant="secondary" className="px-3 py-1">Day {day.day_number}</Badge>}
-                              {day?.theme && <h3 className="text-lg font-semibold text-foreground">{day.theme}</h3>}
+                        <div className="flex flex-col items-start gap-2.5">
+                          <div className="flex items-center gap-3 flex-wrap">
+                              {day?.day_number && <Badge variant="secondary" className="px-3 py-1 text-sm font-semibold transition-all duration-200 group-hover:scale-105">Day {day.day_number}</Badge>}
+                              {day?.theme && <h3 className="text-lg sm:text-xl font-bold text-foreground transition-colors duration-200 group-hover:text-primary">{day.theme}</h3>}
                             </div>
                             <div className="flex items-center gap-4 text-sm text-muted-foreground">
                               {day?.date && (
-                                <span className="flex items-center gap-1"><Calendar className="w-4 h-4" />{new Date(day.date).toLocaleDateString()}</span>
+                                <span className="flex items-center gap-1.5 transition-colors duration-200 group-hover:text-foreground"><Calendar className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />{new Date(day.date).toLocaleDateString()}</span>
                               )}
                             </div>
                           </div>
                           <div className="flex items-center gap-3">
                             {it?.currency && day?.daily_total_cost && (
-                              <Badge variant="outline" className="px-3 py-1 font-medium">{day.daily_total_cost} {it.currency}</Badge>
+                              <Badge variant="outline" className="px-3 py-1.5 font-semibold text-sm transition-all duration-200 group-hover:scale-105 group-hover:border-primary/50">{day.daily_total_cost} {it.currency}</Badge>
                             )}
                         </div>
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="relative pl-16 pb-8">
-                          <div className="rounded-2xl border bg-gradient-to-br from-white/80 to-gray-50/50 dark:from-gray-900/80 dark:to-gray-800/50 backdrop-blur-sm p-6 shadow-lg">
+                    <AccordionContent className="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up overflow-hidden">
+                      <div className="relative pl-16 pb-6">
+                          <div className="rounded-xl border border-border/50 bg-card/80 backdrop-blur-sm p-5 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:border-primary/30">
                             {(['morning','lunch','afternoon','evening'] as const).map((sectionKey) => {
                               const section: any = (day as any)?.[sectionKey];
                               if (!section) return null;
@@ -823,12 +840,12 @@ export default function TripDetailPage(props: TripPageProps) {
                                 const wKey = (typeof lat === 'number' && typeof lng === 'number') ? `${lat.toFixed(3)},${lng.toFixed(3)}` : undefined;
                                 const w = wKey ? weatherMap[wKey] : undefined;
                                 return (
-                                  <div key={sectionKey} className="space-y-4">
-                                  <div className="flex items-center gap-3 pb-2 border-b border-border/50">
-                                      <span className="text-lg">🍽️</span>
-                                      <h4 className="text-lg font-semibold capitalize text-foreground">{sectionKey}</h4>
+                                  <div key={sectionKey} className="space-y-5 mb-6">
+                                  <div className="flex items-center gap-3 pb-3 border-b border-border/50">
+                                      <span className="text-xl">🍽️</span>
+                                      <h4 className="text-lg sm:text-xl font-bold capitalize text-foreground">{sectionKey}</h4>
                                     </div>
-                                    <div className="p-5 rounded-xl border bg-gradient-to-br from-background to-muted/20 shadow-sm hover:shadow-md transition-shadow">
+                                    <div className="p-5 sm:p-6 rounded-xl border border-border/50 bg-card/50 shadow-sm hover:shadow-md transition-all">
                                       <div className="space-y-4">
                                         {/* Title and Address */}
                                         <div>
@@ -859,19 +876,19 @@ export default function TripDetailPage(props: TripPageProps) {
                               if (!section.activities || section.activities.length === 0) return null;
                               
                               return (
-                                <div key={sectionKey} className="space-y-4">
-                                  <div className="flex items-center gap-3 pb-2 border-b border-border/50">
-                                    <span className="text-lg">{sectionKey === 'morning' ? '🌅' : sectionKey === 'afternoon' ? '☀️' : '🌆'}</span>
-                                    <h4 className="text-lg font-semibold capitalize text-foreground">{sectionKey}</h4>
+                                <div key={sectionKey} className="space-y-5 mb-6">
+                                  <div className="flex items-center gap-3 pb-3 border-b border-border/50">
+                                    <span className="text-xl">{sectionKey === 'morning' ? '🌅' : sectionKey === 'afternoon' ? '☀️' : '🌆'}</span>
+                                    <h4 className="text-lg sm:text-xl font-bold capitalize text-foreground">{sectionKey}</h4>
                                   </div>
                                   {(section?.total_duration_hours || section?.estimated_cost || section?.transportation_notes) && (
-                                    <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                                      {section?.total_duration_hours && <Badge variant="outline">Duration: {section.total_duration_hours} hrs</Badge>}
-                                      {section?.estimated_cost && <Badge variant="outline">Cost: {formatCurrency(section.estimated_cost)}</Badge>}
-                                      {section?.transportation_notes && <span className="opacity-80">{section.transportation_notes}</span>}
+                                    <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-muted-foreground mb-2">
+                                      {section?.total_duration_hours && <Badge variant="outline" className="font-medium">Duration: {section.total_duration_hours} hrs</Badge>}
+                                      {section?.estimated_cost && <Badge variant="outline" className="font-medium">Cost: {formatCurrency(section.estimated_cost)}</Badge>}
+                                      {section?.transportation_notes && <span className="opacity-90">{section.transportation_notes}</span>}
                                     </div>
                                   )}
-                                  <div className="grid gap-4">
+                                  <div className="grid gap-5">
                                     {section.activities.map((act: unknown, aIdx: number) => {
                                       // Extract the place/activity object - it can be directly (act as any).activity or just (act as any)
                                       const p = (act as any)?.activity || (act as any) || {};
@@ -880,24 +897,28 @@ export default function TripDetailPage(props: TripPageProps) {
                                       const wKey = (typeof lat === 'number' && typeof lng === 'number') ? `${lat.toFixed(3)},${lng.toFixed(3)}` : undefined;
                                       const w = wKey ? weatherMap[wKey] : undefined;
                                       return (
-                                        <div key={aIdx} className="p-5 rounded-xl border bg-gradient-to-br from-background to-muted/20 shadow-sm hover:shadow-md transition-shadow">
-                                          <div className="space-y-4">
+                                        <div key={aIdx} className="p-5 sm:p-6 rounded-xl border border-border/50 bg-card/50 shadow-sm hover:shadow-xl transition-all duration-300 hover:scale-[1.01] hover:border-primary/30 group">
+                                          <div className="space-y-5">
                                             {/* Title and Address */}
                                             <div>
-                                              <h5 className="font-semibold text-lg text-foreground mb-1.5">{p?.name || (act as any)?.activity_type}</h5>
-                                              {p?.address && <p className="text-sm text-muted-foreground flex items-center gap-1.5">{p.address}</p>}
+                                              <h5 className="font-bold text-lg sm:text-xl text-foreground mb-2 transition-colors duration-200 group-hover:text-primary">{p?.name || act?.activity_type}</h5>
+                                              {p?.address && <p className="text-sm text-muted-foreground flex items-center gap-1.5 transition-colors duration-200 group-hover:text-foreground">{p.address}</p>}
                                             </div>
 
                                             {/* Media Section */}
                                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                              <GoogleMapsPreview lat={p?.coordinates?.lat} lng={p?.coordinates?.lng} placeId={p?.place_id} name={p?.name} ratio={16/9} className="w-full" />
+                                              <div className="rounded-lg overflow-hidden border border-border/50 transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-lg">
+                                                <GoogleMapsPreview lat={p?.coordinates?.lat} lng={p?.coordinates?.lng} placeId={p?.place_id} name={p?.name} ratio={16/9} className="w-full" />
+                                              </div>
                                               {Array.isArray(p?.photo_urls) && p.photo_urls.length > 0 && (
-                                                <AutoCarousel images={p.photo_urls} className="w-full aspect-video" rounded="rounded-lg" showControls intervalMs={4000} imgAlt={p?.name || 'Activity'} />
+                                                <div className="rounded-lg overflow-hidden border border-border/50 transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-lg">
+                                                  <AutoCarousel images={p.photo_urls} className="w-full aspect-video" rounded="rounded-lg" showControls imgAlt={p?.name || 'Activity'} />
+                                                </div>
                                               )}
                                             </div>
 
                                             {/* Information Grid */}
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm pt-2">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm pt-3 border-t border-border/30">
                                               <div className="space-y-2.5">
                                                 {p?.description && (
                                                   <div className="flex flex-col gap-1">
@@ -1005,17 +1026,17 @@ export default function TripDetailPage(props: TripPageProps) {
         {Array.isArray(it?.travel_options) && it.travel_options.length > 0 && (
           <Accordion type="multiple" defaultValue={["travel-options"]} className="w-full">
             <AccordionItem value="travel-options" className="border-0">
-              <Card id="travel-options" className="glass-card mb-8 border-2">
+              <Card id="travel-options" className="border border-border/50 shadow-lg hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm">
                 <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180">
-                  <div className="w-full bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/50 dark:to-cyan-950/50 border-b px-6 py-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/50">
+                  <div className="w-full bg-gradient-to-r from-blue-50/80 to-cyan-50/80 dark:from-blue-950/30 dark:to-cyan-950/30 border-b border-border/50 px-6 py-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="p-2.5 rounded-xl bg-blue-100 dark:bg-blue-900/50 shadow-sm flex-shrink-0">
                           <Plane className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         </div>
-                        <div className="text-left">
-                          <div className="text-xl font-semibold">Travel Options</div>
-                          <div className="text-sm text-muted-foreground">Ways to reach and move between places</div>
+                        <div className="text-left min-w-0 flex-1">
+                          <div className="text-xl sm:text-2xl font-bold text-foreground">Travel Options</div>
+                          <div className="text-sm text-muted-foreground mt-0.5">Ways to reach and move between places</div>
                         </div>
                       </div>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-200">
@@ -1090,17 +1111,17 @@ export default function TripDetailPage(props: TripPageProps) {
         {Array.isArray(it?.seasonal_considerations) && it.seasonal_considerations.length > 0 && (
           <Accordion type="multiple" defaultValue={["seasonal-considerations"]} className="w-full">
             <AccordionItem value="seasonal-considerations" className="border-0">
-              <Card id="season" className="glass-card mb-8 border-2">
+              <Card id="season" className="border border-border/50 shadow-lg hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm">
                 <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180">
-                  <div className="w-full bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/50 dark:to-amber-950/50 border-b px-6 py-4">
+                  <div className="w-full bg-gradient-to-r from-orange-50/80 to-amber-50/80 dark:from-orange-950/30 dark:to-amber-950/30 border-b border-border/50 px-6 py-5">
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-orange-100 dark:bg-orange-900">
                           <TrendingUp className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                         </div>
                         <div>
-                          <div className="text-xl font-semibold">Seasonal Considerations</div>
-                          <div className="text-sm text-muted-foreground">Important seasonal insights for your trip</div>
+                          <div className="text-xl sm:text-2xl font-bold text-foreground">Seasonal Considerations</div>
+                          <div className="text-sm text-muted-foreground mt-0.5">Important seasonal insights for your trip</div>
                         </div>
                       </div>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-200">
@@ -1109,8 +1130,8 @@ export default function TripDetailPage(props: TripPageProps) {
                     </div>
                   </div>
                 </AccordionTrigger>
-                <AccordionContent>
-                  <CardContent className="pt-6">
+                <AccordionContent className="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up overflow-hidden">
+                  <CardContent className="pt-6 pb-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {it.seasonal_considerations.map((item: string, i: number) => (
                         <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-gradient-to-br from-orange-50/50 to-amber-50/30 dark:from-orange-950/20 dark:to-amber-950/10 border">
@@ -1131,17 +1152,17 @@ export default function TripDetailPage(props: TripPageProps) {
         {(it?.weather_forecast_summary || it?.local_information) && (
           <Accordion type="multiple" defaultValue={["local-information"]} className="w-full">
             <AccordionItem value="local-information" className="border-0">
-              <Card id="local-info" className="glass-card mb-8 border-2">
+              <Card id="local-info" className="border border-border/50 shadow-lg hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm">
                 <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180">
-                  <div className="w-full bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/50 dark:to-emerald-950/50 border-b px-6 py-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900">
+                  <div className="w-full bg-gradient-to-r from-green-50/80 to-emerald-50/80 dark:from-green-950/30 dark:to-emerald-950/30 border-b border-border/50 px-6 py-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="p-2.5 rounded-xl bg-green-100 dark:bg-green-900/50 shadow-sm flex-shrink-0">
                           <Info className="w-5 h-5 text-green-600 dark:text-green-400" />
                         </div>
-                        <div>
-                          <div className="text-xl font-semibold">Local Information</div>
-                          {it.weather_forecast_summary && (<div className="text-sm text-muted-foreground">{it.weather_forecast_summary}</div>)}
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xl sm:text-2xl font-bold text-foreground">Local Information</div>
+                          {it.weather_forecast_summary && (<div className="text-sm text-muted-foreground mt-0.5">{it.weather_forecast_summary}</div>)}
                         </div>
                       </div>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-200">
@@ -1289,17 +1310,17 @@ export default function TripDetailPage(props: TripPageProps) {
         {Array.isArray(it?.hidden_gems) && it.hidden_gems.length > 0 && (
           <Accordion type="multiple" defaultValue={["hidden-gems"]} className="w-full">
             <AccordionItem value="hidden-gems" className="border-0">
-              <Card id="gems" className="glass-card mb-8 border-2">
+              <Card id="gems" className="border border-border/50 shadow-lg hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm">
                 <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180">
-                  <div className="w-full bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-950/50 dark:to-cyan-950/50 border-b px-6 py-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900">
+                  <div className="w-full bg-gradient-to-r from-teal-50/80 to-cyan-50/80 dark:from-teal-950/30 dark:to-cyan-950/30 border-b border-border/50 px-6 py-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="p-2.5 rounded-xl bg-teal-100 dark:bg-teal-900/50 shadow-sm flex-shrink-0">
                           <Camera className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                         </div>
-                        <div>
-                          <div className="text-xl font-semibold">Hidden Gems</div>
-                          <div className="text-sm text-muted-foreground">Curated lesser-known spots for authentic experiences</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xl sm:text-2xl font-bold text-foreground">Hidden Gems</div>
+                          <div className="text-sm text-muted-foreground mt-0.5">Curated lesser-known spots for authentic experiences</div>
                         </div>
                       </div>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-200">
@@ -1351,17 +1372,17 @@ export default function TripDetailPage(props: TripPageProps) {
         {Array.isArray(it?.photography_spots) && it.photography_spots.length > 0 && (
           <Accordion type="multiple" defaultValue={["photography-spots"]} className="w-full">
             <AccordionItem value="photography-spots" className="border-0">
-              <Card id="photo" className="glass-card mb-8 border-2">
+              <Card id="photo" className="border border-border/50 shadow-lg hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm">
                 <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180">
-                  <div className="w-full bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-950/50 dark:to-violet-950/50 border-b px-6 py-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900">
+                  <div className="w-full bg-gradient-to-r from-purple-50/80 to-violet-50/80 dark:from-purple-950/30 dark:to-violet-950/30 border-b border-border/50 px-6 py-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="p-2.5 rounded-xl bg-purple-100 dark:bg-purple-900/50 shadow-sm flex-shrink-0">
                           <Camera className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                         </div>
-                        <div>
-                          <div className="text-xl font-semibold">Photography Spots</div>
-                          <div className="text-sm text-muted-foreground">Perfect locations to capture memorable moments</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xl sm:text-2xl font-bold text-foreground">Photography Spots</div>
+                          <div className="text-sm text-muted-foreground mt-0.5">Perfect locations to capture memorable moments</div>
                         </div>
                       </div>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-200">
@@ -1413,17 +1434,17 @@ export default function TripDetailPage(props: TripPageProps) {
         {Array.isArray(it?.customization_suggestions) && it.customization_suggestions.length > 0 && (
           <Accordion type="multiple" defaultValue={["customization"]} className="w-full">
             <AccordionItem value="customization" className="border-0">
-              <Card id="customize" className="glass-card mb-8 border-2">
+              <Card id="customize" className="border border-border/50 shadow-lg hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm">
                 <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180">
-                  <div className="w-full bg-gradient-to-r from-pink-50 to-rose-50 dark:from-pink-950/50 dark:to-rose-950/50 border-b px-6 py-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-pink-100 dark:bg-pink-900">
+                  <div className="w-full bg-gradient-to-r from-pink-50/80 to-rose-50/80 dark:from-pink-950/30 dark:to-rose-950/30 border-b border-border/50 px-6 py-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="p-2.5 rounded-xl bg-pink-100 dark:bg-pink-900/50 shadow-sm flex-shrink-0">
                           <Sparkles className="w-5 h-5 text-pink-600 dark:text-pink-400" />
                         </div>
-                        <div>
-                          <div className="text-xl font-semibold">Customization Suggestions</div>
-                          <div className="text-sm text-muted-foreground">Tailor your trip to perfection</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xl sm:text-2xl font-bold text-foreground">Customization Suggestions</div>
+                          <div className="text-sm text-muted-foreground mt-0.5">Tailor your trip to perfection</div>
                         </div>
                       </div>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-200">
@@ -1456,17 +1477,17 @@ export default function TripDetailPage(props: TripPageProps) {
         {Array.isArray(it?.packing_suggestions) && it.packing_suggestions.length > 0 && (
           <Accordion type="multiple" defaultValue={["packing"]} className="w-full">
             <AccordionItem value="packing" className="border-0">
-              <Card id="packing" className="glass-card mb-8 border-2">
+              <Card id="packing" className="border border-border/50 shadow-lg hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm">
                 <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180">
-                  <div className="w-full bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950/50 dark:to-blue-950/50 border-b px-6 py-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900">
+                  <div className="w-full bg-gradient-to-r from-indigo-50/80 to-blue-50/80 dark:from-indigo-950/30 dark:to-blue-950/30 border-b border-border/50 px-6 py-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="p-2.5 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 shadow-sm flex-shrink-0">
                           <Package className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                         </div>
-                        <div>
-                          <div className="text-xl font-semibold">Packing Suggestions</div>
-                          <div className="text-sm text-muted-foreground">Essential items for your journey</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xl sm:text-2xl font-bold text-foreground">Packing Suggestions</div>
+                          <div className="text-sm text-muted-foreground mt-0.5">Essential items for your journey</div>
                         </div>
                       </div>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-200">
@@ -1494,17 +1515,17 @@ export default function TripDetailPage(props: TripPageProps) {
         {it?.budget_breakdown && (
           <Accordion type="multiple" defaultValue={["budget"]} className="w-full">
             <AccordionItem value="budget" className="border-0">
-              <Card id="budget" className="glass-card mb-8 border-2">
+              <Card id="budget" className="border border-border/50 shadow-lg hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm">
                 <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180">
-                  <div className="w-full bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/50 dark:to-teal-950/50 border-b px-6 py-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900">
+                  <div className="w-full bg-gradient-to-r from-emerald-50/80 to-teal-50/80 dark:from-emerald-950/30 dark:to-teal-950/30 border-b border-border/50 px-6 py-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="p-2.5 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 shadow-sm flex-shrink-0">
                           <DollarSign className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                         </div>
-                        <div>
-                          <div className="text-xl font-semibold">Budget Breakdown</div>
-                          <div className="text-sm text-muted-foreground">Estimated costs for your trip</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xl sm:text-2xl font-bold text-foreground">Budget Breakdown</div>
+                          <div className="text-sm text-muted-foreground mt-0.5">Estimated costs for your trip</div>
                         </div>
                       </div>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-200">
@@ -1598,17 +1619,17 @@ export default function TripDetailPage(props: TripPageProps) {
         {it?.accommodations && (
           <Accordion type="multiple" defaultValue={["accommodations"]} className="w-full">
             <AccordionItem value="accommodations" className="border-0">
-              <Card id="stay" className="glass-card mb-8 border-2">
+              <Card id="stay" className="border border-border/50 shadow-lg hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm">
                 <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180">
-                  <div className="w-full bg-gradient-to-r from-rose-50 to-pink-50 dark:from-rose-950/50 dark:to-pink-950/50 border-b px-6 py-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-rose-100 dark:bg-rose-900">
+                  <div className="w-full bg-gradient-to-r from-rose-50/80 to-pink-50/80 dark:from-rose-950/30 dark:to-pink-950/30 border-b border-border/50 px-6 py-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="p-2.5 rounded-xl bg-rose-100 dark:bg-rose-900/50 shadow-sm flex-shrink-0">
                           <Home className="w-5 h-5 text-rose-600 dark:text-rose-400" />
                         </div>
-                        <div>
-                          <div className="text-xl font-semibold">Accommodation</div>
-                          <div className="text-sm text-muted-foreground">Recommended places to stay</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xl sm:text-2xl font-bold text-foreground">Accommodation</div>
+                          <div className="text-sm text-muted-foreground mt-0.5">Recommended places to stay</div>
                         </div>
                       </div>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-200">
@@ -1671,17 +1692,17 @@ export default function TripDetailPage(props: TripPageProps) {
         {it?.transportation && (
           <Accordion type="multiple" defaultValue={["transportation"]} className="w-full">
             <AccordionItem value="transportation" className="border-0">
-              <Card id="transport" className="glass-card mb-8 border-2">
+              <Card id="transport" className="border border-border/50 shadow-lg hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm">
                 <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180">
-                  <div className="w-full bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-950/50 dark:to-blue-950/50 border-b px-6 py-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-cyan-100 dark:bg-cyan-900">
+                  <div className="w-full bg-gradient-to-r from-cyan-50/80 to-blue-50/80 dark:from-cyan-950/30 dark:to-blue-950/30 border-b border-border/50 px-6 py-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="p-2.5 rounded-xl bg-cyan-100 dark:bg-cyan-900/50 shadow-sm flex-shrink-0">
                           <Plane className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
                         </div>
-                        <div>
-                          <div className="text-xl font-semibold">Transportation</div>
-                          <div className="text-sm text-muted-foreground">Transfers and local transport options</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xl sm:text-2xl font-bold text-foreground">Transportation</div>
+                          <div className="text-sm text-muted-foreground mt-0.5">Transfers and local transport options</div>
                         </div>
                       </div>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-200">
@@ -1786,17 +1807,17 @@ export default function TripDetailPage(props: TripPageProps) {
         {(mapData?.static_map_url || mapData?.daily_route_maps || mapData?.all_locations) && (
           <Accordion type="multiple" defaultValue={["maps"]} className="w-full">
             <AccordionItem value="maps" className="border-0">
-              <Card id="maps" className="glass-card mb-8 border-2">
+              <Card id="maps" className="border border-border/50 shadow-lg hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm">
                 <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180">
-                  <div className="w-full bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/50 dark:to-purple-950/50 border-b px-6 py-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900">
+                  <div className="w-full bg-gradient-to-r from-indigo-50/80 to-purple-50/80 dark:from-indigo-950/30 dark:to-purple-950/30 border-b border-border/50 px-6 py-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="p-2.5 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 shadow-sm flex-shrink-0">
                           <MapPin className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                         </div>
-                        <div>
-                          <div className="text-xl font-semibold">Maps & Locations</div>
-                          <div className="text-sm text-muted-foreground">Navigate your journey with daily routes and location guides</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xl sm:text-2xl font-bold text-foreground">Maps & Locations</div>
+                          <div className="text-sm text-muted-foreground mt-0.5">Navigate your journey with daily routes and location guides</div>
                         </div>
                       </div>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-200">
@@ -1851,6 +1872,7 @@ export default function TripDetailPage(props: TripPageProps) {
             />
           </div>
         )}
+        </div>
       </div>
 
       {/* AI Travel Assistant - Only show when trip is loaded */}
