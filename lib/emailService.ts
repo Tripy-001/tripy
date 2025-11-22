@@ -16,14 +16,6 @@ if (sendGridApiKey) {
 // Click "Verify a Single Sender" and add dewanshshukla2002@gmail.com
 // Use just the email address (no display name) for better compatibility
 const FROM_EMAIL = 'dewanshshukla2002@gmail.com';
-
-interface EmailOptions {
-  to: string;
-  subject: string;
-  html: string;
-  text?: string;
-}
-
 /**
  * Send email invitation for trip collaboration using SendGrid
  */
@@ -168,7 +160,7 @@ This invitation will expire in 7 days. If you didn't expect this invitation, you
     console.error('❌ SendGrid Error Details:', JSON.stringify(errorDetails, null, 2));
     
     // Check if it's a sender identity error
-    const senderIdentityError = errorDetails.some((err: any) => 
+    const senderIdentityError = errorDetails.some((err: unknown) => 
       err?.message?.includes('Sender Identity') || 
       err?.message?.includes('verified Sender')
     );
@@ -319,7 +311,7 @@ ${tripLink}
     console.error('❌ SendGrid Error Details:', JSON.stringify(errorDetails, null, 2));
     
     // Check if it's a sender identity error
-    const senderIdentityError = errorDetails.some((err: any) => 
+    const senderIdentityError = errorDetails.some((err: unknown) => 
       err?.message?.includes('Sender Identity') || 
       err?.message?.includes('verified Sender')
     );

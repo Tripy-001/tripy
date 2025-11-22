@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import { auth } from '@/lib/firebase';
 import { toast } from 'sonner';
 import { Loader2, Mail, MapPin, Users, CheckCircle2, XCircle } from 'lucide-react';
 
-export default function AcceptInvitationPage() {
+function AcceptInvitationPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { firebaseUser, signInWithGoogle, signUpWithEmail, signInWithEmail } = useAppStore();
@@ -161,7 +161,7 @@ export default function AcceptInvitationPage() {
               Trip Invitation
             </CardTitle>
             <CardDescription>
-              You've been invited to collaborate on a trip
+              You&apos;ve been invited to collaborate on a trip
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -241,7 +241,7 @@ export default function AcceptInvitationPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="p-4 bg-muted rounded-lg">
-            <p className="text-sm text-muted-foreground mb-2">You've been invited to collaborate on:</p>
+            <p className="text-sm text-muted-foreground mb-2">You&apos;ve been invited to collaborate on:</p>
             <p className="font-medium text-lg">{invitation.tripName}</p>
             <p className="text-sm text-muted-foreground mt-2">Invitation sent to:</p>
             <p className="font-medium">{invitation.email}</p>
@@ -286,7 +286,7 @@ export default function AcceptInvitationPage() {
 
           <div className="pt-4 border-t">
             <p className="text-sm text-center text-muted-foreground">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <button
                 onClick={() => router.push(`/signup?email=${encodeURIComponent(invitation.email)}&invitation=${invitation.token}&tripId=${invitation.tripId}`)}
                 className="text-primary hover:underline"
@@ -307,6 +307,23 @@ export default function AcceptInvitationPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function AcceptInvitationPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-muted/30">
+        <Card className="w-full max-w-md">
+          <CardContent className="p-12 text-center">
+            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+            <p className="text-muted-foreground">Loading invitation...</p>
+          </CardContent>
+        </Card>
+      </div>
+    }>
+      <AcceptInvitationPageContent />
+    </Suspense>
   );
 }
 

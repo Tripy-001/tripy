@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { useAppStore } from "@/lib/store";
 import { auth } from "@/lib/firebase";
 import { toast } from "sonner";
 
-const SigninPage = () => {
+const SigninPageContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { signInWithEmail, signInWithGoogle, error, setError, authLoading, user, firebaseUser } = useAppStore();
@@ -220,6 +220,21 @@ const SigninPage = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const SigninPage = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
+        <div className="w-full max-w-md bg-white rounded-xl shadow-xl p-10 flex flex-col gap-6">
+          <h2 className="text-3xl font-bold mb-2 text-center text-foreground">Sign In to Tripy</h2>
+          <div className="text-center text-muted-foreground">Loading...</div>
+        </div>
+      </div>
+    }>
+      <SigninPageContent />
+    </Suspense>
   );
 };
 

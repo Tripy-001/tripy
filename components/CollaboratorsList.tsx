@@ -172,7 +172,7 @@ export default function CollaboratorsList({ tripId, isOwner }: CollaboratorsList
                     <div className="p-4 bg-muted rounded-lg border-2 border-primary/20">
                       <p className="text-sm font-medium mb-2">Invitation Link Created!</p>
                       <p className="text-xs text-muted-foreground mb-3">
-                        {inviteEmail} can use this link to join the trip. Share it if email wasn't sent.
+                        {inviteEmail} can use this link to join the trip. Share it if email wasn&apos;t sent.
                       </p>
                       <div className="flex items-center gap-2">
                         <Input

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,7 @@ import { useAppStore } from "@/lib/store";
 import { auth } from "@/lib/firebase";
 import { toast } from "sonner";
 
-const SignupPage = () => {
+const SignupPageContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { signUpWithEmail, signInWithGoogle, error, setError, authLoading, firebaseUser } = useAppStore();
@@ -163,6 +163,21 @@ const SignupPage = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const SignupPage = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
+        <div className="w-full max-w-md bg-white rounded-xl shadow-xl p-10 flex flex-col gap-6">
+          <h2 className="text-3xl font-bold mb-2 text-center text-foreground">Sign Up for Tripy</h2>
+          <div className="text-center text-muted-foreground">Loading...</div>
+        </div>
+      </div>
+    }>
+      <SignupPageContent />
+    </Suspense>
   );
 };
 
