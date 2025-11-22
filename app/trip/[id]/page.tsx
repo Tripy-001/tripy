@@ -699,7 +699,9 @@ export default function TripDetailPage(props: TripPageProps) {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-        <div className="space-y-6">
+        <div className="flex flex-col lg:flex-row gap-6 items-start">
+          {/* Left Column - 70% - Scrollable */}
+          <div className="w-full lg:flex-[0.7] space-y-6 lg:overflow-y-auto lg:[scrollbar-width:none] lg:[-ms-overflow-style:none] lg:[&::-webkit-scrollbar]:hidden lg:max-h-[calc(100vh-10rem)]">
           <Accordion type="multiple" defaultValue={["overview"]} className="w-full">
           <AccordionItem value="overview" className="border-0">
             <Card id="overview" className="border border-border/50 shadow-lg hover:shadow-xl transition-all duration-300 bg-card/50 backdrop-blur-sm hover:border-blue-300/50 dark:hover:border-blue-700/50">
@@ -1856,75 +1858,6 @@ export default function TripDetailPage(props: TripPageProps) {
           </div>
         )}
 
-        {(mapData?.static_map_url || mapData?.daily_route_maps || mapData?.all_locations) && (
-          <Accordion type="multiple" defaultValue={["maps"]} className="w-full">
-            <AccordionItem value="maps" className="border-0">
-              <Card id="maps" className="border border-border/50 shadow-lg hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm">
-                <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180">
-                  <div className="w-full bg-gradient-to-r from-indigo-50/80 to-purple-50/80 dark:from-indigo-950/30 dark:to-purple-950/30 border-b border-border/50 px-6 py-5">
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="flex items-center gap-4 flex-1 min-w-0">
-                        <div className="p-2.5 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 shadow-sm flex-shrink-0">
-                          <MapPin className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="text-xl sm:text-2xl font-bold text-foreground">Maps & Locations</div>
-                          <div className="text-sm text-muted-foreground mt-0.5">Navigate your journey with daily routes and location guides</div>
-                        </div>
-                      </div>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-200">
-                        <path d="m6 9 6 6 6-6"/>
-                      </svg>
-                    </div>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <CardContent className="pt-6">
-              {mapData.daily_route_maps && (
-                <div className="p-5 rounded-xl bg-gradient-to-br from-indigo-50/50 to-purple-50/30 dark:from-indigo-950/20 dark:to-purple-950/10 border-2 border-indigo-200 dark:border-indigo-800">
-                  <div className="flex items-center gap-2 mb-4">
-                    <MapPin className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                    <h4 className="font-bold text-foreground">Day-wise Routes</h4>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    {Object.entries(mapData.daily_route_maps)
-                      .sort(([dayA], [dayB]) => {
-                        // Extract day numbers from strings like "Day 1", "Day 2", etc.
-                        const numA = parseInt((dayA as string).match(/\d+/)?.[0] || '0');
-                        const numB = parseInt((dayB as string).match(/\d+/)?.[0] || '0');
-                        return numA - numB;
-                      })
-                      .map(([day, url]: unknown, i: number) => (
-                      <a key={i} href={url as string} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-2 rounded-lg border-2 border-indigo-200 dark:border-indigo-800 px-4 py-2.5 text-sm font-medium bg-white dark:bg-gray-900 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:border-indigo-400 dark:hover:border-indigo-600 transition-all hover:shadow-md">
-                        <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 group-hover:scale-125 transition-transform" />
-                        <span className="text-foreground">{day}</span>
-                        <span className="text-indigo-500 group-hover:translate-x-1 transition-transform">→</span>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-                </AccordionContent>
-              </Card>
-            </AccordionItem>
-          </Accordion>
-        )}
-
-        {/* Collaborators Section */}
-        {tripId && (
-          <div className="mb-6">
-            <CollaboratorsList tripId={tripId} isOwner={isOwner} />
-          </div>
-        )}
-
-        {/* Expenses Section */}
-        {tripId && tripMembers.length > 0 && (
-          <div className="mb-6">
-            <ExpenseManager tripId={tripId} tripMembers={tripMembers} />
-          </div>
-        )}
-        
         {/* Trip Checklist */}
         {tripId && (
           <div id="checklist" className="mb-8">
@@ -1938,6 +1871,80 @@ export default function TripDetailPage(props: TripPageProps) {
             />
           </div>
         )}
+          </div>
+
+          {/* Right Column - 30% - Fixed/Sticky */}
+          <div className="w-full lg:flex-[0.3] space-y-6 lg:sticky lg:top-24 lg:self-start">
+            {/* Maps & Locations Section */}
+            {(mapData?.static_map_url || mapData?.daily_route_maps || mapData?.all_locations) && (
+              <Accordion type="multiple" defaultValue={["maps"]} className="w-full">
+                <AccordionItem value="maps" className="border-0">
+                  <Card id="maps" className="border border-border/50 shadow-lg hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm">
+                    <AccordionTrigger className="hover:no-underline p-0 [&>svg]:hidden [&[data-state=open]>div>svg]:rotate-180">
+                      <div className="w-full bg-gradient-to-r from-indigo-50/80 to-purple-50/80 dark:from-indigo-950/30 dark:to-purple-950/30 border-b border-border/50 px-6 py-5">
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-4 flex-1 min-w-0">
+                            <div className="p-2.5 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 shadow-sm flex-shrink-0">
+                              <MapPin className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="text-xl sm:text-2xl font-bold text-foreground">Maps & Locations</div>
+                              <div className="text-sm text-muted-foreground mt-0.5">Navigate your journey with daily routes and location guides</div>
+                            </div>
+                          </div>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-foreground transition-transform duration-200">
+                            <path d="m6 9 6 6 6-6"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <CardContent className="pt-6">
+                        {mapData.daily_route_maps && (
+                          <div className="p-5 rounded-xl bg-gradient-to-br from-indigo-50/50 to-purple-50/30 dark:from-indigo-950/20 dark:to-purple-950/10 border-2 border-indigo-200 dark:border-indigo-800">
+                            <div className="flex items-center gap-2 mb-4">
+                              <MapPin className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                              <h4 className="font-bold text-foreground">Day-wise Routes</h4>
+                            </div>
+                            <div className="flex flex-wrap gap-3">
+                              {Object.entries(mapData.daily_route_maps)
+                                .sort(([dayA], [dayB]) => {
+                                  // Extract day numbers from strings like "Day 1", "Day 2", etc.
+                                  const numA = parseInt((dayA as string).match(/\d+/)?.[0] || '0');
+                                  const numB = parseInt((dayB as string).match(/\d+/)?.[0] || '0');
+                                  return numA - numB;
+                                })
+                                .map(([day, url]: unknown, i: number) => (
+                                  <a key={i} href={url as string} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-2 rounded-lg border-2 border-indigo-200 dark:border-indigo-800 px-4 py-2.5 text-sm font-medium bg-white dark:bg-gray-900 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:border-indigo-400 dark:hover:border-indigo-600 transition-all hover:shadow-md">
+                                    <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 group-hover:scale-125 transition-transform" />
+                                    <span className="text-foreground">{day}</span>
+                                    <span className="text-indigo-500 group-hover:translate-x-1 transition-transform">→</span>
+                                  </a>
+                                ))}
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </AccordionContent>
+                  </Card>
+                </AccordionItem>
+              </Accordion>
+            )}
+
+            {/* Collaborators Section */}
+            {tripId && (
+              <div className="mb-6" id="collaborators">
+                <CollaboratorsList tripId={tripId} isOwner={isOwner} />
+              </div>
+            )}
+
+            {/* Expenses Section */}
+            {tripId && tripMembers.length > 0 && (
+              <div className="mb-6" id="expenses">
+                <ExpenseManager tripId={tripId} tripMembers={tripMembers} />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
