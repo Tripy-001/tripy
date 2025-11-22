@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb, adminAuth } from '@/lib/firebaseAdmin';
 import { Timestamp } from 'firebase-admin/firestore';
+import { checkTripAccess } from '@/lib/tripAccess';
 
 type Params = { tripId: string };
 type Context = { params: Params } | { params: Promise<Params> };
@@ -32,10 +33,13 @@ export async function GET(req: NextRequest, context: Context): Promise<NextRespo
       return NextResponse.json({ error: 'Trip not found' }, { status: 404 });
     }
 
-    const data = tripSnap.data() as { userId?: string; createdAt?: unknown; updatedAt?: unknown } | undefined;
-    if (!data || data.userId !== authUid) {
-      return NextResponse.json({ error: 'Forbidden: You do not own this trip' }, { status: 403 });
+    // Check if user has access (owner or collaborator)
+    const accessCheck = await checkTripAccess(tripId, authUid);
+    if (!accessCheck.hasAccess) {
+      return NextResponse.json({ error: 'Forbidden: You do not have access to this trip' }, { status: 403 });
     }
+
+    const data = tripSnap.data() as { userId?: string; createdAt?: unknown; updatedAt?: unknown; collaborators?: string[] } | undefined;
 
     const toMillis = (value: unknown): number => {
       if (value && typeof value === 'object') {
@@ -102,15 +106,20 @@ export async function PUT(req: NextRequest, context: Context): Promise<NextRespo
       return NextResponse.json({ error: 'Trip not found' }, { status: 404 });
     }
 
-    const data = tripSnap.data() as { userId?: string } | undefined;
-    if (!data || data.userId !== authUid) {
-      return NextResponse.json({ error: 'Forbidden: You do not own this trip' }, { status: 403 });
+    // Check if user has access (owner or collaborator)
+    const accessCheck = await checkTripAccess(tripId, authUid);
+    if (!accessCheck.hasAccess) {
+      return NextResponse.json({ error: 'Forbidden: You do not have access to this trip' }, { status: 403 });
     }
 
     // Prevent ownership/creation timestamp changes
+    // Only owner can modify collaborators
     const safeUpdate = { ...(updateData || {}) } as Record<string, unknown>;
     delete safeUpdate.userId;
     delete safeUpdate.createdAt;
+    if (!accessCheck.isOwner && 'collaborators' in safeUpdate) {
+      delete safeUpdate.collaborators;
+    }
     const updatedTrip = {
       ...safeUpdate,
       updatedAt: Timestamp.now(),
@@ -148,9 +157,10 @@ export async function DELETE(req: NextRequest, context: Context): Promise<NextRe
       return NextResponse.json({ error: 'Trip not found' }, { status: 404 });
     }
 
-    const data = tripSnap.data() as { userId?: string } | undefined;
-    if (!data || data.userId !== authUid) {
-      return NextResponse.json({ error: 'Forbidden: You do not own this trip' }, { status: 403 });
+    // Only owner can delete trips
+    const accessCheck = await checkTripAccess(tripId, authUid);
+    if (!accessCheck.isOwner) {
+      return NextResponse.json({ error: 'Forbidden: Only the trip owner can delete this trip' }, { status: 403 });
     }
 
     await tripRef.delete();

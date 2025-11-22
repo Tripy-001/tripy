@@ -25,9 +25,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: 'Forbidden: Cannot access other users\' trips' }, { status: 403 });
     }
 
-    // Query trips owned by user
-    const q = adminDb.collection('trips').where('userId', '==', userId);
-    const snapshot = await q.get();
     // Helper to normalize various timestamp shapes to epoch ms
     const toMillis = (value: unknown): number => {
       if (value && typeof value === 'object') {
@@ -49,15 +46,39 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       return 0;
     };
 
+    // Query trips owned by user
+    const ownedTripsQuery = adminDb.collection('trips').where('userId', '==', userId);
+    const ownedTripsSnapshot = await ownedTripsQuery.get();
+
+    // Query trips where user is a collaborator
+    const collaboratedTripsQuery = adminDb.collection('trips').where('collaborators', 'array-contains', userId);
+    const collaboratedTripsSnapshot = await collaboratedTripsQuery.get();
+
+    // Combine both results and deduplicate by trip ID
+    const tripMap = new Map<string, { doc: FirebaseFirestore.QueryDocumentSnapshot; isOwner: boolean }>();
+
+    // Add owned trips
+    ownedTripsSnapshot.docs.forEach((doc) => {
+      tripMap.set(doc.id, { doc, isOwner: true });
+    });
+
+    // Add collaborated trips (only if not already added as owned)
+    collaboratedTripsSnapshot.docs.forEach((doc) => {
+      if (!tripMap.has(doc.id)) {
+        tripMap.set(doc.id, { doc, isOwner: false });
+      }
+    });
+
     // Sort newest first in-memory to avoid requiring a composite index
-    const trips = snapshot.docs
-      .map((d) => {
-        const data = d.data() as Record<string, unknown>;
+    const trips = Array.from(tripMap.values())
+      .map(({ doc, isOwner }) => {
+        const data = doc.data() as Record<string, unknown>;
         const createdAtMs = toMillis(data.createdAt);
         const updatedAtMs = toMillis(data.updatedAt);
         return {
-          id: d.id,
+          id: doc.id,
           ...data,
+          isOwner, // Add flag to indicate if user is owner or collaborator
           ...(createdAtMs ? { createdAt: new Date(createdAtMs).toISOString() } : {}),
           ...(updatedAtMs ? { updatedAt: new Date(updatedAtMs).toISOString() } : {}),
         };

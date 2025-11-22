@@ -280,7 +280,15 @@ const DashboardPage = () => {
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="space-y-1">
-                        <CardTitle className="text-lg">{trip.title}</CardTitle>
+                        <div className="flex items-center gap-2">
+                          <CardTitle className="text-lg">{trip.title}</CardTitle>
+                          {trip.isOwner === false && (
+                            <Badge variant="outline" className="text-xs">
+                              <Users className="w-3 h-3 mr-1" />
+                              Shared
+                            </Badge>
+                          )}
+                        </div>
                         <CardDescription className="flex items-center">
                           <MapPin className="w-4 h-4 mr-1" />
                           {trip.destination}

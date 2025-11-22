@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
     const tripRef = adminDb.collection('trips').doc(); // Auto-generate ID
     const newTrip = {
       userId: userId,
+      collaborators: [], // Initialize empty collaborators array
       status: 'pending' as const,
       createdAt: Timestamp.now(),
       userInput: userInput,

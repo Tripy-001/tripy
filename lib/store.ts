@@ -77,6 +77,7 @@ export interface Trip {
   updatedAt: Date;
   shared: boolean;
   shareId?: string;
+  isOwner?: boolean; // Whether the current user owns this trip (true) or is a collaborator (false)
   aiPreferences: {
     activityIntensity: 'relaxed' | 'moderate' | 'packed';
     mustSeePlaces: string[];
@@ -430,31 +431,50 @@ export const useAppStore = create<AppState>()(
           
           // Transform API response to match our Trip interface
           const transformedTrips: Trip[] = data.trips.map((trip: unknown) => {
+            const tripData = trip as { 
+              id: string; 
+              userInput: { 
+                start_date: string; 
+                end_date: string; 
+                destination: string; 
+                origin: string; 
+                group_size: number; 
+                total_budget: number; 
+                activity_level: string; 
+                must_visit_places: string[] 
+              }; 
+              status: string; 
+              itinerary: unknown; 
+              createdAt: string; 
+              updatedAt: string; 
+              isOwner?: boolean;
+            };
             
             // Calculate duration from start and end dates
-            const startDate = new Date(trip.userInput.start_date);
-            const endDate = new Date(trip.userInput.end_date);
+            const startDate = new Date(tripData.userInput.start_date);
+            const endDate = new Date(tripData.userInput.end_date);
             const duration = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
             
             return {
-              id: trip.id,
-              title: `${trip.userInput.destination} Adventure` || 'Untitled Trip',
-              destination: `${trip.userInput.origin} → ${trip.userInput.destination}`,
-              startDate: trip.userInput.start_date,
-              endDate: trip.userInput.end_date,
+              id: tripData.id,
+              title: `${tripData.userInput.destination} Adventure` || 'Untitled Trip',
+              destination: `${tripData.userInput.origin} → ${tripData.userInput.destination}`,
+              startDate: tripData.userInput.start_date,
+              endDate: tripData.userInput.end_date,
               duration: duration,
-              travelers: trip.userInput.group_size || 1,
-              budget: trip.userInput.total_budget || 0,
-              status: trip.status === 'processing' ? 'planning' : trip.status || 'planning',
-              dayPlans: trip.itinerary || [],
-              totalCost: trip.userInput.total_budget || 0,
-              createdAt: new Date(trip.createdAt),
-              updatedAt: new Date(trip.updatedAt),
+              travelers: tripData.userInput.group_size || 1,
+              budget: tripData.userInput.total_budget || 0,
+              status: tripData.status === 'processing' ? 'planning' : tripData.status || 'planning',
+              dayPlans: tripData.itinerary || [],
+              totalCost: tripData.userInput.total_budget || 0,
+              createdAt: new Date(tripData.createdAt),
+              updatedAt: new Date(tripData.updatedAt),
               shared: false, // Default to private
               shareId: undefined,
+              isOwner: tripData.isOwner !== undefined ? tripData.isOwner : true, // Default to true for backward compatibility
               aiPreferences: {
-                activityIntensity: trip.userInput.activity_level || 'moderate',
-                mustSeePlaces: trip.userInput.must_visit_places || [],
+                activityIntensity: tripData.userInput.activity_level || 'moderate',
+                mustSeePlaces: tripData.userInput.must_visit_places || [],
                 budgetAdherence: 80, // Default value
               },
             };
