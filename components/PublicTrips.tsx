@@ -1,13 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import AutoCarousel from "@/components/AutoCarousel";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { CreditCard, Lock, DollarSign } from "lucide-react";
+import { CreditCard, Lock, DollarSign, CheckCircle } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 
 type PublicTrip = {
@@ -33,6 +34,7 @@ type PublicTripsProps = {
 };
 
 export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }: PublicTripsProps) {
+  const router = useRouter();
   const [trips, setTrips] = useState<PublicTrip[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -45,6 +47,8 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState<PublicTrip | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [clonedTripId, setClonedTripId] = useState<string | null>(null);
 
   const buildUrl = useCallback(
     (cursor?: string | null) => {
@@ -149,11 +153,22 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
         throw new Error(errorData.error || 'Purchase failed');
       }
 
+      const data = await res.json();
+      
       // Add to purchased trips
       setPurchasedTrips(prev => new Set([...prev, selectedTrip.source_trip_id!]));
       setPaymentModalOpen(false);
-      setSelectedTrip(null);
-      alert('Trip purchased successfully! You can now view the full trip.');
+      
+      // If trip was cloned, show success modal
+      if (data.cloned && data.trip_id) {
+        setClonedTripId(data.trip_id);
+        setShowSuccessModal(true);
+        setSelectedTrip(null);
+      } else {
+        setSelectedTrip(null);
+        // Refresh to show unlocked trips
+        window.location.reload();
+      }
     } catch (err) {
       console.error('Purchase error:', err);
       alert(err instanceof Error ? err.message : 'Failed to purchase trip');
@@ -185,7 +200,19 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
             <div key={`${trip.source_trip_id}-${idx}`} className="relative">
               {canView ? (
                 <Link href={`/explore/trip/${trip.source_trip_id}`}>
-                  <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <Card className={`overflow-hidden hover:shadow-lg transition-all duration-300 ${
+                    isPaid 
+                      ? 'border-2 border-amber-200 dark:border-amber-800 bg-gradient-to-br from-amber-50/50 to-yellow-50/30 dark:from-amber-950/20 dark:to-yellow-950/10' 
+                      : ''
+                  }`}>
+                    {isPaid && (
+                      <div className="absolute top-2 right-2 z-10">
+                        <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white border-0 shadow-lg">
+                          <DollarSign className="w-3 h-3 mr-1" />
+                          Premium
+                        </Badge>
+                      </div>
+                    )}
                     {Array.isArray(trip.destination_photos) && trip.destination_photos.length > 0 ? (
                       <AutoCarousel images={trip.destination_photos} className="w-full aspect-[4/3]" />
                     ) : trip.thumbnail_url ? (
@@ -208,8 +235,7 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
                         </CardTitle>
                         <div className="flex flex-col items-end gap-1">
                           {isPaid && (
-                            <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
-                              <DollarSign className="w-3 h-3 mr-1" />
+                            <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 font-bold">
                               ₹{trip.price ? parseFloat(trip.price).toLocaleString() : '0'}
                             </Badge>
                           )}
@@ -227,9 +253,9 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
                   </Card>
                 </Link>
               ) : (
-                <Card className="overflow-hidden relative">
+                <Card className="overflow-hidden relative border-2 border-amber-200 dark:border-amber-800 bg-gradient-to-br from-amber-50/30 to-yellow-50/20 dark:from-amber-950/10 dark:to-yellow-950/5">
                   {/* Blurred/Masked Content */}
-                  <div className="blur-sm pointer-events-none">
+                  <div className="blur-sm pointer-events-none opacity-50">
                     {Array.isArray(trip.destination_photos) && trip.destination_photos.length > 0 ? (
                       <AutoCarousel images={trip.destination_photos} className="w-full aspect-[4/3]" />
                     ) : trip.thumbnail_url ? (
@@ -262,23 +288,29 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
                     </CardContent>
                   </div>
                   
-                  {/* Overlay with Lock Icon and Purchase Button */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm p-6">
-                    <Lock className="w-12 h-12 text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold text-foreground mb-2">{trip.title || "Premium Trip"}</h3>
-                    <p className="text-sm text-muted-foreground mb-4 text-center">
-                      This is a paid trip. Purchase to view full details.
+                  {/* Premium Overlay with Lock Icon and Purchase Button */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-background/95 via-background/90 to-background/95 backdrop-blur-md p-6 border-2 border-amber-200/50 dark:border-amber-800/50 rounded-lg">
+                    <div className="relative mb-4">
+                      <div className="absolute inset-0 bg-amber-400/20 blur-xl rounded-full"></div>
+                      <Lock className="w-16 h-16 text-amber-600 dark:text-amber-400 relative z-10" />
+                    </div>
+                    <h3 className="text-xl font-bold text-foreground mb-2 text-center">{trip.title || "Premium Trip"}</h3>
+                    <p className="text-sm text-muted-foreground mb-4 text-center max-w-xs">
+                      Unlock this premium itinerary with full access to all details and planning resources.
                     </p>
-                    <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 mb-4">
-                      <DollarSign className="w-3 h-3 mr-1" />
-                      ₹{trip.price ? parseFloat(trip.price).toLocaleString() : '0'}
-                    </Badge>
+                    <div className="mb-4">
+                      <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white border-0 text-lg px-4 py-2 font-bold shadow-lg">
+                        <DollarSign className="w-4 h-4 mr-2" />
+                        ₹{trip.price ? parseFloat(trip.price).toLocaleString() : '0'}
+                      </Badge>
+                    </div>
                     <Button
                       onClick={(e) => handlePurchaseClick(e, trip)}
-                      className="theme-bg theme-bg-hover text-primary-foreground"
+                      className="theme-bg theme-bg-hover text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                      size="lg"
                     >
-                      <CreditCard className="w-4 h-4 mr-2" />
-                      Purchase Trip
+                      <CreditCard className="w-5 h-5 mr-2" />
+                      Purchase & Unlock
                     </Button>
                   </div>
                 </Card>
@@ -381,6 +413,53 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
             >
               {isProcessingPayment ? 'Processing...' : `Pay ₹${selectedTrip?.price ? parseFloat(selectedTrip.price).toLocaleString() : '0'}`}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Success Modal - Trip Cloned */}
+      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-green-500" />
+              Trip Purchased & Cloned!
+            </DialogTitle>
+            <DialogDescription>
+              Your trip has been purchased and cloned to your account. You are now the owner of this trip.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="p-4 rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800">
+              <p className="text-sm text-green-800 dark:text-green-200">
+                ✓ Payment processed successfully<br />
+                ✓ Trip cloned to your account<br />
+                ✓ You are now the owner
+              </p>
+            </div>
+          </div>
+
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowSuccessModal(false);
+                window.location.reload();
+              }}
+            >
+              Continue Browsing
+            </Button>
+            {clonedTripId && (
+              <Button
+                onClick={() => {
+                  router.push(`/trip/${clonedTripId}`);
+                }}
+                className="theme-bg theme-bg-hover text-primary-foreground"
+              >
+                View My Trip
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
