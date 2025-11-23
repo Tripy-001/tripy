@@ -167,9 +167,22 @@ export async function POST(req: NextRequest, context: Context): Promise<NextResp
     const invitationDoc = await invitationsRef.add(invitationData);
 
     // Generate invitation link
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL 
-      || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null)
-      || 'http://localhost:3000';
+    // Use production URL if in production, otherwise use VERCEL_URL or localhost
+    let baseUrl: string;
+    if (process.env.NEXT_PUBLIC_APP_URL) {
+      baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+    } else if (process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production') {
+      // Use production URL for production deployments
+      baseUrl = 'https://tripy-ai-planner.vercel.app';
+    } else if (process.env.VERCEL_URL) {
+      // Use VERCEL_URL for preview deployments
+      baseUrl = `https://${process.env.VERCEL_URL}`;
+    } else {
+      // Fallback to localhost for local development
+      baseUrl = 'http://localhost:3000';
+    }
+    // Ensure baseUrl doesn't end with a slash
+    baseUrl = baseUrl.replace(/\/$/, '');
     const invitationLink = `${baseUrl}/invitations/accept?token=${token}&tripId=${tripId}`;
 
     // Send email invitation
