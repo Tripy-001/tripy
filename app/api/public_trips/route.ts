@@ -53,6 +53,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         destination_photos,
         title: data.title,
         updated_at: data.updated_at,
+        is_paid: data.is_paid ?? false,
+        price: data.price ? String(data.price) : undefined,
       } as {
         source_trip_id?: string;
         summary?: string;
@@ -60,6 +62,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         destination_photos?: string[];
         title?: string;
         updated_at?: string;
+        is_paid?: boolean;
+        price?: string;
       };
     });
     const nextCursor = hasMore ? pageDocs[pageDocs.length - 1].id : null;

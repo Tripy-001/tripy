@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import AutoCarousel from "@/components/AutoCarousel";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { CreditCard, Lock, DollarSign } from "lucide-react";
+import { useAppStore } from "@/lib/store";
 
 type PublicTrip = {
   source_trip_id?: string;
@@ -14,6 +17,8 @@ type PublicTrip = {
   destination_photos?: string[];
   title?: string;
   updated_at?: string;
+  is_paid?: boolean;
+  price?: string;
 };
 
 type ApiResponse = {
@@ -35,6 +40,11 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
   const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [hasInitialized, setHasInitialized] = useState<boolean>(false);
+  const { firebaseUser } = useAppStore();
+  const [purchasedTrips, setPurchasedTrips] = useState<Set<string>>(new Set());
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [selectedTrip, setSelectedTrip] = useState<PublicTrip | null>(null);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   const buildUrl = useCallback(
     (cursor?: string | null) => {
@@ -78,6 +88,85 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
     }
   }, [fetchPage, hasInitialized, isLoading]);
 
+  // Fetch purchased trips for logged-in users
+  useEffect(() => {
+    const fetchPurchasedTrips = async () => {
+      if (!firebaseUser) {
+        setPurchasedTrips(new Set());
+        return;
+      }
+
+      try {
+        const token = await firebaseUser.getIdToken();
+        const res = await fetch('/api/public_trips/purchases', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setPurchasedTrips(new Set(data.trip_ids || []));
+        }
+      } catch (e) {
+        console.error('Failed to fetch purchased trips:', e);
+      }
+    };
+
+    fetchPurchasedTrips();
+  }, [firebaseUser]);
+
+  const handlePurchaseClick = (e: React.MouseEvent, trip: PublicTrip) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!firebaseUser) {
+      alert('Please log in to purchase trips');
+      return;
+    }
+    setSelectedTrip(trip);
+    setPaymentModalOpen(true);
+  };
+
+  const handlePurchase = async () => {
+    if (!selectedTrip || !firebaseUser || !selectedTrip.source_trip_id) return;
+
+    setIsProcessingPayment(true);
+    try {
+      const token = await firebaseUser.getIdToken();
+      const res = await fetch(`/api/public_trips/${selectedTrip.source_trip_id}/purchase`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          trip_id: selectedTrip.source_trip_id,
+          price: selectedTrip.price,
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Purchase failed' }));
+        throw new Error(errorData.error || 'Purchase failed');
+      }
+
+      // Add to purchased trips
+      setPurchasedTrips(prev => new Set([...prev, selectedTrip.source_trip_id!]));
+      setPaymentModalOpen(false);
+      setSelectedTrip(null);
+      alert('Trip purchased successfully! You can now view the full trip.');
+    } catch (err) {
+      console.error('Purchase error:', err);
+      alert(err instanceof Error ? err.message : 'Failed to purchase trip');
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
+
+  const isTripPurchased = (trip: PublicTrip) => {
+    if (!trip.is_paid || !trip.source_trip_id) return true; // Free trips are always "purchased"
+    return purchasedTrips.has(trip.source_trip_id);
+  };
+
   const gridCols = useMemo(() => "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6", []);
 
   return (
@@ -87,43 +176,116 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
       )}
 
       <div className={gridCols}>
-        {trips.map((trip, idx) => (
-          <Link href={`/explore/trip/${trip.source_trip_id}`} key={`${trip.source_trip_id}-${idx}`}>
-          <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-            {Array.isArray(trip.destination_photos) && trip.destination_photos.length > 0 ? (
-              <AutoCarousel images={trip.destination_photos} className="w-full aspect-[4/3]" />
-            ) : trip.thumbnail_url ? (
-              <div className="w-full aspect-[4/3] bg-muted/40 overflow-hidden">
-                {/* Using img to avoid external domain config for Next/Image */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={trip.thumbnail_url}
-                  alt={trip.title || "Trip thumbnail"}
-                  className="block w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-            ) : (
-              <div className="w-full aspect-[4/3] bg-muted/40" />
-            )}
-            <CardHeader>
-              <div className="flex items-start justify-between gap-2">
-                <CardTitle className="text-base font-semibold leading-tight">
-                  {trip.title || "Untitled Trip"}
-                </CardTitle>
-                <Badge variant="secondary" className="whitespace-nowrap">
-                  {trip.updated_at ? new Date(trip.updated_at).toLocaleDateString() : "New"}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground line-clamp-3">
-                {trip.summary || "No summary available."}
-              </p>
-            </CardContent>
-          </Card>
-          </Link>
-        ))}
+        {trips.map((trip, idx) => {
+          const isPaid = trip.is_paid ?? false;
+          const isPurchased = isTripPurchased(trip);
+          const canView = !isPaid || isPurchased;
+
+          return (
+            <div key={`${trip.source_trip_id}-${idx}`} className="relative">
+              {canView ? (
+                <Link href={`/explore/trip/${trip.source_trip_id}`}>
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+                    {Array.isArray(trip.destination_photos) && trip.destination_photos.length > 0 ? (
+                      <AutoCarousel images={trip.destination_photos} className="w-full aspect-[4/3]" />
+                    ) : trip.thumbnail_url ? (
+                      <div className="w-full aspect-[4/3] bg-muted/40 overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={trip.thumbnail_url}
+                          alt={trip.title || "Trip thumbnail"}
+                          className="block w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-full aspect-[4/3] bg-muted/40" />
+                    )}
+                    <CardHeader>
+                      <div className="flex items-start justify-between gap-2">
+                        <CardTitle className="text-base font-semibold leading-tight">
+                          {trip.title || "Untitled Trip"}
+                        </CardTitle>
+                        <div className="flex flex-col items-end gap-1">
+                          {isPaid && (
+                            <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                              <DollarSign className="w-3 h-3 mr-1" />
+                              ₹{trip.price ? parseFloat(trip.price).toLocaleString() : '0'}
+                            </Badge>
+                          )}
+                          <Badge variant="secondary" className="whitespace-nowrap">
+                            {trip.updated_at ? new Date(trip.updated_at).toLocaleDateString() : "New"}
+                          </Badge>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground line-clamp-3">
+                        {trip.summary || "No summary available."}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ) : (
+                <Card className="overflow-hidden relative">
+                  {/* Blurred/Masked Content */}
+                  <div className="blur-sm pointer-events-none">
+                    {Array.isArray(trip.destination_photos) && trip.destination_photos.length > 0 ? (
+                      <AutoCarousel images={trip.destination_photos} className="w-full aspect-[4/3]" />
+                    ) : trip.thumbnail_url ? (
+                      <div className="w-full aspect-[4/3] bg-muted/40 overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={trip.thumbnail_url}
+                          alt={trip.title || "Trip thumbnail"}
+                          className="block w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-full aspect-[4/3] bg-muted/40" />
+                    )}
+                    <CardHeader>
+                      <div className="flex items-start justify-between gap-2">
+                        <CardTitle className="text-base font-semibold leading-tight">
+                          {trip.title || "Untitled Trip"}
+                        </CardTitle>
+                        <Badge variant="secondary" className="whitespace-nowrap">
+                          {trip.updated_at ? new Date(trip.updated_at).toLocaleDateString() : "New"}
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground line-clamp-3">
+                        {trip.summary || "No summary available."}
+                      </p>
+                    </CardContent>
+                  </div>
+                  
+                  {/* Overlay with Lock Icon and Purchase Button */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm p-6">
+                    <Lock className="w-12 h-12 text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-semibold text-foreground mb-2">{trip.title || "Premium Trip"}</h3>
+                    <p className="text-sm text-muted-foreground mb-4 text-center">
+                      This is a paid trip. Purchase to view full details.
+                    </p>
+                    <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 mb-4">
+                      <DollarSign className="w-3 h-3 mr-1" />
+                      ₹{trip.price ? parseFloat(trip.price).toLocaleString() : '0'}
+                    </Badge>
+                    <Button
+                      onClick={(e) => handlePurchaseClick(e, trip)}
+                      className="theme-bg theme-bg-hover text-primary-foreground"
+                    >
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      Purchase Trip
+                    </Button>
+                  </div>
+                </Card>
+              )}
+            </div>
+          );
+        })}
 
         {isLoading && (
           Array.from({ length: Math.max(3 - (trips.length % 3), 1) }).map((_, i) => (
@@ -152,6 +314,76 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
           <div className="text-sm text-muted-foreground">No more trips</div>
         ) : null}
       </div>
+
+      {/* Payment Modal */}
+      <Dialog open={paymentModalOpen} onOpenChange={setPaymentModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CreditCard className="w-5 h-5" />
+              Purchase Trip
+            </DialogTitle>
+            <DialogDescription>
+              Complete your purchase to unlock this premium trip
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedTrip && (
+            <div className="space-y-4 py-4">
+              <div className="p-4 rounded-lg bg-muted/50">
+                <h3 className="font-semibold text-foreground mb-2">{selectedTrip.title || "Untitled Trip"}</h3>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Price</span>
+                  <span className="text-xl font-bold text-foreground">
+                    ₹{selectedTrip.price ? parseFloat(selectedTrip.price).toLocaleString() : '0'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-lg border border-border">
+                <h4 className="font-medium text-foreground mb-3">Mock Payment Details</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Card Number:</span>
+                    <span className="font-mono">**** **** **** 4242</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Expiry:</span>
+                    <span>12/25</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">CVV:</span>
+                    <span>***</span>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground mt-3">
+                  This is a mock payment. No actual charges will be made.
+                </p>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setPaymentModalOpen(false);
+                setSelectedTrip(null);
+              }}
+              disabled={isProcessingPayment}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handlePurchase}
+              disabled={isProcessingPayment}
+              className="theme-bg theme-bg-hover text-primary-foreground"
+            >
+              {isProcessingPayment ? 'Processing...' : `Pay ₹${selectedTrip?.price ? parseFloat(selectedTrip.price).toLocaleString() : '0'}`}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

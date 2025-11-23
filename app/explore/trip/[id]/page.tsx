@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
 import { headers } from 'next/headers';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +8,7 @@ import { AI_RESPONSE as SAMPLE_CONST } from '@/app/constant';
 import { MapPin, Calendar, Clock, DollarSign, Users, Star, Plane, Home, Package, Sparkles, Camera, Info, TrendingUp, Shield, Languages, Sun } from 'lucide-react';
 import ScrollSpyTabs from '@/components/ScrollSpyTabs';
 import AutoCarousel from '@/components/AutoCarousel';
+import PaidTripGate from '@/components/PaidTripGate';
 
 type PublicTrip = unknown;
 
@@ -77,9 +77,14 @@ export default async function PublicTripsPage(
   if (it?.accommodations) sectionLinks.push({ href: '#stay', label: 'Stay' });
   if (it?.transportation) sectionLinks.push({ href: '#transport', label: 'Transport' });
 
+  const isPaid = response?.is_paid ?? false;
+  const price = response?.price ? String(response.price) : '0';
+  const tripId = id || '';
+
   return (
-    <div className="min-h-screen bg-muted/30">
-      <header className="bg-white/80 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
+    <PaidTripGate tripId={tripId} isPaid={isPaid} price={price}>
+      <div className="min-h-screen bg-muted/30">
+        <header className="bg-white/80 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
@@ -1301,6 +1306,7 @@ export default async function PublicTripsPage(
           </Accordion>
         )}
       </div>
-    </div>
+      </div>
+    </PaidTripGate>
   );
 }
