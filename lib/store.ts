@@ -480,11 +480,13 @@ export const useAppStore = create<AppState>()(
             };
           });
 
+          // Set trips without persisting to localStorage
+          // The trips data is managed in memory and fetched from API as needed
           set({ trips: transformedTrips, isLoading: false });
         } catch (error) {
           console.error('Error fetching trips:', error);
           const errorMessage = error instanceof Error ? error.message : 'Failed to fetch trips';
-          set({ error: errorMessage, isLoading: false });
+          set({ error: errorMessage, isLoading: false, trips: [] });
         }
       },
       
@@ -846,13 +848,61 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'tripy-store',
+      // Only persist minimal essential data to avoid localStorage quota issues
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
-        trips: state.trips,
-        currentTrip: state.currentTrip,
-        activeTrip: state.activeTrip,
+        // Don't persist trips array - it can be very large with itineraries
+        // Trips will be fetched from API on demand
       }),
+      // Add custom storage with error handling for quota issues
+      storage: {
+        getItem: (name) => {
+          try {
+            const str = localStorage.getItem(name);
+            return str ? JSON.parse(str) : null;
+          } catch (error) {
+            console.error('Error reading from localStorage:', error);
+            return null;
+          }
+        },
+        setItem: (name, value) => {
+          try {
+            localStorage.setItem(name, JSON.stringify(value));
+          } catch (error) {
+            console.error('Error writing to localStorage:', error);
+            // If quota exceeded, clear old data and try again
+            if (error instanceof Error && error.name === 'QuotaExceededError') {
+              console.warn('localStorage quota exceeded, clearing stored data...');
+              try {
+                localStorage.removeItem(name);
+                // Try storing minimal data (just auth state)
+                const minimalValue = {
+                  state: {
+                    isAuthenticated: value.state?.isAuthenticated,
+                    user: value.state?.user ? {
+                      id: value.state.user.id,
+                      email: value.state.user.email,
+                      displayName: value.state.user.displayName,
+                    } : null,
+                  },
+                  version: value.version,
+                };
+                localStorage.setItem(name, JSON.stringify(minimalValue));
+              } catch (retryError) {
+                console.error('Failed to store even minimal data:', retryError);
+              }
+            }
+          }
+        },
+        removeItem: (name) => {
+          try {
+            localStorage.removeItem(name);
+          } catch (error) {
+            console.error('Error removing from localStorage:', error);
+          }
+        },
+      },
     }
   )
 );
