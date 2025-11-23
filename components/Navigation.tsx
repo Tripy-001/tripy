@@ -168,7 +168,7 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
   //   );
   // }
   return (
-    <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl shadow-sm">
+    <header className="sticky top-0 z-[100] border-b border-border/50 bg-background/80 backdrop-blur-xl shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
@@ -262,7 +262,7 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
                 </div>
                 
                 {/* Hover Tooltip */}
-                <div className="absolute top-full right-0 mt-2 w-64 p-3 bg-popover border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="absolute top-full right-0 mt-2 w-64 p-3 bg-popover border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div>

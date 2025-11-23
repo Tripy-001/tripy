@@ -14,11 +14,17 @@ import TodoWidget from '@/components/TodoWidget';
 import CollaboratorsList from '@/components/CollaboratorsList';
 import ExpenseManager from '@/components/ExpenseManager';
 import { useTripTodos } from '@/lib/hooks/useTripTodos';
-import { MapPin, Calendar, Clock, DollarSign, Users, Star, Download, Cloud, CloudRain, Sun, Wind, Plane, Home, Package, Sparkles, Camera, Info, TrendingUp, Shield, Languages, CreditCard } from 'lucide-react';
+import { MapPin, Calendar, Clock, DollarSign, Users, Star, Download, Cloud, CloudRain, Sun, Wind, Plane, Home, Package, Sparkles, Camera, Info, TrendingUp, Shield, Languages, CreditCard, Globe, X } from 'lucide-react';
 import ScrollSpyTabs from '@/components/ScrollSpyTabs';
 import { auth } from '@/lib/firebase';
 import { useAppStore } from '@/lib/store';
 import { useRouter } from 'next/navigation';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type Trip = unknown;
 
@@ -57,6 +63,18 @@ export default function TripDetailPage(props: TripPageProps) {
   }>>({});
   const [tripMembers, setTripMembers] = useState<Array<{ id: string; name: string; email: string; isOwner: boolean }>>([]);
   const [isOwner, setIsOwner] = useState(false);
+  
+  // Make Public Modal State
+  const [showMakePublicModal, setShowMakePublicModal] = useState(false);
+  const [publicTripForm, setPublicTripForm] = useState({
+    title: '',
+    summary: '',
+    description: '',
+    tags: '',
+    isPaid: false,
+    price: '',
+  });
+  const [isSubmittingPublicTrip, setIsSubmittingPublicTrip] = useState(false);
 
   // Todo list hook
   const {
@@ -205,6 +223,82 @@ export default function TripDetailPage(props: TripPageProps) {
     const checklistElement = document.getElementById('checklist');
     if (checklistElement) {
       checklistElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const handleMakePublic = async () => {
+    if (!tripId || !firebaseUser) {
+      setError('You must be logged in to make a trip public');
+      return;
+    }
+
+    // Validate form
+    if (!publicTripForm.title.trim()) {
+      setError('Title is required');
+      return;
+    }
+    if (!publicTripForm.summary.trim()) {
+      setError('Summary is required');
+      return;
+    }
+    if (publicTripForm.isPaid && (!publicTripForm.price || publicTripForm.price.trim() === '' || parseFloat(publicTripForm.price) <= 0)) {
+      setError('Valid price is required for paid trips');
+      return;
+    }
+
+    setIsSubmittingPublicTrip(true);
+    setError(null);
+
+    try {
+      const token = await firebaseUser.getIdToken();
+      const tagsArray = publicTripForm.tags
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
+
+      const requestBody = {
+        trip_id: tripId,
+        title: publicTripForm.title.trim(),
+        summary: publicTripForm.summary.trim(),
+        description: publicTripForm.description.trim(),
+        tags: tagsArray,
+        is_paid: publicTripForm.isPaid,
+        ...(publicTripForm.isPaid && { price: publicTripForm.price.trim() }),
+      };
+
+      const response = await fetch(`/api/trips/${tripId}/make-public`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Failed to make trip public' }));
+        throw new Error(errorData.error || 'Failed to make trip public');
+      }
+
+      const data = await response.json();
+      setShowMakePublicModal(false);
+      // Reset form
+      setPublicTripForm({
+        title: '',
+        summary: '',
+        description: '',
+        tags: '',
+        isPaid: false,
+        price: '',
+      });
+      // Show success message or redirect
+      alert('Trip made public successfully!');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to make trip public';
+      setError(errorMessage);
+      console.error('Error making trip public:', err);
+    } finally {
+      setIsSubmittingPublicTrip(false);
     }
   };
 
@@ -647,6 +741,27 @@ export default function TripDetailPage(props: TripPageProps) {
             </div>
             
             <div className="flex items-center gap-2 flex-shrink-0">
+              {isOwner && (
+                <button 
+                  onClick={() => {
+                    // Pre-fill form with trip data if available
+                    const tripData = trip as any;
+                    setPublicTripForm({
+                      title: tripData?.title || tripData?.itinerary?.destination || '',
+                      summary: tripData?.summary || '',
+                      description: tripData?.description || '',
+                      tags: '',
+                      isPaid: false,
+                      price: '',
+                    });
+                    setShowMakePublicModal(true);
+                  }}
+                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-muted transition-all duration-200 shadow-sm hover:shadow-lg hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                >
+                  <Globe className="w-4 h-4 transition-transform duration-200" />
+                  <span className="hidden sm:inline">Make Public</span>
+                </button>
+              )}
               <button 
                 onClick={() => tripId && router.push(`/booking/${tripId}`)} 
                 className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-semibold hover:bg-primary/90 transition-all duration-200 shadow-sm hover:shadow-lg hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
@@ -1980,6 +2095,128 @@ export default function TripDetailPage(props: TripPageProps) {
           onScrollToChecklist={scrollToChecklist}
         />
       )}
+
+      {/* Make Public Modal */}
+      <Dialog open={showMakePublicModal} onOpenChange={setShowMakePublicModal}>
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Globe className="w-5 h-5" />
+              Make Trip Public
+            </DialogTitle>
+            <DialogDescription>
+              Share your trip with the community. You can make it free or charge a price for others to access.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="public-title">Title *</Label>
+              <Input
+                id="public-title"
+                placeholder="e.g., Amazing 5-Day Bali Adventure"
+                value={publicTripForm.title}
+                onChange={(e) => setPublicTripForm({ ...publicTripForm, title: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="public-summary">Summary *</Label>
+              <Textarea
+                id="public-summary"
+                placeholder="e.g., Beach hopping, temple visits, and authentic cuisine"
+                value={publicTripForm.summary}
+                onChange={(e) => setPublicTripForm({ ...publicTripForm, summary: e.target.value })}
+                rows={3}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="public-description">Description</Label>
+              <Textarea
+                id="public-description"
+                placeholder="A perfect blend of relaxation and cultural immersion"
+                value={publicTripForm.description}
+                onChange={(e) => setPublicTripForm({ ...publicTripForm, description: e.target.value })}
+                rows={4}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="public-tags">Tags</Label>
+              <Input
+                id="public-tags"
+                placeholder="beach, culture, adventure, budget-friendly (comma-separated)"
+                value={publicTripForm.tags}
+                onChange={(e) => setPublicTripForm({ ...publicTripForm, tags: e.target.value })}
+              />
+              <p className="text-xs text-muted-foreground">
+                Separate tags with commas
+              </p>
+            </div>
+
+            <div className="flex items-center space-x-2 pt-2 pb-2 border-t border-border">
+              <Checkbox
+                id="is-paid"
+                checked={publicTripForm.isPaid}
+                onCheckedChange={(checked) => 
+                  setPublicTripForm({ ...publicTripForm, isPaid: checked === true, price: checked ? publicTripForm.price : '' })
+                }
+              />
+              <Label htmlFor="is-paid" className="font-medium cursor-pointer">
+                Make this a paid trip
+              </Label>
+            </div>
+
+            {publicTripForm.isPaid && (
+              <div className="space-y-2 pl-6">
+                <Label htmlFor="public-price">Price *</Label>
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground">₹</span>
+                  <Input
+                    id="public-price"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={publicTripForm.price}
+                    onChange={(e) => setPublicTripForm({ ...publicTripForm, price: e.target.value })}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Users will need to purchase this trip to view it
+                </p>
+              </div>
+            )}
+
+            {error && (
+              <div className="p-3 rounded-md bg-destructive/10 text-destructive text-sm">
+                {error}
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowMakePublicModal(false);
+                setError(null);
+              }}
+              disabled={isSubmittingPublicTrip}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleMakePublic}
+              disabled={isSubmittingPublicTrip}
+              className="theme-bg theme-bg-hover text-primary-foreground"
+            >
+              {isSubmittingPublicTrip ? 'Publishing...' : 'Make Public'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
