@@ -7,9 +7,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   // Ensure native dependencies are properly handled
-  experimental: {
-    serverComponentsExternalPackages: ['lightningcss', '@tailwindcss/node'],
-  },
+  serverExternalPackages: ['lightningcss', '@tailwindcss/node', '@tailwindcss/oxide'],
 };
 
 export default nextConfig;
