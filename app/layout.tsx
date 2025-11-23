@@ -50,12 +50,21 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  var theme = localStorage.getItem('theme');
-                  // Default to light theme if no preference is saved
+                  var theme = localStorage.getItem('theme') || 'light';
+                  var themeColor = localStorage.getItem('theme-color') || 'default';
+                  
+                  // Apply mode (light/dark)
                   if (theme === 'dark') {
                     document.documentElement.classList.add('dark');
                   } else {
                     document.documentElement.classList.remove('dark');
+                  }
+                  
+                  // Apply color variant
+                  if (themeColor && themeColor !== 'default') {
+                    document.documentElement.setAttribute('data-theme', themeColor);
+                  } else {
+                    document.documentElement.removeAttribute('data-theme');
                   }
                 } catch (e) {}
               })();

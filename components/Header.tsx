@@ -3,41 +3,69 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, Sun, Moon, MapPin, Plane } from 'lucide-react';
+import { Menu, Sun, Moon, MapPin, Plane, Palette, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [theme, setTheme] = useState<{ mode: 'light' | 'dark'; color: 'default' | 'blue' | 'green' | 'purple' | 'orange' }>({ mode: 'light', color: 'default' });
   const pathname = usePathname();
 
   useEffect(() => {
-    // Check for saved theme preference or default to light mode
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Check for saved theme preference, default to light theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    const savedColor = localStorage.getItem('theme-color') || 'default';
     
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      setIsDarkMode(true);
+    const mode: 'light' | 'dark' = savedTheme as 'light' | 'dark';
+    const color: 'default' | 'blue' | 'green' | 'purple' | 'orange' = savedColor as unknown || 'default';
+    
+    // Apply mode
+    if (mode === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
-      setIsDarkMode(false);
       document.documentElement.classList.remove('dark');
     }
+    
+    // Apply color variant
+    if (color !== 'default') {
+      document.documentElement.setAttribute('data-theme', color);
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+    
+    setTheme({ mode, color });
   }, []);
 
-
-  const toggleTheme = () => {
-    const newTheme = !isDarkMode;
-    setIsDarkMode(newTheme);
-    
-    if (newTheme) {
+  // Apply theme function
+  const applyTheme = (mode: 'light' | 'dark', color: 'default' | 'blue' | 'green' | 'purple' | 'orange') => {
+    // Apply mode
+    if (mode === 'dark') {
       document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
     }
+    
+    // Apply color variant
+    if (color !== 'default') {
+      document.documentElement.setAttribute('data-theme', color);
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('theme', mode);
+    localStorage.setItem('theme-color', color);
+    
+    setTheme({ mode, color });
   };
 
   const toggleMenu = () => {
@@ -130,20 +158,67 @@ const Header = () => {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
-            {/* Theme toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="h-10 w-10 rounded-lg bg-background/50 hover:bg-background/80 border border-border/50"
-              aria-label="Toggle theme"
-            >
-              {isDarkMode ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
+            {/* Theme Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-10 w-10 rounded-lg bg-background/50 hover:bg-background/80 border border-border/50"
+                  aria-label="Select theme"
+                >
+                  <Palette className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuLabel>Theme</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => applyTheme('light', 'default')}>
+                  <Sun className="h-4 w-4 mr-2" />
+                  Light
+                  {theme.mode === 'light' && theme.color === 'default' && (
+                    <Check className="h-4 w-4 ml-auto" />
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => applyTheme('dark', 'default')}>
+                  <Moon className="h-4 w-4 mr-2" />
+                  Dark
+                  {theme.mode === 'dark' && theme.color === 'default' && (
+                    <Check className="h-4 w-4 ml-auto" />
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel>Color Variants</DropdownMenuLabel>
+                <DropdownMenuItem onClick={() => applyTheme(theme.mode, 'blue')}>
+                  <div className="h-4 w-4 mr-2 rounded-full bg-blue-500" />
+                  Blue
+                  {theme.color === 'blue' && (
+                    <Check className="h-4 w-4 ml-auto" />
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => applyTheme(theme.mode, 'green')}>
+                  <div className="h-4 w-4 mr-2 rounded-full bg-green-500" />
+                  Green
+                  {theme.color === 'green' && (
+                    <Check className="h-4 w-4 ml-auto" />
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => applyTheme(theme.mode, 'purple')}>
+                  <div className="h-4 w-4 mr-2 rounded-full bg-purple-500" />
+                  Purple
+                  {theme.color === 'purple' && (
+                    <Check className="h-4 w-4 ml-auto" />
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => applyTheme(theme.mode, 'orange')}>
+                  <div className="h-4 w-4 mr-2 rounded-full bg-orange-500" />
+                  Orange
+                  {theme.color === 'orange' && (
+                    <Check className="h-4 w-4 ml-auto" />
+                  )}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* CTA Button */}
             <Button className="hidden sm:inline-flex" size="default">
@@ -239,6 +314,69 @@ const Header = () => {
                         <span className="absolute -bottom-1 left-4 right-4 h-0.5 bg-primary rounded-full"></span>
                       )}
                     </Link>
+                  </div>
+                  
+                  {/* Theme Dropdown */}
+                  <div className="px-6 pb-4">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start rounded-xl hover:bg-muted/50"
+                        >
+                          <Palette className="w-4 h-4 mr-2" />
+                          Theme
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="w-48">
+                        <DropdownMenuLabel>Theme</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => applyTheme('light', 'default')}>
+                          <Sun className="h-4 w-4 mr-2" />
+                          Light
+                          {theme.mode === 'light' && theme.color === 'default' && (
+                            <Check className="h-4 w-4 ml-auto" />
+                          )}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => applyTheme('dark', 'default')}>
+                          <Moon className="h-4 w-4 mr-2" />
+                          Dark
+                          {theme.mode === 'dark' && theme.color === 'default' && (
+                            <Check className="h-4 w-4 ml-auto" />
+                          )}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuLabel>Color Variants</DropdownMenuLabel>
+                        <DropdownMenuItem onClick={() => applyTheme(theme.mode, 'blue')}>
+                          <div className="h-4 w-4 mr-2 rounded-full bg-blue-500" />
+                          Blue
+                          {theme.color === 'blue' && (
+                            <Check className="h-4 w-4 ml-auto" />
+                          )}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => applyTheme(theme.mode, 'green')}>
+                          <div className="h-4 w-4 mr-2 rounded-full bg-green-500" />
+                          Green
+                          {theme.color === 'green' && (
+                            <Check className="h-4 w-4 ml-auto" />
+                          )}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => applyTheme(theme.mode, 'purple')}>
+                          <div className="h-4 w-4 mr-2 rounded-full bg-purple-500" />
+                          Purple
+                          {theme.color === 'purple' && (
+                            <Check className="h-4 w-4 ml-auto" />
+                          )}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => applyTheme(theme.mode, 'orange')}>
+                          <div className="h-4 w-4 mr-2 rounded-full bg-orange-500" />
+                          Orange
+                          {theme.color === 'orange' && (
+                            <Check className="h-4 w-4 ml-auto" />
+                          )}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                   
                   {/* CTA Button */}
