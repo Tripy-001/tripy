@@ -4,9 +4,12 @@ service cloud.firestore {
 
     // Users collection: A user can read/write ONLY their own document
     match /users/{userId} {
-      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+      allow read, delete: if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null;
-    }
+      // Allow updates, but prevent direct modification of credits field from client
+      allow update: if request.auth != null && 
+                      request.auth.uid == userId &&
+                      (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['credits']));
 
     // Trips collection: Users can create trips, read/update trips they own or collaborate on, only owner can delete
     match /trips/{tripId} {

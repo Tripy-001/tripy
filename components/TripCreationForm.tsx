@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Form } from '@/components/ui/form';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -18,7 +20,8 @@ import {
   Heart,
   Home,
   Star,
-  CheckCircle
+  CheckCircle,
+  AlertCircle
 } from 'lucide-react';
 import { TripPlanRequestSchema, defaultTripPlanValues, type TripPlanRequest } from '@/lib/schemas/trip-plan';
 import { BasicInfoStep } from '@/components/form-steps/BasicInfoStep';
@@ -30,6 +33,7 @@ import { SpecialRequirementsStep } from '@/components/form-steps/SpecialRequirem
 import { AdditionalInfoStep } from '@/components/form-steps/AdditionalInfoStep';
 import { SummaryStep } from '@/components/form-steps/SummaryStep';
 import { useAppStore } from '@/lib/store';
+import CreditsDisplay from '@/components/CreditsDisplay';
 
 const STEPS = [
   { id: 'basic', title: 'Basic Info', icon: MapPin },
@@ -45,8 +49,16 @@ const STEPS = [
 export const TripCreationForm = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
-  const { startItineraryGeneration } = useAppStore();
+  const { startItineraryGeneration, user, fetchUserCredits } = useAppStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showCreditDialog, setShowCreditDialog] = useState(false);
+
+  const credits = user?.credits ?? 0;
+
+  // Fetch credits on mount
+  useEffect(() => {
+    fetchUserCredits();
+  }, [fetchUserCredits]);
 
   const form = useForm<TripPlanRequest>({
     resolver: zodResolver(TripPlanRequestSchema) as Resolver<TripPlanRequest>,
@@ -108,6 +120,12 @@ export const TripCreationForm = () => {
   };
 
   const onSubmit = async (data: TripPlanRequest) => {
+    // Check if user has sufficient credits
+    if (credits < 1) {
+      setShowCreditDialog(true);
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       // Convert dates to proper format
@@ -117,7 +135,7 @@ export const TripCreationForm = () => {
         end_date: formatDate(data.end_date),
       };
 
-      // Start itinerary generation via proxy route
+      // Start itinerary generation via proxy route (credits will be deducted in API)
       await startItineraryGeneration?.(payload);
       router.push('/trip/ai-generation');
     } catch (error) {
@@ -167,10 +185,38 @@ export const TripCreationForm = () => {
   const progress = ((currentStep + 1) / STEPS.length) * 100;
 
   return (
-    <div className="min-h-screen bg-muted/30 flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl">
-        <Card className="shadow-2xl border-0">
-          <CardHeader className="text-center pb-8">
+    <>
+      <Dialog open={showCreditDialog} onOpenChange={setShowCreditDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-destructive" />
+              Insufficient Credits
+            </DialogTitle>
+            <DialogDescription>
+              You need at least 1 credit to generate a trip. Please purchase credits to continue.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4">
+            <CreditsDisplay variant="default" showPurchaseButton={true} />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <div className="min-h-screen bg-muted/30 flex items-center justify-center p-4">
+        <div className="w-full max-w-4xl">
+          {/* Credits Warning */}
+          {credits === 0 && (
+            <Alert className="mb-4 border-destructive/50 bg-destructive/10">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                You have no credits remaining. Purchase credits to generate trips.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <Card className="shadow-2xl border-0">
+            <CardHeader className="text-center pb-8">
             <div className="flex items-center justify-between mb-6">
               <Button
                 variant="ghost"
@@ -259,9 +305,10 @@ export const TripCreationForm = () => {
               </form>
             </Form>
           </CardContent>
-        </Card>
+          </Card>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

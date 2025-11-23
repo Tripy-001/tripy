@@ -37,6 +37,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       email,
       displayName,
       photoURL,
+      credits: 2, // Default credits for new users
       createdAt: Timestamp.now(),
       // Default preferences and stats for a new user
       preferences: {

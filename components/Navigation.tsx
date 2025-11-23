@@ -25,9 +25,11 @@ import {
   Sun,
   Moon,
   Palette,
-  Check
+  Check,
+  Coins
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
+import CreditsDisplay from '@/components/CreditsDisplay';
 
 interface NavigationProps {
   showAuth?: boolean;
@@ -37,10 +39,20 @@ interface NavigationProps {
 const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, isAuthenticated, firebaseUser, signOut, setCurrentStep, authLoading } = useAppStore();
+  const { user, isAuthenticated, firebaseUser, signOut, setCurrentStep, authLoading, fetchUserCredits } = useAppStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showCreditsDialog, setShowCreditsDialog] = useState(false);
   const [theme, setTheme] = useState<{ mode: 'light' | 'dark'; color: 'default' | 'blue' | 'green' | 'purple' | 'orange' }>({ mode: 'light', color: 'default' });
+
+  const credits = user?.credits ?? 0;
+
+  // Fetch user credits when authenticated
+  useEffect(() => {
+    if (isAuthenticated && firebaseUser) {
+      fetchUserCredits();
+    }
+  }, [isAuthenticated, firebaseUser, fetchUserCredits]);
 
   // Preload logo image immediately
   useEffect(() => {
@@ -236,6 +248,57 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-3">
+            {/* Credits Display */}
+            {isAuthenticated && (
+              <div className="relative group">
+                <div
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/80 transition-all ${
+                    credits === 0 ? 'text-orange-600 dark:text-orange-400' : 'text-foreground'
+                  }`}
+                >
+                  <Coins className={`w-4 h-4 ${credits === 0 ? 'text-orange-600 dark:text-orange-400' : 'text-primary'}`} />
+                  <span className="font-semibold text-sm">{credits}</span>
+                  <span className="text-xs text-muted-foreground">credit{credits !== 1 ? 's' : ''}</span>
+                </div>
+                
+                {/* Hover Tooltip */}
+                <div className="absolute top-full right-0 mt-2 w-64 p-3 bg-popover border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium">Available Credits</p>
+                        <p className="text-2xl font-bold">{credits}</p>
+                      </div>
+                      <Coins className="w-10 h-10 text-primary opacity-20" />
+                    </div>
+                    {credits === 0 && (
+                      <p className="text-xs text-orange-600 dark:text-orange-400">
+                        You&apos;re out of credits! Purchase more to continue.
+                      </p>
+                    )}
+                    <Button
+                      onClick={() => setShowCreditsDialog(true)}
+                      className="w-full"
+                      size="sm"
+                    >
+                      <Coins className="w-3.5 h-3.5 mr-1.5" />
+                      Buy More Credits
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Credits Purchase Dialog */}
+            {isAuthenticated && showCreditsDialog && (
+              <CreditsDisplay 
+                variant="default" 
+                showPurchaseButton={true}
+                isDialogOpen={showCreditsDialog}
+                onDialogChange={setShowCreditsDialog}
+              />
+            )}
+            
             {/* Theme Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -414,6 +477,39 @@ const Navigation = ({ showAuth = true, showCreateTrip = true }: NavigationProps)
               )}
 
               <div className="pt-4 border-t border-border/50 space-y-3">
+                {/* Credits Display in Mobile Menu */}
+                {isAuthenticated && (
+                  <div className="px-4 space-y-2">
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                      <div className="flex items-center gap-2">
+                        <Coins className={`w-4 h-4 ${credits === 0 ? 'text-orange-600 dark:text-orange-400' : 'text-primary'}`} />
+                        <span className="font-semibold">{credits}</span>
+                        <span className="text-xs text-muted-foreground">credit{credits !== 1 ? 's' : ''}</span>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="default"
+                        onClick={() => {
+                          setShowCreditsDialog(true);
+                          setIsMobileMenuOpen(false);
+                        }}
+                      >
+                        Buy More
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Credits Purchase Dialog */}
+                {isAuthenticated && showCreditsDialog && (
+                  <CreditsDisplay 
+                    variant="default" 
+                    showPurchaseButton={true}
+                    isDialogOpen={showCreditsDialog}
+                    onDialogChange={setShowCreditsDialog}
+                  />
+                )}
+                
                 {/* Theme Dropdown in Mobile Menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>

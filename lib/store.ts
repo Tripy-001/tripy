@@ -17,6 +17,7 @@ export interface UserProfile {
   previousExperience: 'beginner' | 'intermediate' | 'expert' | null;
   dietaryRestrictions: string[];
   accessibilityNeeds: string[];
+  credits: number; // User's available credits for trip generation
   createdAt: Date;
   updatedAt: Date;
   // Firestore shape for compatibility
@@ -125,6 +126,11 @@ export interface AppState {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   resetCurrentTrip?: () => void;
+  
+  // Credit actions
+  updateUserCredits: (credits: number) => void;
+  deductCredit: () => Promise<boolean>;
+  fetchUserCredits: () => Promise<void>;
   
   // Firebase Auth Actions
   signInWithGoogle: () => Promise<void>;
@@ -499,7 +505,7 @@ export const useAppStore = create<AppState>()(
       },
       
       completeOnboarding: () => {
-        const { onboardingData, firebaseUser } = get();
+        const { onboardingData, firebaseUser, user: existingUser } = get();
         const user: UserProfile = {
           id: firebaseUser?.uid || crypto.randomUUID(),
           displayName: firebaseUser?.displayName || onboardingData.displayName || '',
@@ -510,6 +516,7 @@ export const useAppStore = create<AppState>()(
           previousExperience: onboardingData.previousExperience || null,
           dietaryRestrictions: onboardingData.dietaryRestrictions || [],
           accessibilityNeeds: onboardingData.accessibilityNeeds || [],
+          credits: existingUser?.credits ?? 2, // Preserve existing credits or default to 2
           createdAt: new Date(),
           updatedAt: new Date(),
         };
@@ -588,6 +595,69 @@ export const useAppStore = create<AppState>()(
         get().updateActivity(tripId, dayId, activityId, { photos });
       },
 
+      // Credit actions
+      updateUserCredits: (credits) => {
+        set((state) => ({
+          user: state.user ? { ...state.user, credits } : null,
+        }));
+      },
+
+      deductCredit: async () => {
+        try {
+          const { firebaseUser, user } = get();
+          if (!firebaseUser || !user) {
+            set({ error: 'User not authenticated' });
+            return false;
+          }
+
+          const token = await firebaseUser.getIdToken();
+          const response = await fetch('/api/users/credits/deduct', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            set({ error: errorData.error || 'Failed to deduct credit' });
+            return false;
+          }
+
+          const data = await response.json();
+          get().updateUserCredits(data.credits);
+          return true;
+        } catch (error) {
+          console.error('Error deducting credit:', error);
+          set({ error: 'Failed to deduct credit' });
+          return false;
+        }
+      },
+
+      fetchUserCredits: async () => {
+        try {
+          const { firebaseUser } = get();
+          if (!firebaseUser) return;
+
+          const token = await firebaseUser.getIdToken();
+          const response = await fetch('/api/users/credits', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            get().updateUserCredits(data.credits);
+          }
+        } catch (error) {
+          console.error('Error fetching credits:', error);
+        }
+      },
+
       // AI itinerary actions
       startItineraryGeneration: async (userInput) => {
         // Initialize generation state
@@ -613,6 +683,11 @@ export const useAppStore = create<AppState>()(
           const data = await response.json();
           if (!response.ok || !data?.success) {
             throw new Error(data?.error || 'Failed to start generation.');
+          }
+
+          // Update credits if returned from API
+          if (typeof data.credits === 'number') {
+            get().updateUserCredits(data.credits);
           }
 
           set({ currentTripId: data.tripId });
