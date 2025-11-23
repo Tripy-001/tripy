@@ -1,6 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { TodoItem } from '@/lib/schemas/todo';
+import { checkTripAccess } from '@/lib/tripAccess';
+import { adminAuth } from '@/lib/firebaseAdmin';
+
+// Helper to get user ID from request
+async function getUserIdFromRequest(req: NextRequest): Promise<string | null> {
+  try {
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return null;
+    }
+    const token = authHeader.split('Bearer ')[1];
+    const decodedToken = await adminAuth.verifyIdToken(token);
+    return decodedToken.uid;
+  } catch (error) {
+    console.error('Error verifying token:', error);
+    return null;
+  }
+}
 
 // GET /api/trips/[tripId]/todos - Fetch all todos for a trip
 export async function GET(
@@ -14,6 +32,23 @@ export async function GET(
       return NextResponse.json(
         { error: 'Trip ID is required' },
         { status: 400 }
+      );
+    }
+
+    // Check trip access
+    const userId = await getUserIdFromRequest(request);
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const accessCheck = await checkTripAccess(tripId, userId);
+    if (!accessCheck.hasAccess) {
+      return NextResponse.json(
+        { error: 'Forbidden: You do not have access to this trip' },
+        { status: 403 }
       );
     }
 
@@ -55,6 +90,23 @@ export async function POST(
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
+      );
+    }
+
+    // Check trip access
+    const userId = await getUserIdFromRequest(request);
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const accessCheck = await checkTripAccess(tripId, userId);
+    if (!accessCheck.hasAccess) {
+      return NextResponse.json(
+        { error: 'Forbidden: You do not have access to this trip' },
+        { status: 403 }
       );
     }
 

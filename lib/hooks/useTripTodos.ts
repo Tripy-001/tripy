@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { db } from '@/lib/firebase';
+import { db, auth } from '@/lib/firebase';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { TodoItem, TodoDay } from '@/lib/schemas/todo';
+import { useAppStore } from '@/lib/store';
 
 export function useTripTodos(tripId: string | null) {
+  const { firebaseUser } = useAppStore();
   const [todoDays, setTodoDays] = useState<TodoDay[]>([]);
   const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
@@ -65,10 +67,19 @@ export function useTripTodos(tripId: string | null) {
   const initializeTodos = useCallback(async () => {
     if (!tripId || initializingRef.current) return;
 
+    const user = firebaseUser || auth.currentUser;
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
     initializingRef.current = true;
     try {
+      const token = await user.getIdToken();
       const response = await fetch(`/api/trips/${tripId}/todos/initialize`, {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!response.ok) {
@@ -84,15 +95,24 @@ export function useTripTodos(tripId: string | null) {
     } finally {
       initializingRef.current = false;
     }
-  }, [tripId]);
+  }, [tripId, firebaseUser]);
 
   const toggleTodo = useCallback(async (todoId: string, isCompleted: boolean) => {
     if (!tripId) return;
 
+    const user = firebaseUser || auth.currentUser;
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
     try {
+      const token = await user.getIdToken();
       const response = await fetch(`/api/trips/${tripId}/todos/${todoId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ isCompleted }),
       });
 
@@ -108,6 +128,11 @@ export function useTripTodos(tripId: string | null) {
   const addTodo = useCallback(async (dayNumber: number, activityName: string, description?: string) => {
     if (!tripId) return;
 
+    const user = firebaseUser || auth.currentUser;
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
     try {
       // Get max order for this day
       const dayTodos = todoDays.find(d => d.dayNumber === dayNumber)?.todos || [];
@@ -115,9 +140,13 @@ export function useTripTodos(tripId: string | null) {
         ? Math.max(...dayTodos.map(t => t.order))
         : 0;
 
+      const token = await user.getIdToken();
       const response = await fetch(`/api/trips/${tripId}/todos`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           dayNumber,
           activityName,
@@ -134,15 +163,24 @@ export function useTripTodos(tripId: string | null) {
       console.error('Error adding todo:', error);
       throw error;
     }
-  }, [tripId, todoDays]);
+  }, [tripId, todoDays, firebaseUser]);
 
   const updateTodo = useCallback(async (todoId: string, activityName: string, description?: string) => {
     if (!tripId) return;
 
+    const user = firebaseUser || auth.currentUser;
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
     try {
+      const token = await user.getIdToken();
       const response = await fetch(`/api/trips/${tripId}/todos/${todoId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ activityName, description }),
       });
 
@@ -158,9 +196,18 @@ export function useTripTodos(tripId: string | null) {
   const deleteTodo = useCallback(async (todoId: string) => {
     if (!tripId) return;
 
+    const user = firebaseUser || auth.currentUser;
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
     try {
+      const token = await user.getIdToken();
       const response = await fetch(`/api/trips/${tripId}/todos/${todoId}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!response.ok) {
