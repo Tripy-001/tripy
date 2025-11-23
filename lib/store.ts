@@ -855,10 +855,13 @@ export const useAppStore = create<AppState>()(
         // Don't persist trips array - it can be very large with itineraries
         // Trips will be fetched from API on demand
       }),
-      // Add custom storage with error handling for quota issues
+      // Add custom storage with error handling for quota issues and SSR safety
       storage: {
         getItem: (name) => {
           try {
+            if (typeof window === 'undefined') {
+              return null; // SSR: return null
+            }
             const str = localStorage.getItem(name);
             return str ? JSON.parse(str) : null;
           } catch (error) {
@@ -868,6 +871,9 @@ export const useAppStore = create<AppState>()(
         },
         setItem: (name, value) => {
           try {
+            if (typeof window === 'undefined') {
+              return; // SSR: do nothing
+            }
             localStorage.setItem(name, JSON.stringify(value));
           } catch (error) {
             console.error('Error writing to localStorage:', error);
@@ -897,6 +903,9 @@ export const useAppStore = create<AppState>()(
         },
         removeItem: (name) => {
           try {
+            if (typeof window === 'undefined') {
+              return; // SSR: do nothing
+            }
             localStorage.removeItem(name);
           } catch (error) {
             console.error('Error removing from localStorage:', error);
