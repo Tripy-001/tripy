@@ -10,10 +10,19 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ['lightningcss', '@tailwindcss/node', '@tailwindcss/oxide'],
   webpack: (config, { isServer }) => {
     // Exclude native bindings from webpack bundling
+    config.externals = config.externals || [];
     if (isServer) {
-      config.externals = config.externals || [];
       config.externals.push('@tailwindcss/oxide');
     }
+    
+    // Add fallbacks for node modules
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      net: false,
+      tls: false,
+    };
+    
     return config;
   },
 };

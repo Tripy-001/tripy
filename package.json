@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "npm rebuild @tailwindcss/oxide --no-save || echo 'Rebuild skipped'"
+    "postinstall": "npm rebuild @tailwindcss/oxide || true"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

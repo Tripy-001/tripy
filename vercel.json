@@ -1,7 +1,10 @@
 {
   "buildCommand": "npm run build",
-  "installCommand": "npm install",
+  "installCommand": "npm install && npm rebuild @tailwindcss/oxide || true",
   "framework": "nextjs",
-  "nodeVersion": "20.x"
+  "nodeVersion": "22.x",
+  "env": {
+    "NEXT_TELEMETRY_DISABLED": "1"
+  }
 }
 
