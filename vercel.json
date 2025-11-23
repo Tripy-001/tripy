@@ -1,0 +1,6 @@
+{
+  "buildCommand": "npm run build",
+  "installCommand": "npm install && npm rebuild @tailwindcss/oxide || true",
+  "framework": "nextjs"
+}
+
