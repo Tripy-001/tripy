@@ -78,10 +78,59 @@ export async function POST(req: NextRequest, context: RouteParams): Promise<Next
 
     await purchaseRef.set(purchaseData);
 
+    // Clone the trip for the purchaser
+    try {
+      const sourceTripId = publicTripData.source_trip_id;
+      if (sourceTripId) {
+        const originalTripRef = adminDb.collection('trips').doc(sourceTripId);
+        const originalTripSnap = await originalTripRef.get();
+
+        if (originalTripSnap.exists) {
+          const originalTripData = originalTripSnap.data();
+          if (originalTripData) {
+            // Create a new trip document with the purchaser as the owner
+            const newTripRef = adminDb.collection('trips').doc();
+            const clonedTripData = {
+              userId: userId, // Purchaser becomes the owner
+              collaborators: [], // Start with no collaborators
+              status: originalTripData.status || 'planning',
+              createdAt: Timestamp.now(),
+              updatedAt: Timestamp.now(),
+              userInput: originalTripData.userInput || {},
+              itinerary: originalTripData.itinerary || null,
+              title: originalTripData.title || publicTripData.title || 'Cloned Trip',
+              summary: originalTripData.summary || publicTripData.summary || '',
+              description: originalTripData.description || publicTripData.description || '',
+              // Add metadata about the clone
+              clonedFrom: {
+                public_trip_id: id,
+                source_trip_id: sourceTripId,
+                cloned_at: Timestamp.now(),
+              },
+            };
+
+            await newTripRef.set(clonedTripData);
+
+            return NextResponse.json({
+              success: true,
+              message: 'Trip purchased and cloned successfully',
+              purchase_id: purchaseRef.id,
+              trip_id: newTripRef.id,
+              cloned: true,
+            }, { status: 200 });
+          }
+        }
+      }
+    } catch (cloneError) {
+      console.error('Error cloning trip after purchase:', cloneError);
+      // Still return success for purchase, but log the clone error
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Trip purchased successfully',
       purchase_id: purchaseRef.id,
+      cloned: false,
     }, { status: 200 });
   } catch (error: unknown) {
     console.error('Error in /api/public_trips/[id]/purchase POST:', error);

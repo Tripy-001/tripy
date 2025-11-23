@@ -9,6 +9,8 @@ import { MapPin, Calendar, Clock, DollarSign, Users, Star, Plane, Home, Package,
 import ScrollSpyTabs from '@/components/ScrollSpyTabs';
 import AutoCarousel from '@/components/AutoCarousel';
 import PaidTripGate from '@/components/PaidTripGate';
+import MaskedContent from '@/components/MaskedContent';
+import ExploreTripContent from '@/components/ExploreTripContent';
 
 type PublicTrip = unknown;
 
@@ -83,6 +85,7 @@ export default async function PublicTripsPage(
 
   return (
     <PaidTripGate tripId={tripId} isPaid={isPaid} price={price}>
+      <ExploreTripContent tripId={tripId} isPaid={isPaid}>
       <div className="min-h-screen bg-muted/30">
         <header className="bg-white/80 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -246,6 +249,7 @@ export default async function PublicTripsPage(
 
         {/* Daily itinerary */}
         {Array.isArray(it?.daily_itineraries) && it.daily_itineraries.length > 0 && (
+          <MaskedContent previewText="Purchase to unlock daily itinerary details">
           <Accordion type="multiple" defaultValue={["daily-itinerary"]} className="w-full">
             <AccordionItem value="daily-itinerary" className="border-0">
               <Card id="itinerary" className="glass-card mb-8 border-2">
@@ -442,10 +446,12 @@ export default async function PublicTripsPage(
               </Card>
             </AccordionItem>
           </Accordion>
+          </MaskedContent>
         )}
 
         {/* Travel options */}
         {Array.isArray(it?.travel_options) && it.travel_options.length > 0 && (
+          <MaskedContent previewText="Purchase to unlock travel options and booking details">
           <Accordion type="multiple" defaultValue={["travel-options"]} className="w-full">
             <AccordionItem value="travel-options" className="border-0">
               <Card id="travel-options" className="glass-card mb-8 border-2">
@@ -528,10 +534,12 @@ export default async function PublicTripsPage(
               </Card>
             </AccordionItem>
           </Accordion>
+          </MaskedContent>
         )}
 
         {/* Seasonal considerations */}
         {Array.isArray(it?.seasonal_considerations) && it.seasonal_considerations.length > 0 && (
+          <MaskedContent previewText="Purchase to unlock seasonal considerations">
           <Accordion type="multiple" defaultValue={["season"]} className="w-full">
             <AccordionItem value="season" className="border-0">
               <Card id="season" className="glass-card mb-8 border-2">
@@ -570,10 +578,12 @@ export default async function PublicTripsPage(
               </Card>
             </AccordionItem>
           </Accordion>
+          </MaskedContent>
         )}
 
         {/* Local information */}
         {(it?.weather_forecast_summary || it?.local_information) && (
+          <MaskedContent previewText="Purchase to unlock local information and weather details">
           <Accordion type="multiple" defaultValue={["local-info"]} className="w-full">
             <AccordionItem value="local-info" className="border-0">
               <Card id="local-info" className="glass-card mb-8 border-2">
@@ -744,10 +754,12 @@ export default async function PublicTripsPage(
               </Card>
             </AccordionItem>
           </Accordion>
+          </MaskedContent>
         )}
 
         {/* Hidden gems */}
         {Array.isArray(it?.hidden_gems) && it.hidden_gems.length > 0 && (
+          <MaskedContent previewText="Purchase to unlock hidden gems and secret spots">
           <Accordion type="multiple" defaultValue={["gems"]} className="w-full">
             <AccordionItem value="gems" className="border-0">
               <Card id="gems" className="glass-card mb-8 border-2">
@@ -807,10 +819,12 @@ export default async function PublicTripsPage(
               </Card>
             </AccordionItem>
           </Accordion>
+          </MaskedContent>
         )}
 
         {/* Photography spots */}
         {Array.isArray(it?.photography_spots) && it.photography_spots.length > 0 && (
+          <MaskedContent previewText="Purchase to unlock photography spots and locations">
           <Accordion type="multiple" defaultValue={["photo"]} className="w-full">
             <AccordionItem value="photo" className="border-0">
               <Card id="photo" className="glass-card mb-8 border-2">
@@ -870,10 +884,12 @@ export default async function PublicTripsPage(
               </Card>
             </AccordionItem>
           </Accordion>
+          </MaskedContent>
         )}
 
         {/* Customization suggestions */}
         {Array.isArray(it?.customization_suggestions) && it.customization_suggestions.length > 0 && (
+          <MaskedContent previewText="Purchase to unlock customization suggestions">
           <Accordion type="multiple" defaultValue={["customize"]} className="w-full">
             <AccordionItem value="customize" className="border-0">
               <Card id="customize" className="glass-card mb-8 border-2">
@@ -914,10 +930,12 @@ export default async function PublicTripsPage(
               </Card>
             </AccordionItem>
           </Accordion>
+          </MaskedContent>
         )}
 
         {/* Packing suggestions */}
         {Array.isArray(it?.packing_suggestions) && it.packing_suggestions.length > 0 && (
+          <MaskedContent previewText="Purchase to unlock packing suggestions">
           <Accordion type="multiple" defaultValue={["packing"]} className="w-full">
             <AccordionItem value="packing" className="border-0">
               <Card id="packing" className="glass-card mb-8 border-2">
@@ -953,10 +971,12 @@ export default async function PublicTripsPage(
               </Card>
             </AccordionItem>
           </Accordion>
+          </MaskedContent>
         )}
 
         {/* Budget breakdown */}
         {it?.budget_breakdown && (
+          <MaskedContent previewText="Purchase to unlock detailed budget breakdown">
           <Accordion type="multiple" defaultValue={["budget"]} className="w-full">
             <AccordionItem value="budget" className="border-0">
               <Card id="budget" className="glass-card mb-8 border-2">
@@ -1058,10 +1078,12 @@ export default async function PublicTripsPage(
               </Card>
             </AccordionItem>
           </Accordion>
+          </MaskedContent>
         )}
 
         {/* Accommodation */}
         {it?.accommodations && (
+          <MaskedContent previewText="Purchase to unlock accommodation details">
           <Accordion type="multiple" defaultValue={["stay"]} className="w-full">
             <AccordionItem value="stay" className="border-0">
               <Card id="stay" className="glass-card mb-8 border-2">
@@ -1132,10 +1154,12 @@ export default async function PublicTripsPage(
               </Card>
             </AccordionItem>
           </Accordion>
+          </MaskedContent>
         )}
 
         {/* Transportation */}
         {it?.transportation && (
+          <MaskedContent previewText="Purchase to unlock transportation details">
           <Accordion type="multiple" defaultValue={["transport"]} className="w-full">
             <AccordionItem value="transport" className="border-0">
               <Card id="transport" className="glass-card mb-8 border-2">
@@ -1242,6 +1266,7 @@ export default async function PublicTripsPage(
               </Card>
             </AccordionItem>
           </Accordion>
+          </MaskedContent>
         )}
 
         {/* Data freshness */}
@@ -1307,6 +1332,7 @@ export default async function PublicTripsPage(
         )}
       </div>
       </div>
+      </ExploreTripContent>
     </PaidTripGate>
   );
 }
