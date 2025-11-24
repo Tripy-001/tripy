@@ -27,15 +27,47 @@ interface PlacesAutocompleteSuggestion {
   };
 }
 
+// Minimal field mask to reduce API costs - only request essential fields
 const FIELD_MASK = [
   'suggestions.placePrediction.placeId',
-  'suggestions.placePrediction.place',
   'suggestions.placePrediction.text.text',
   'suggestions.placePrediction.structuredFormat.mainText.text',
   'suggestions.placePrediction.structuredFormat.secondaryText.text',
-  'suggestions.placePrediction.types',
-  'suggestions.placePrediction.distanceMeters',
 ].join(',');
+
+// Simple in-memory cache with TTL to prevent duplicate API calls
+const cache = new Map<string, { data: unknown; timestamp: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function getCacheKey(input: string, types: string[], regionCodes?: string[]): string {
+  return JSON.stringify({ 
+    input: input.toLowerCase().trim(), 
+    types: types.sort(), 
+    regionCodes: regionCodes?.sort() 
+  });
+}
+
+function getFromCache(key: string): unknown | null {
+  const cached = cache.get(key);
+  if (!cached) return null;
+  
+  const now = Date.now();
+  if (now - cached.timestamp > CACHE_TTL) {
+    cache.delete(key);
+    return null;
+  }
+  
+  return cached.data;
+}
+
+function setCache(key: string, data: unknown): void {
+  // Limit cache size to prevent memory issues
+  if (cache.size > 100) {
+    const firstKey = cache.keys().next().value;
+    if (firstKey) cache.delete(firstKey);
+  }
+  cache.set(key, { data, timestamp: Date.now() });
+}
 
 export async function POST(request: NextRequest) {
   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
@@ -96,6 +128,13 @@ export async function POST(request: NextRequest) {
     payload.origin = origin;
   }
 
+  // Check cache before making API call
+  const cacheKey = getCacheKey(input, includedPrimaryTypes || [], includedRegionCodes);
+  const cachedResult = getFromCache(cacheKey);
+  if (cachedResult) {
+    return NextResponse.json(cachedResult);
+  }
+
   try {
     const response = await fetch('https://places.googleapis.com/v1/places:autocomplete', {
       method: 'POST',
@@ -126,16 +165,21 @@ export async function POST(request: NextRequest) {
       .map((suggestion) => suggestion.placePrediction)
       .filter((prediction): prediction is NonNullable<typeof prediction> => Boolean(prediction))
       .map((prediction) => ({
-        placeId: prediction.placeId ?? prediction.place ?? '',
+        placeId: prediction.placeId ?? '',
         fullText: prediction.text?.text ?? '',
         mainText: prediction.structuredFormat?.mainText?.text ?? prediction.text?.text ?? '',
         secondaryText: prediction.structuredFormat?.secondaryText?.text ?? '',
-        types: prediction.types ?? [],
-        distanceMeters: prediction.distanceMeters,
+        types: [], // Not requested in field mask to reduce costs
+        distanceMeters: undefined, // Not requested in field mask to reduce costs
       }))
       .filter((prediction) => prediction.placeId && prediction.fullText);
 
-    return NextResponse.json({ suggestions });
+    const result = { suggestions };
+    
+    // Cache successful results
+    setCache(cacheKey, result);
+    
+    return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json(
       {

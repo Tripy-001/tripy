@@ -34,7 +34,8 @@ interface PlaceAutocompleteProps {
 type Suggestion = PlaceAutocompleteSelection;
 
 const DEFAULT_TYPES = ['locality', 'administrative_area_level_1', 'country'];
-const FETCH_DEBOUNCE_MS = 250;
+const FETCH_DEBOUNCE_MS = 500;
+const MIN_QUERY_LENGTH = 3;
 
 const normalizePrimaryType = (type: string) => {
   switch (type) {
@@ -163,7 +164,8 @@ export const PlaceAutocomplete = ({
   useEffect(() => {
     const trimmed = inputValue.trim();
 
-    if (!trimmed) {
+    // Don't fetch if input is empty or too short
+    if (!trimmed || trimmed.length < MIN_QUERY_LENGTH) {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
@@ -225,6 +227,8 @@ export const PlaceAutocomplete = ({
     onChange(suggestion.fullText);
     onPlaceSelect?.(suggestion);
     resetSuggestions();
+    // Generate new session token after selection to start fresh session
+    // This groups all autocomplete requests until selection under one session token
     sessionTokenRef.current = createSessionToken();
   }, [onChange, onPlaceSelect]);
 
