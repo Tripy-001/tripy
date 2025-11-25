@@ -1,0 +1,1526 @@
+{
+    "trip_id": "yhC1mHfLH9lDdQf4x1hR",
+    "generated_at": "2025-11-22T22:13:30.177099",
+    "version": "1.0",
+    "origin": "Patna, Bihar, India",
+    "destination": "Sikkim, India",
+    "trip_duration_days": 5,
+    "total_budget": "50000.0",
+    "currency": "INR",
+    "group_size": 2,
+    "travel_style": "ADVENTURE",
+    "activity_level": "HIGHLY_ACTIVE",
+    "daily_itineraries": [
+        {
+            "day_number": 1,
+            "date": "2025-11-25",
+            "theme": "Arrival & Gangtok City Exploration",
+            "morning": {
+                "total_duration_hours": 2.5,
+                "estimated_cost": 600.0,
+                "activities": [
+                    {
+                        "group_cost": 600.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 300.0,
+                        "activity_type": "meal",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 2948,
+                            "booking_url": null,
+                            "place_id": "ChIJibwEBBWl5jkR_sscjel_J4A",
+                            "address": "Mahatma Gandhi Marg, Arithang, Gangtok, Sikkim 737101, India",
+                            "phone": null,
+                            "category": "restaurant",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.2,
+                            "duration_hours": 1.0,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 2,
+                            "estimated_cost": 600.0,
+                            "subcategory": "bakery",
+                            "description": "Start your Sikkim adventure with a delightful breakfast at Baker's Cafe upon arrival in Gangtok. Enjoy fresh pastries and coffee before checking into your hostel.",
+                            "coordinates": {
+                                "lat": 27.328946199999997,
+                                "lng": 88.612202
+                            },
+                            "why_recommended": "A popular spot for breakfast with good coffee and baked goods, perfect for energizing before a day of exploration. Conveniently located.",
+                            "name": "Baker's Cafe",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJibwEBBWl5jkR_sscjel_J4A/photos/AWn5SU79jgOKHl_L7TTwcy_xgKEyz4u4S1QazyGbJoNj3MDmNChNMEUOASiA8JgpO_6mPvmyfqcuvNkjwVY3cRWasK9rsdUIL_UlffjziGXbGRmQJfrcdWY33H7Sxj58oCk2WjN4zFItH_ifDa4aHIeuy8MJr75fFZLQBuSnoE4M4SWY-wN4bGcxYu6IOi5wLoDAQ2_8ZdXvQyXKJDidHOPvmEkGWhyTaLlQLdXhedNPm0Uho81MxMOCO2K44JWTmcpBUYT801WCQtex0RCMv3_9py4D3pTh27vs6tFQQvkq3ejLMQ/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJibwEBBWl5jkR_sscjel_J4A/photos/AWn5SU79jgOKHl_L7TTwcy_xgKEyz4u4S1QazyGbJoNj3MDmNChNMEUOASiA8JgpO_6mPvmyfqcuvNkjwVY3cRWasK9rsdUIL_UlffjziGXbGRmQJfrcdWY33H7Sxj58oCk2WjN4zFItH_ifDa4aHIeuy8MJr75fFZLQBuSnoE4M4SWY-wN4bGcxYu6IOi5wLoDAQ2_8ZdXvQyXKJDidHOPvmEkGWhyTaLlQLdXhedNPm0Uho81MxMOCO2K44JWTmcpBUYT801WCQtex0RCMv3_9py4D3pTh27vs6tFQQvkq3ejLMQ/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJibwEBBWl5jkR_sscjel_J4A/photos/AWn5SU6lUeD9TuvzE1xCNNGzqLZX73bmZyyWF5s-hzzrkzi2CYiOnQdten-d5dI5nUq4woZmEkVsJONCfAg--tVd0gC_32DwtrdZPUSFPgKmFEy30hXjuUBhbb2RaeLb5GP0zVVr6tvNF50D7aRB8ZQuxaEGPp2aGc4vyhDEr9kDA6Yw9kwIlkk-PC5EfvQ0RPvT15WWQ9JhURgQH6KYrrz6lEBUba7GQF1BbazF4NHXgs4Vn_4anl08CUsAgv3T46E6_qy548aAwv8AszdqT6vEViNVBe8pwXGkCC3jnvgkXZvVKJdzYKH42dpc51DWyFrlPqZmc3bQFtXVaJm4ECg2tNrN3szKRy-8U-UhDzN6FAR_OaDjtJC3IV87-b4JzXIW1FevHlugAuQqCi-Wxlg8z2GdRlX5YDhCFvfpwUzfR6DDPLqHrH9ZBwgGCm-rcUOY/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJibwEBBWl5jkR_sscjel_J4A/photos/AWn5SU5Q9gIMeCnt8JfBudBBP1YYrO-XF0mXrKvdvYtv0wnstvlLkouJugHbrMTy76X6RLlyrLTdV4UGgPyW7hPQgTaYINnDN5GpfXf32AiS63TTpBgk5S-2P_KcLlTBjpnt-Zr1RhuR8jzsxQGEE8KAoPTQtwfyeccPZbIx1IL70tQIe8nT95Pghph4hq9uMVm4ena2PK8m48Q6XI51GXCcKHHF1nDF37LNrPfKATCLN2zSASRz7pHVNCMgBOcyuO_HBb-5ns-rygD1XQvKWo6gIVlMlPNdd-GxJ976EqiJmfV6QA/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    },
+                    {
+                        "group_cost": 600,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 300,
+                        "activity_type": "sightseeing",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 7632,
+                            "booking_url": null,
+                            "place_id": "ChIJ750aose65jkRLJzHi7Yilig",
+                            "address": "9JC8+6CQ, N Sikkim Hwy, Gangtok, Sikkim 737103, India",
+                            "phone": "+91 3592 209 090",
+                            "category": "activity",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.5,
+                            "duration_hours": 1.5,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": null,
+                            "estimated_cost": 300,
+                            "subcategory": "attraction",
+                            "description": null,
+                            "coordinates": {
+                                "lat": 27.3690385,
+                                "lng": 88.6132007
+                            },
+                            "why_recommended": "Start your day with a delicious breakfast at this popular spot with excellent ratings (4.5★ from 7632 reviews).",
+                            "name": "Gonjang Monastery",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJ750aose65jkRLJzHi7Yilig/photos/AWn5SU6BpCFOSsF6olfSvMJT83VXmmwwd6kHwx8cHt5DZ11KAUQgYU8rgXLUAH4ag-SZYspAdK_rlXcoZWrgKIhT1wK6xGMf9Q8otPuM7dznDbTgfnrehFX5wSQgfSzuULfIqoANSe4spXsaTbZnL0yMFmu44oCjDEWhSHfjXWSqf2RSMv6WH2AHgnGVh1ItnSy0uD3RYyorCjDmLkUvrH16o6C2QU-jzoQPDsvpkyb1T8XUKpmlOpK80QWVe8cwjZ6IgyHTTQfLUFssBh7ue8MxfczUHuUrTwqFlGQGaH2Xlg5eNqUx-bmZusrdtwKXY5aB2iaghprv-tRZtifHy7fDL__OnteQ-LC2OZHNFuJrZWnc4R1HLbW-9D5Vr7yW0FL5L9c69cGfTXnOybtWDtvjTcL1c9aWHTGfwNvjyboH3YTELQ/media?maxWidthPx=400&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJ750aose65jkRLJzHi7Yilig/photos/AWn5SU6BpCFOSsF6olfSvMJT83VXmmwwd6kHwx8cHt5DZ11KAUQgYU8rgXLUAH4ag-SZYspAdK_rlXcoZWrgKIhT1wK6xGMf9Q8otPuM7dznDbTgfnrehFX5wSQgfSzuULfIqoANSe4spXsaTbZnL0yMFmu44oCjDEWhSHfjXWSqf2RSMv6WH2AHgnGVh1ItnSy0uD3RYyorCjDmLkUvrH16o6C2QU-jzoQPDsvpkyb1T8XUKpmlOpK80QWVe8cwjZ6IgyHTTQfLUFssBh7ue8MxfczUHuUrTwqFlGQGaH2Xlg5eNqUx-bmZusrdtwKXY5aB2iaghprv-tRZtifHy7fDL__OnteQ-LC2OZHNFuJrZWnc4R1HLbW-9D5Vr7yW0FL5L9c69cGfTXnOybtWDtvjTcL1c9aWHTGfwNvjyboH3YTELQ/media?maxWidthPx=400&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJ750aose65jkRLJzHi7Yilig/photos/AWn5SU4noGD4eRy5qDQi_xiwNBVteZVwNtCF1a54MS7ZDgYiTtPkysT9jq56W7rMCTGUlrlCnl8aaejcGhSesH6YdR_wZybDQSZ-7BpHFZV5KuN6HXDlwf9t0cRghTONtRbW5_MXtDjVRAhvmobx9qoJSS8Oc8rIWlX-wK0PvNKAzXEKeHiNb1Jnavgs3q5CvIa6uk2ZRJwv717aUTxNNJUrUfaLKFC0kMBfRcFLg8kOfaXHUynQLdrVKDkP2l7VwCI1XKv8zQM6UAnlTmRMlL6Bnm6arjr25o1Pm-FaMuvYO9jGjthcmEzhKCTvfBNVK_6a6GVPOosVS9fG2kG-uSTUGH1-1h8xSE_jmRSbsYuKG2yssvk5pNqm-xvsuniAsy1_fFLgSrOK0ivALxvMLbhtJm8jWgplVcp2n3IqZrEas5meO26o/media?maxWidthPx=400&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJ750aose65jkRLJzHi7Yilig/photos/AWn5SU7Wf8aAFEj7WF__kkVYN0qRwepx1kAcw1v51QTCUL3sut3ni-Nxe9guM7JLhsT0XYrgJAUSxvLq5x_JeBLNBdszPCs7bik2FCEJW4F0x3ixxnxx90x8xz-TDrIZzUS7yIF5gprz8WAP-4G4SSmH1TCSqatKybJJoQH0rGJ6_eLBRDXHjKGZw3x77XEnZSHRaAFQj2lpNSKwGfy9UsZaI44_YbS4LIpQgxYc6WDhMQ_w0Q5xL1sgRk5DeobTJridQoqz7UiZecFatRPX7T-oqMBSCMqAUVrKAH8ROQU6Gh6RUw3rABVV03SKHGBNwyA31tR0N3re_Yj7J8B2Vazo0a9AZwO0Q6SifGrTsoS-br1TI7oHjBisfsQS_sPHWJuXR6WlGTzU0ZgX2K8I9t6eB33EViQGNnUgYR1TTneP9qzSDQ/media?maxWidthPx=400&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    }
+                ],
+                "transportation_notes": "Walk from hostel to cafe, then to exhibition center. Gangtok is walkable in the center."
+            },
+            "afternoon": {
+                "total_duration_hours": 3.5,
+                "estimated_cost": 1000.0,
+                "activities": [
+                    {
+                        "group_cost": 1000.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 500.0,
+                        "activity_type": "meal",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 2421,
+                            "booking_url": null,
+                            "place_id": "ChIJ13qQCBWl5jkR-kNgRwNa-9A",
+                            "address": "Norbula Complex, Mahatma Gandhi Marg, Arithang, Gangtok, Sikkim 737101, India",
+                            "phone": null,
+                            "category": "restaurant",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.5,
+                            "duration_hours": 1.5,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 2,
+                            "estimated_cost": 1000.0,
+                            "subcategory": "indian_restaurant",
+                            "description": "Enjoy a hearty lunch at Osm Restro & Lounge, a popular spot in Gangtok for Indian and Chinese cuisine.",
+                            "coordinates": {
+                                "lat": 27.3285807,
+                                "lng": 88.6121821
+                            },
+                            "why_recommended": "Known for its good ambiance and variety of dishes, perfect for a satisfying meal after exploring. High ratings indicate good quality.",
+                            "name": "Osm Restro & Lounge",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJ13qQCBWl5jkR-kNgRwNa-9A/photos/AWn5SU4V1WG5-4zAT6vkBzCG8XzcRpIt0HrZ0XKTGRtU4kA5IkiZfCt1T_jGj5kUdsrfYu6HjEw6UR0o5ymUQQhAA4mDaIcC3iBpeEmJKU10V2VV_4uneKuliqs3KUpjoSbbnI2r0gWBeYXWKYJ0CynxN357ZJoymjRflL0TTlAN2MFpwn4XlF_CQ7EGWEcUuxsqRFBWseTwBFvhijlS5HppPn9i_waAgw9p7XpiGIyviuX3mfg7EVq2FCqgB1zGUNrhxDpLety_R_-3IhZ6RJvbFO2-8y9-BKg697ogE1elG0ptVkKBKNDdC6bVnl_vBVgYeE-4cThiNCIQdz4QQbed6nZDCf5WCMSd69xeexRj67oaM5ubxKo5sjKNx4cfpv5NWfijacdR2jTS7NplbMMnlh41JuHSLZA9ZEnKr2Bs9JqcAQ/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJ13qQCBWl5jkR-kNgRwNa-9A/photos/AWn5SU4V1WG5-4zAT6vkBzCG8XzcRpIt0HrZ0XKTGRtU4kA5IkiZfCt1T_jGj5kUdsrfYu6HjEw6UR0o5ymUQQhAA4mDaIcC3iBpeEmJKU10V2VV_4uneKuliqs3KUpjoSbbnI2r0gWBeYXWKYJ0CynxN357ZJoymjRflL0TTlAN2MFpwn4XlF_CQ7EGWEcUuxsqRFBWseTwBFvhijlS5HppPn9i_waAgw9p7XpiGIyviuX3mfg7EVq2FCqgB1zGUNrhxDpLety_R_-3IhZ6RJvbFO2-8y9-BKg697ogE1elG0ptVkKBKNDdC6bVnl_vBVgYeE-4cThiNCIQdz4QQbed6nZDCf5WCMSd69xeexRj67oaM5ubxKo5sjKNx4cfpv5NWfijacdR2jTS7NplbMMnlh41JuHSLZA9ZEnKr2Bs9JqcAQ/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJ13qQCBWl5jkR-kNgRwNa-9A/photos/AWn5SU6A2sEGWDm0QuwJS0ft9P4CGoYixox0yoa7J-CKL3HSqrpMAosboKjtNDfC8aodhb4Nph1drSQR6BnvXq5ZLw59Rx6p9xxjOp4170r7iuEtAAZveQW8DNJVsimSgmQRjv5aHcIQR7UWMERz-uCsTe6QGs9DPdtEkGqOKAKmy9URmoC5Qsg0xGphx_7B22HtbQjh2oLJ_A_QHEgHlkyxl3zHV7TOLsV-ihirOvXSbNzYqbI565fZU_9ykjSVNur2FlWr5AL99i19Dcw0lHu-_BinqkCKylZ2we_I3Tpth9B7ybn8_uv7oyRj67vIDY7gg6E8ia_FtEBS5qAClDX1abMW8X-IcFMMfvhF0JBRFQnnrn6k51dnxaSu2Z7MJrrJeZsQqoAh9THXqwGzeZHA_p6ALevAswm3XkwdXtZCMK-6Mg/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJ13qQCBWl5jkR-kNgRwNa-9A/photos/AWn5SU78VXZMF6B0xytFdXuR5ivCxx6C0Fgo9r882gjUqMyZkiQPGXNv2VVzWlt3PmofrXUzDc9Mq8aRgPz6bq4IMacS1pU6P4v1XWBNXpG8GNY7Ume2rlYtSnpek0sx3zwwksuXOK3y5J08h1pwDiZENNKMQbkNcTuJfb5CBzirXyw4NjnEkyre6SY4587YubnJYnjaxbFG8bP2c9B3J54WdP1pVxg_SX0jQO9ct1qvIT230NHewwkVMxPTcWmjzegPEkNPngKMVMAa3M8eD-uxTBS_w3wF_PAC3Y-GF4pOA6h99Ipp-ZKRf_Xx97lk05apn8oRsF6LFT3MTQ-yLP7MT2NHpjNeut6ZIdRyW5HN18SdvEaLmxULtJEWpMgDt6ExcIVoCaJvROQnjCiqVdZxZzpceUTnsN0QMOxL8Wb7xnQu9ynkdxXZOOy2ikIlMcXv/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    },
+                    {
+                        "group_cost": 0.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 0.0,
+                        "activity_type": "shopping",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 49821,
+                            "booking_url": null,
+                            "place_id": "ChIJ38h0DBWl5jkR-nQ2CfK9dEU",
+                            "address": "Arithang, Gangtok, Sikkim 737101, India",
+                            "phone": null,
+                            "category": "market",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.5,
+                            "duration_hours": 2.0,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 0,
+                            "estimated_cost": 0.0,
+                            "subcategory": null,
+                            "description": "Immerse yourselves in the local culture at M. G. Market, a pedestrian-only zone perfect for a leisurely walk, people-watching, and browsing local crafts.",
+                            "coordinates": {
+                                "lat": 27.3283472,
+                                "lng": 88.6124316
+                            },
+                            "why_recommended": "The heart of Gangtok, offering a vibrant atmosphere, local goods, and a chance to experience daily life. Great for photography.",
+                            "name": "M. G. Market",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJ38h0DBWl5jkR-nQ2CfK9dEU/photos/AWn5SU6ygwB2NCG8_zbV5CIDT34kVu-kJ7zFE5Jc6p3pIKOQsGap_xpIfLVv_Fg0fgbXCPkezL4K9hUbppX_BOBWtMeQKm1wN9pzjGPw4RZ0g2CEXh8MPoqdUEqRIol97B7kYVGv03Zh85IOeCfXp6FAPfHLIIFhk_nk58s-kBdFM8UpRVD-FusO5D3UdndodkNHftF5VUY_Kcf4NtmFSBWB1Oe6-hFHbZkDUBV_2unY2XzMrF32xXU-odY2XPupbJ9lfbAS0LzaNs_UN-CZTCiKhIdAgoQqs2eKdlEOrIh3ZhJBNtNLDa54y6SxHcUOG9C0JgCANiqtTl6h6VNpIvq8luTxDiQZExa8EU04zB-T0VDTy660vydrAGjWx1vOWT0sEFGSTaQRUZkQLRn0r7mAgeuAj3X2kPNr1Ycn9-ZxFGEru4XY/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJ38h0DBWl5jkR-nQ2CfK9dEU/photos/AWn5SU6ygwB2NCG8_zbV5CIDT34kVu-kJ7zFE5Jc6p3pIKOQsGap_xpIfLVv_Fg0fgbXCPkezL4K9hUbppX_BOBWtMeQKm1wN9pzjGPw4RZ0g2CEXh8MPoqdUEqRIol97B7kYVGv03Zh85IOeCfXp6FAPfHLIIFhk_nk58s-kBdFM8UpRVD-FusO5D3UdndodkNHftF5VUY_Kcf4NtmFSBWB1Oe6-hFHbZkDUBV_2unY2XzMrF32xXU-odY2XPupbJ9lfbAS0LzaNs_UN-CZTCiKhIdAgoQqs2eKdlEOrIh3ZhJBNtNLDa54y6SxHcUOG9C0JgCANiqtTl6h6VNpIvq8luTxDiQZExa8EU04zB-T0VDTy660vydrAGjWx1vOWT0sEFGSTaQRUZkQLRn0r7mAgeuAj3X2kPNr1Ycn9-ZxFGEru4XY/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJ38h0DBWl5jkR-nQ2CfK9dEU/photos/AWn5SU6lGCVLwydHHECw6Ezc9jc9qCxouIQ6K3XXos0AlLsKXOHxx4m8FHLiqFAXDKLKVv1YbTakVcdNem66P32Dm_b70_aTvfmhY45SieOzos5nE6K0yf9aXvxMNq5QHKSaIZ4mdlXdYJMpz6qbuhNRFxnuSh5scVNBfoC0lMW32OEd9FcK2dQ8eDJKifGbg3uXmsJUHt1OR6Nv0p8EIsoqH3Gh-z7ww-35TgUX2saeFw_Hw4cObtfrap0q_Luy4NrKcycTEfIKEBSQo7u-YhjJ9qhWgHdGAoeJ-a9pRM-ldQqDqrREtfUUPIvMfmCDLDGltudpw-GWqXY8mmVjgmBfyf1udqHImQO-riB-SrZehqbrmX_B7NQWYmgcxnrwEyGsF0AvqucdDriyDnKSnorA_Z_QfYV1eUAQX580gfCS2FTyVe98/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJ38h0DBWl5jkR-nQ2CfK9dEU/photos/AWn5SU66jXRPmwBY0RxOMJECMXz2CVY0G_KiFhFUMwSZE3UFrZvbXulKiwdB-Jd--aH--9URc-0LdTlnDzv0_B2aAziUYGlFsd7o---uTebcTlcz18jDv55G5tlDTcen3rlE7Xw1gTOxmmeYHx9r2ef0qUQ4LLREsxV9XSwPY6mNGmDp9pMvVrbHQ8sA4ZLer8GQ1m97LwgKtcS1cFXpR5sovCOsWMkDeK9HaudEVMXOsHTdJs1tFgr4WV-Bbf4nxMU-LxN8uYqjURmTb9OmiF_yZE5ToF08H-EOsHlkklT_rghvBOhhdVhxZc2m6I4B5zrJcON-gm2FDLU3l9FEZK8J1z5PCW2UT3v-xdTUSjxR9Ka-1tdbRJpzje0Dryqqx5cP4oCiFjbdj42aDpnO26kQcfgQA6XBe5FMByiO9kKLomwMMA/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    }
+                ],
+                "transportation_notes": "Walk from lunch to the market, all within the city center."
+            },
+            "evening": {
+                "total_duration_hours": 2.5,
+                "estimated_cost": 1650.0,
+                "activities": [
+                    {
+                        "group_cost": 250.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 125.0,
+                        "activity_type": "sightseeing",
+                        "weather_dependent": true,
+                        "activity": {
+                            "user_ratings_total": 7255,
+                            "booking_url": null,
+                            "place_id": "ChIJK9EJ_xKl5jkRrZocXlzmmqQ",
+                            "address": "Vishal Gaon, Gangtok, Sikkim 737102, India",
+                            "phone": null,
+                            "category": "tourist_attraction",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.2,
+                            "duration_hours": 1.0,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 1,
+                            "estimated_cost": 250.0,
+                            "subcategory": null,
+                            "description": "Take an exhilarating ride on the Gangtok Ropeway to get panoramic views of the city and surrounding valleys as the sun begins to set.",
+                            "coordinates": {
+                                "lat": 27.3178355,
+                                "lng": 88.6066283
+                            },
+                            "why_recommended": "Offers breathtaking aerial views of Gangtok, especially beautiful during sunset. A unique perspective of the city.",
+                            "name": "Gangtok Ropeway",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJK9EJ_xKl5jkRrZocXlzmmqQ/photos/AWn5SU69YVt36L_BvdNwbnh3ZAZApDfajdBTzgIgRbldR9XQ2LOsFfdfphvebp_SzI5GQWMhC8npN1SUHLsaRlL-IwuBHn557jrWQl5Q3EYV8hwMWBH0tfMvKpWSQLQCXMTaqjfSErZxZqmHVm1Us1C7o_MVQD5PEZDR9hKTbPtr2o0EBlWTyUOqpqMddu9sFwHX7ou26_nrD5ugqMDolE73w07bfAo4itT9JXyOuOSZg3e-JbQPeEqv-XgLgF8ukCIDceh9tb0TpN_Kj3CVKN8CWwHC2Lg0tK3V0sVFLKoDOQm3Ma5uH46-gb8fQHCaw9H2IDEPK29GhYyZDnUkTsrlrq6Zr_mFvIVJZC7sHq7dlfjeJZcfoYlVsqMOnF4t7KqcqIIgOGJ8lzRtLGMCvjHfmNBQyeQ6bcuWNYO8PqUT2f9saIMpBG7sqH-rWNxf6A/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJK9EJ_xKl5jkRrZocXlzmmqQ/photos/AWn5SU69YVt36L_BvdNwbnh3ZAZApDfajdBTzgIgRbldR9XQ2LOsFfdfphvebp_SzI5GQWMhC8npN1SUHLsaRlL-IwuBHn557jrWQl5Q3EYV8hwMWBH0tfMvKpWSQLQCXMTaqjfSErZxZqmHVm1Us1C7o_MVQD5PEZDR9hKTbPtr2o0EBlWTyUOqpqMddu9sFwHX7ou26_nrD5ugqMDolE73w07bfAo4itT9JXyOuOSZg3e-JbQPeEqv-XgLgF8ukCIDceh9tb0TpN_Kj3CVKN8CWwHC2Lg0tK3V0sVFLKoDOQm3Ma5uH46-gb8fQHCaw9H2IDEPK29GhYyZDnUkTsrlrq6Zr_mFvIVJZC7sHq7dlfjeJZcfoYlVsqMOnF4t7KqcqIIgOGJ8lzRtLGMCvjHfmNBQyeQ6bcuWNYO8PqUT2f9saIMpBG7sqH-rWNxf6A/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJK9EJ_xKl5jkRrZocXlzmmqQ/photos/AWn5SU5wPFCd-XTpBscUQCErQYLN8DKloQJTKtbyIfbnIky3HFW0Dt8I_VSc98pantJrdlT725AosGRK94PhOR6QJ5duelsgA5lKCkedUC9mtiUe4h4PMeFvNVo__wRSquD1DeyPqmDh91ItVI0gAqEcunlbC4FA6RLBh-ZL_UU6I1RWPqDgvUo6OGnuEu2bwpI_2qZxHBL6nHBYqEr3_9eeF288RAkWc2ikWr7Vi38I2kBehzOGqSyjsFZvnok-fV85mNhBDf9k1cVS3pKNOthWTZgEm1b7GaghdZDbO7bEkwk0H4VMAn2uSPzIIRW7S26zBB_TcMzTmh0-7I4kCVo2Q7fVbtZ2LEUGe5gf_4unuNlU4KzUfxcXflYfNVjsfCUJ0xaJUX9ab_K7_4N8CbGyf-jHxpbseDKF3-ZqAEU21mQQCA/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJK9EJ_xKl5jkRrZocXlzmmqQ/photos/AWn5SU7nsDXGrPWHGrIuuQQ76FcHz5-3GBFbxZ1lmCpKK0PfitlbuzJFJzRqHszupJWLWJUzU94-Dm4HWjejB0tzedovGLaGJjMqRYShmXD2RBP0Yf7KWVVh26RdPxpYvjOyCuxVwUsK8ivF3wrNJQWb4Oh2hLbPhzmHKpMFzcYTmnxc0HvxsM2j-CZuJCy31srH2FAiJSLtr7uz1vIOlRQ-pfYwwE83jzEiNza36cyhf4braQWZkSb3Ypow2cdT6JXEf6lL-eIwTcQp9824TKqNLe132OHo2gHjqn3Bqrtgg9F2eHYp5gIUxhNSRR6-raPZDoWPJJBxaTmojmxHDdWHvYiQK07U473tJ6zB5fM4e9JrCLveX3XnREew73gGeDJxPflARFNihEn_P-Espo7-b01vSfnDMuzT2dzDIhadZOuIpAgK/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    },
+                    {
+                        "group_cost": 1400.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 700.0,
+                        "activity_type": "meal",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 158,
+                            "booking_url": null,
+                            "place_id": "ChIJm-vAiiOl5jkR4JpPzytm3UA",
+                            "address": "Tibet Road, Upper, Mahatma Gandhi Marg, Arithang, Gangtok, Sikkim 737101, India",
+                            "phone": null,
+                            "category": "restaurant",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.9,
+                            "duration_hours": 1.5,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 2,
+                            "estimated_cost": 1400.0,
+                            "subcategory": "bar",
+                            "description": "Conclude your first day with dinner at SHAMBHALA WOK, known for its Asian cuisine and cozy ambiance.",
+                            "coordinates": {
+                                "lat": 27.3283639,
+                                "lng": 88.6129696
+                            },
+                            "why_recommended": "A highly-rated restaurant offering delicious food and a pleasant atmosphere for a relaxed evening meal.",
+                            "name": "SHAMBHALA WOK - RESTAURANT & BAR",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJm-vAiiOl5jkR4JpPzytm3UA/photos/AWn5SU77WtKIL8xnIz_mIVgn9kvRa4PedPS6C-aIFNu-saBF3IfWKd87Z8wdKM7ZWlqMkgGxlVsFGULCPSVgy8NACfL_ys4DPsvQ4NCj8ygAUVG8ARxncTQfbwX4uRKNHInTbjhqWpZgBIK2zS8zonNqNRl9VP4zrhUCJlfSYZjYFI0pFEkwTIdza7-bq0XZqpnprAScKt-xXX-aagVOlz-zAjEjtzpZ87rsU8z0sdy7Ws6a0u71KHyFHpcvZubthx2NCmk9aIk2O6rDO5kQ85idA0uS6uvMMkIWW5apnTH3Q_IvSw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJm-vAiiOl5jkR4JpPzytm3UA/photos/AWn5SU77WtKIL8xnIz_mIVgn9kvRa4PedPS6C-aIFNu-saBF3IfWKd87Z8wdKM7ZWlqMkgGxlVsFGULCPSVgy8NACfL_ys4DPsvQ4NCj8ygAUVG8ARxncTQfbwX4uRKNHInTbjhqWpZgBIK2zS8zonNqNRl9VP4zrhUCJlfSYZjYFI0pFEkwTIdza7-bq0XZqpnprAScKt-xXX-aagVOlz-zAjEjtzpZ87rsU8z0sdy7Ws6a0u71KHyFHpcvZubthx2NCmk9aIk2O6rDO5kQ85idA0uS6uvMMkIWW5apnTH3Q_IvSw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJm-vAiiOl5jkR4JpPzytm3UA/photos/AWn5SU7yChf-WBnhvVLkNscyGL4IZgOu7TA2mo61ux5xOyGJMbmpxHZ533P4fL4e7gkejXTiasWYlkhnb2WGAg3P1XkCIT5EDyH_KErOAMkWFebj4Bhx8hsnbxew100_Qu4vjvmKG3TEo9s4tETkSryPjmMC3107i16ejxACfE5Spd9vYoxvYg8m68sqkwWFoO927ltfszuRfONZVlgIEc-AyaMBEQZR0KcYLXUp0OMtguGKcOHtiLczqRR7ykwLoNcSo6WmGXtk_vhsRJKi8bfuw1CcAG-6JQMYzf9e2XphEvAm4g/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJm-vAiiOl5jkR4JpPzytm3UA/photos/AWn5SU6PRsGZrLKa_IFSbYKqNzLHzZi1tkMCQxMoLt4NFmrPS4kQ9DX-wVtPUeHmCLlR7RP_m8OdB0MEnz7ZKZWZ5UzHRp4sMfIqjXEWj-lcTiM9GmClpgzetto1lJotjae30EGghlqRDqQNl0g12vRFS1nXZVL4KGRtvU4cBE3kBlcRLYcN4vWU79XBI-g-omLAqzqQ7UgPh8SrRQFSDnIDkRKhqilPoqLjIF1bp29XHSi3Xp_TgURz1nNDLt-eGhhYK9MZEokxac3tzWE9is91s8OkXqM95BfNkHguoCOnzCvwgnuieB3BCC9aWe5zCicU43zmLVKbcfFiWjWk9zeD5OOGjBmXGs5tSRRAbVHDZVfXjJBicxtB_mMjId6-9jzEJLm5MGKjBwMnpQmfH3Wif3DGj3c8uif-ZCH3GkAwypSSP-gn/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    }
+                ],
+                "transportation_notes": "Short taxi ride to Ropeway, then walk to dinner."
+            },
+            "daily_total_cost": "1925.0",
+            "daily_notes": [
+                "Focus on acclimatization today. Stay hydrated and take it easy.",
+                "Consider purchasing local sim card upon arrival if needed."
+            ]
+        },
+        {
+            "day_number": 2,
+            "date": "2025-11-26",
+            "theme": "Nature, Wildlife & Waterfalls",
+            "morning": {
+                "total_duration_hours": 3.5,
+                "estimated_cost": 800.0,
+                "activities": [
+                    {
+                        "group_cost": 600.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 300.0,
+                        "activity_type": "meal",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 1756,
+                            "booking_url": null,
+                            "place_id": "ChIJAQAAADyl5jkRsdLWpCX-S-s",
+                            "address": "Anola Building, Mahatma Gandhi Marg, Vishal Gaon, Gangtok, Sikkim 737101, India",
+                            "phone": null,
+                            "category": "cafe",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.3,
+                            "duration_hours": 1.0,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 2,
+                            "estimated_cost": 600.0,
+                            "subcategory": "coffee_shop",
+                            "description": "Start your day with breakfast at The Coffee Shop, a cozy spot with a good selection of breakfast items and coffee.",
+                            "coordinates": {
+                                "lat": 27.3261076,
+                                "lng": 88.61191989999999
+                            },
+                            "why_recommended": "A local favorite for coffee and light breakfast, perfect to kickstart an active day.",
+                            "name": "The Coffee Shop",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJAQAAADyl5jkRsdLWpCX-S-s/photos/AWn5SU4-qRdqrak0dBoewJzuLigezXavBvLWGcjQGll0StnoM1zfqYh5LmZEY65_0VpC_T-eoQ-UBK1HD3AG1Z3-2RrIs1HTzq1WGSFFu_T6fovPhfjMQQF-2Qm89QDKxaI9hs2fl5X8nMiw7CEkHvV9TeYv9eF-El-kHrUDWrVZOQcuAihOz8lW8P4pd9XigHKlr9Rnyqdtbg2ocyMdxe4DrCWVi83P4JOxqBduMFfXkNCtUxt8k9de7YF8yxKeINLn1sGB92b9tmG6gJ3qXXSrvjtCp3u0HG6rlED39U5MP5w4JqdGgsfHYYwh-o6rXiTEgiy6EOJ3Mtsp5z-kfpjrtbqyl9XS8HEXJ1b-VKNSi4g-PNjCIFZ8US_VtTkRf32oOBmoDgzF4qQkXtFNQDu67QtQk8Z270dcQjqgM7_9drzw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJAQAAADyl5jkRsdLWpCX-S-s/photos/AWn5SU4-qRdqrak0dBoewJzuLigezXavBvLWGcjQGll0StnoM1zfqYh5LmZEY65_0VpC_T-eoQ-UBK1HD3AG1Z3-2RrIs1HTzq1WGSFFu_T6fovPhfjMQQF-2Qm89QDKxaI9hs2fl5X8nMiw7CEkHvV9TeYv9eF-El-kHrUDWrVZOQcuAihOz8lW8P4pd9XigHKlr9Rnyqdtbg2ocyMdxe4DrCWVi83P4JOxqBduMFfXkNCtUxt8k9de7YF8yxKeINLn1sGB92b9tmG6gJ3qXXSrvjtCp3u0HG6rlED39U5MP5w4JqdGgsfHYYwh-o6rXiTEgiy6EOJ3Mtsp5z-kfpjrtbqyl9XS8HEXJ1b-VKNSi4g-PNjCIFZ8US_VtTkRf32oOBmoDgzF4qQkXtFNQDu67QtQk8Z270dcQjqgM7_9drzw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJAQAAADyl5jkRsdLWpCX-S-s/photos/AWn5SU6B9t02bxAAalEe2PzP60Y-HinfeSC7B1DJMCWfUkRkzBGWO_kj2oUW4PDV9SzmOZxPKqKxVBNStFsPPGBU199tPhDjsFbs7lIxqua-fx-ZqOMVGsGRUoULbf8uIjyB8cRYVR5M0WG21WKYxoS6Hx28sm2X0fO1rgbg0d7yR8pSWVg0F4W02Jq-6WSt6lejeszB7_iOVWLDc26i5pXG0BsTJ2CRYuEY9L6bS72nlFaxWrNHTs_GkpwUh4u26r3RJGuZiR3y0yrdLIxH4flrBcBY-3X0QVCyrCGvfUHgzLOKrhYnkDr0k8JSRxsn4YJs1Xj3THH4rbttwjX8I0Pudbrz8Ee81Ya7_8kWjxfNyV6V7dLreeeTC2gwhIsYMEeEtTk08kpEMlqIfRNo4i8afDFeQ-axFmFuam2INIwZc1fhhafQ/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJAQAAADyl5jkRsdLWpCX-S-s/photos/AWn5SU4_hDAGC04XAfRveYQeescKAOZh3m6XTtj3wbnmePc2_4Gk0VrvmK5xyECTeo3oL8o3o6ah_ccpC00Gcn_HJ4nBzzAFLsE1QHZec3aeZoSlsOBgK6GFIYwCaSCWNVpjRBPUULWnbowNP9Ae69XiXj8lYzMJFyLgHC3laDWazscJJZPykf2pxbPKa5776C0UG3bwJyRbOy_mPymaoAl3N7PRntpC0oy6RCEizYnN-IeQgMT-F3K0bmJJWtGnaSGk_ANQVx7I6iS1tsC1_eFM0ZZb1kUhASxpPDSotDUWMMzuzCJ-XI7_Q42Kv0KxDRtsY9S2UryW-9M0354MfoUwjtSGWGSWzMSI31EYAarb1Yqr7GtefkBivffPf0DZz4GE-wlih2DU5a3346VRk3h0MFaK03LFA1Ut69_knq7Mtd4D98MU7AmMl26-JHWsXVWj/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    },
+                    {
+                        "group_cost": 200.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "moderate",
+                        "estimated_cost_per_person": 100.0,
+                        "activity_type": "wildlife_viewing",
+                        "weather_dependent": true,
+                        "activity": {
+                            "user_ratings_total": 6828,
+                            "booking_url": null,
+                            "place_id": "ChIJ6_xhaqu65jkRUKaFuFtFV1M",
+                            "address": "Jawaharlal Nehru Rd, Sungava, Gangtok, Sikkim 737103, India",
+                            "phone": null,
+                            "category": "zoo",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.3,
+                            "duration_hours": 2.5,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 1,
+                            "estimated_cost": 200.0,
+                            "subcategory": null,
+                            "description": "Explore the Himalayan Zoological Park, home to various Himalayan fauna like Red Pandas, Snow Leopards, and Himalayan Black Bears.",
+                            "coordinates": {
+                                "lat": 27.350486399999998,
+                                "lng": 88.62693759999999
+                            },
+                            "why_recommended": "Offers a chance to see unique Himalayan wildlife in their natural habitat, contributing to conservation efforts.",
+                            "name": "Sikkim Himalayan Zoological Park",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJ6_xhaqu65jkRUKaFuFtFV1M/photos/AWn5SU7F3EDOnNdUJNN98An0rMa0t-ffN6ZeLxhv1mqYQ8xRJwAIZdRnPnnM2kSUTywaMtkokMjPzrJny7rE9aXymCwX8C6n4LPpKzbQrxRONt2We-hsuywytFHpRiyoLXQvU7g9idRSAv7jTGAFXFRQpiRxO_ZxRTN4jN3YwJOV4JKd2ykanljpdayFMhVH-Rvx-hKAeNTlAw7hAVOLI7bdw84ZZNpUzD7koCYgw-UeziAut-pUQ1qzx5UBbEFU4I-2KKVuWSG-IiNQivhelqpWW-tewoNjQn6BIYeMD8JVoXjE0A_p31padgzr3P7czrxr6w9WoETL0pT9D2HXH9uNNyHwy9jHgNP92Lyp2CuO6ylr4gYmsTrYl1qAhvRR6dt3cAccYgJdmuR-X0tA-I_nD7d5n1qFNfpE1kmKcakD5aVZFw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJ6_xhaqu65jkRUKaFuFtFV1M/photos/AWn5SU7F3EDOnNdUJNN98An0rMa0t-ffN6ZeLxhv1mqYQ8xRJwAIZdRnPnnM2kSUTywaMtkokMjPzrJny7rE9aXymCwX8C6n4LPpKzbQrxRONt2We-hsuywytFHpRiyoLXQvU7g9idRSAv7jTGAFXFRQpiRxO_ZxRTN4jN3YwJOV4JKd2ykanljpdayFMhVH-Rvx-hKAeNTlAw7hAVOLI7bdw84ZZNpUzD7koCYgw-UeziAut-pUQ1qzx5UBbEFU4I-2KKVuWSG-IiNQivhelqpWW-tewoNjQn6BIYeMD8JVoXjE0A_p31padgzr3P7czrxr6w9WoETL0pT9D2HXH9uNNyHwy9jHgNP92Lyp2CuO6ylr4gYmsTrYl1qAhvRR6dt3cAccYgJdmuR-X0tA-I_nD7d5n1qFNfpE1kmKcakD5aVZFw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJ6_xhaqu65jkRUKaFuFtFV1M/photos/AWn5SU5iOZLRz5sb-FvlOLzOfHOX4fY3XIpLQLwGhkntE6P_Mob-fV_SnSveii1a7pbFtSBetl2bpvI60UNnh7gRhXyqq-1whlyQGsCUlH0rtB9BG1rv6N9WA7eVBMSsUM-Q7hh4eivZgSU9Qyt_VM-2ypHcBEhA7FInSZ8KUPwv72gjXKl92DWZggitCphiLR3SYhi9cggeHHWXALqtBl3C2cdrrQDClxGNZBrm86s4iGbl7qIt3A8-wgtfeN653zf1b6OFdAUPNfDbMNMbfhQn0SdTh7unnSnVtKblC9M3L8mkrxcFSjiCfNzAXoRTrxFrtjkddzNfrHDJi1BgBPWmeF5eeop51XDD8v-XgXftiUo312KVKIU-O48Ry9kM_5fLaaXFyamWOcpA72OGjF1klgqB6Q7zqaIgXERuymzfqXuk7x5m/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJ6_xhaqu65jkRUKaFuFtFV1M/photos/AWn5SU5gXieiokG7SALYQsANfkKn-hB6LHhzeKAgdfRwJ3y2NLw5KRTyMSSwFR2hp0r3jQLkHdbBEpo8VaNa3zLL8Ne5FB9D0wpFF04umatw1g-mRo6NX4Uq_4EsZJeBJpgP7b0u0m5Ma91yvMydU93ivzkiY2yPX05kU_OaYcdmyNGDDJAFRQ1QC0DFvsL3TRz6kIDzQ46wxxa3X-6B6mYMPzGwwobETvf6iwRwvKTFlPyWELv0jXATWe3XGt2MIzuRPsDtxzqV3FzzUiKhfVVGfnSmoarpVwBo430j18n22flXNZCji-MNjhRxrCDZuyyQXJxF3Nm2YbPrQ6LPPqTU0xJtXeoKvOvFABa6_JiBoxwNtuz-U1BSSB8gjSyqRAkzEIBCoUAVw9LczpgiUQXbuZfQMY-xqeRreN-p6BEm71wdOWeh/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    }
+                ],
+                "transportation_notes": "Taxi to Zoological Park (approx 15-20 mins drive)."
+            },
+            "afternoon": {
+                "total_duration_hours": 3.5,
+                "estimated_cost": 1100.0,
+                "activities": [
+                    {
+                        "group_cost": 1000.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 500.0,
+                        "activity_type": "meal",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 334,
+                            "booking_url": null,
+                            "place_id": "ChIJCQwq57al5jkR5Bli3sKapeQ",
+                            "address": "Verma Building, National Highway 31A, Upper, Mahatma Gandhi Marg, Arithang, Gangtok, Sikkim 737101, India",
+                            "phone": null,
+                            "category": "restaurant",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.8,
+                            "duration_hours": 1.5,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 2,
+                            "estimated_cost": 1000.0,
+                            "subcategory": "indian_restaurant",
+                            "description": "Savor authentic North Indian cuisine for lunch at Flavours of Punjab, known for its rich and aromatic dishes.",
+                            "coordinates": {
+                                "lat": 27.3292527,
+                                "lng": 88.61188829999999
+                            },
+                            "why_recommended": "Highly-rated restaurant offering a different culinary experience from local Sikkimese, with excellent service.",
+                            "name": "Flavours of Punjab Gangtok",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJCQwq57al5jkR5Bli3sKapeQ/photos/AWn5SU7qav5QL5LlAExkyPFBPUZwy75Aq57-0FORAxB2iFRejGkXCdgumblY-pGGJoXdraGy07VxvpeFrMEu50Bz6FU68GRYjA2MD0w4Whc2MNAxgX2NwdAEQfowyxt0S4t6lh0od7fKqwFuHJIB_mJtaMPkfL1mHsifLEHoIJc9VFhctgsRzwIlDWZGtNaTV6THawWNQoKx2tDciFtczVryUO4y-bRKesUk4vLxdgRczbu_uUppvYBe3A-NJbeXvKaGZ8heqkIWMGrNZTzv0IE1VKCz2ZVsMVCp5KH9di10QWMxoA/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJCQwq57al5jkR5Bli3sKapeQ/photos/AWn5SU7qav5QL5LlAExkyPFBPUZwy75Aq57-0FORAxB2iFRejGkXCdgumblY-pGGJoXdraGy07VxvpeFrMEu50Bz6FU68GRYjA2MD0w4Whc2MNAxgX2NwdAEQfowyxt0S4t6lh0od7fKqwFuHJIB_mJtaMPkfL1mHsifLEHoIJc9VFhctgsRzwIlDWZGtNaTV6THawWNQoKx2tDciFtczVryUO4y-bRKesUk4vLxdgRczbu_uUppvYBe3A-NJbeXvKaGZ8heqkIWMGrNZTzv0IE1VKCz2ZVsMVCp5KH9di10QWMxoA/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJCQwq57al5jkR5Bli3sKapeQ/photos/AWn5SU7Os5mQ2vW88-TN9VlCA-bJp5PvYC9D2xNj9_eHdTZgWrPdT6sY_aZQ2iyFGQB1_GtvyhiR-pPHx7HeI7a4Ce9xMDWq3po9tccvE1XQ9NFYaXnuufrxoWqvhqnSzQcNbzqpsdzMLHwKWKR8rJo3rMR2GHy_FOz77yw5UwNp7EotGSNhIwLHZ7uI6qIzo4ZJS4Va5rK4JhMAJxj_-ZjoBmEmku0nCfnW7kHVikunpYice7-AyYW7PoiQ8-TSx1asngwocm3tAB18h91TUyIQ9h19wmrwMieqfEwFjkeIv0o5aA/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJCQwq57al5jkR5Bli3sKapeQ/photos/AWn5SU7eog667XNCVYK6qjd0goyX2D_82z9MSWld-x1oSyyj4Rr_ybvei_sQblXDD5Bjas7uJOAN7aJZcSZRmcRzlnRyTQ6_t1bAvPs91y0o77diP-EYHhOQeVFx6PVCso8DocLU7aHFzwCMOXaao5zhNUyxpc1V260tztmqhGaok9g6uabnk-jHWMJOA-ON-nLujpsOZAlj9logiJcyPdMdingmUMlwYFKE6mFaSFQYRqVF9LyY9a7KtrTQGrbSDGc5oEKTLcM13JhAufJmtlboFhc3OFPdUNDQ_dHkm4yBK78qeQ/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    },
+                    {
+                        "group_cost": 100.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 50.0,
+                        "activity_type": "nature_exploration",
+                        "weather_dependent": true,
+                        "activity": {
+                            "user_ratings_total": 12796,
+                            "booking_url": null,
+                            "place_id": "ChIJcYy7uy2l5jkRFbz75PzWwZE",
+                            "address": "Gangtok, Sikkim 737103, India",
+                            "phone": null,
+                            "category": "tourist_attraction",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.4,
+                            "duration_hours": 2.0,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 1,
+                            "estimated_cost": 100.0,
+                            "subcategory": "park",
+                            "description": "Visit the picturesque Ban Jhakri Falls, a multi-tiered waterfall set amidst lush greenery, perfect for relaxing and enjoying nature.",
+                            "coordinates": {
+                                "lat": 27.350764299999998,
+                                "lng": 88.6032316
+                            },
+                            "why_recommended": "A beautiful natural attraction with a cultural park showcasing the folklore of the Jhakri (witch doctors).",
+                            "name": "Ban Jhakri Falls Park",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJcYy7uy2l5jkRFbz75PzWwZE/photos/AWn5SU50vQlTDjjehq21UVuCQ9OBel_262e-WQCwC73m2JBAfwVeh-ML266eOVhrrXKjQ_WZJVns9mjz2NNW9jTgTZFpOrsvRlTO9_kkhPupi4X2T32uQmStb9yR_3tfUtoTAfdb7E0Gf00ia-n0r4beqgdDQnxHm4XvgxO5kENp9vSszN-E4JB9YGT6FMmqM1uMixIrUBDz0FpEfYYxZGAemW-uyYWA1VKtUzPRAsDCpcmLAgxHqLAKdTPD0dqyc_DnZ_jNBGjmhWII7JCUNC_-PFAzoHHytWAm6TWfnREzuRvwpQ0ls9Cmd80o1FI-xHaDf-wuldyAbzAYdd3f1FzoekoL7aq1KmNejVvEv4QJh-TWA6OQVBBQ96D35mTWzRGfVC_GfSvmnF4AF5oxahkyLLCXCMaGYxXjugrfs21wRLyoboDM/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJcYy7uy2l5jkRFbz75PzWwZE/photos/AWn5SU50vQlTDjjehq21UVuCQ9OBel_262e-WQCwC73m2JBAfwVeh-ML266eOVhrrXKjQ_WZJVns9mjz2NNW9jTgTZFpOrsvRlTO9_kkhPupi4X2T32uQmStb9yR_3tfUtoTAfdb7E0Gf00ia-n0r4beqgdDQnxHm4XvgxO5kENp9vSszN-E4JB9YGT6FMmqM1uMixIrUBDz0FpEfYYxZGAemW-uyYWA1VKtUzPRAsDCpcmLAgxHqLAKdTPD0dqyc_DnZ_jNBGjmhWII7JCUNC_-PFAzoHHytWAm6TWfnREzuRvwpQ0ls9Cmd80o1FI-xHaDf-wuldyAbzAYdd3f1FzoekoL7aq1KmNejVvEv4QJh-TWA6OQVBBQ96D35mTWzRGfVC_GfSvmnF4AF5oxahkyLLCXCMaGYxXjugrfs21wRLyoboDM/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJcYy7uy2l5jkRFbz75PzWwZE/photos/AWn5SU5TxqDuSjvbXhLQCyurQvwl8Uw1turX37fuVo0dJCINhj25DUiyzWwFFhWu9GvS0IpvVhxASCml6F_J3Cg9mAovzcxHxoSXRvrqIPBNN1tjaikpexnaOF6Ju-azqFYxFVnXYPVsEUCoQZT2XdO6Pit-0eO_MnsjdCKEvDwMWA4DOZf9o7IndtpM-0AicNetuTpX3hVSj7QM9TQ-Ht3joiNHA1s0RmpQzFerGKxv0YlQXa5N66ZcK0nCAcmDY4cMjSr4_rvtoFOC41bR-x8UlEbMo97PCcZ7RGnHOL8x3-Z6T_qVTagvfWNHhcuWmd6uoDQ_IVGJYPvmE853838oZdCplYo_aK-H8cIFo0eEV2T4m7n2UM_deNAtC457hnqouh1tkgWtskAxeBzmacEXWHTABOvAFhWFif9DoPNjYDgwPAHq/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJcYy7uy2l5jkRFbz75PzWwZE/photos/AWn5SU4kIX1OmypcCr6SkQ9fu0KF2B-2pLwctrqhp0bFtEtHPszopXD66WEtUHTIQoabuqk-PpC2HtZX13g1ktTwbl1UdhrGMqR-FpNZ1NOQwZtKqb0z311taB6QiRIkTFSIoxHfAR-w3qLSxeB-QbKwevyOrJ5R28fqV0KCUrQ74oOHvM9TYIfdvcKo_TyBIoPRzMUKmaJnJHnCUU84v40UpjcHyWHxZe1WOpxuPMWjDeF9CilBkt3FCTzBOX-0mpT0ZJ20Bhpy0sAZiqtdkiR5Aduul3Nrdt_WB8dNCUfP_DZIXRNVNdqYAZR0h-idqsF2hPXXwU2IIZdi8BNcK4QWVNNK4OVUsQ36qxS8yfDf0e4P7MR52IhQ47RoeEH6ihsWAknHXq_dOXhhNuPQ1Ds9ci_gZgDv6uw0Olxd5a8MWfQqWw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    }
+                ],
+                "transportation_notes": "Taxi from restaurant to Ban Jhakri Falls (approx 20-25 mins drive)."
+            },
+            "evening": {
+                "total_duration_hours": 1.5,
+                "estimated_cost": 1400.0,
+                "activities": [
+                    {
+                        "group_cost": 1400.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 700.0,
+                        "activity_type": "meal",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 1091,
+                            "booking_url": null,
+                            "place_id": "ChIJf2ZRIE-l5jkROGifDy8bumI",
+                            "address": "Mahatma Gandhi Marg, Arithang, Gangtok, Sikkim 737101, India",
+                            "phone": null,
+                            "category": "restaurant",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.6,
+                            "duration_hours": 1.5,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 2,
+                            "estimated_cost": 1400.0,
+                            "subcategory": "indian_restaurant",
+                            "description": "Enjoy a royal dinner experience at The Shahi Darbar, offering a blend of Indian and local Sikkimese flavors.",
+                            "coordinates": {
+                                "lat": 27.329286,
+                                "lng": 88.6122955
+                            },
+                            "why_recommended": "A well-regarded restaurant known for its quality food and comfortable dining experience, centrally located.",
+                            "name": "THE SHAHI DARBAR",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJf2ZRIE-l5jkROGifDy8bumI/photos/AWn5SU6gWpBMK8f8dNlEo3woPt5ny3sSki3Y4p6UMQ1U1kWh1LsJx-4HeVj3uXAhJnzzFQlO-aU33VbhJgYIPu00IcpqX40kBoIFcMiVIyhw-Vny46dSo0QYyyNWM1lFYCMnoGzkokuf9Ww8L7AwyncoJfYCyiFG4zE8I66Yn9reseKkGjHWESN7-LsE8OED6ytJ39LFPmM9SnMqar3NKamA0EPmAO17acc1Rhs8-CQIFSOkex3kvRk0BgsXBLXbcm_NItpTXUw7wUqnGrkmGQvO645KcKW4hWaAx8AmlnYlglWWYg/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJf2ZRIE-l5jkROGifDy8bumI/photos/AWn5SU6gWpBMK8f8dNlEo3woPt5ny3sSki3Y4p6UMQ1U1kWh1LsJx-4HeVj3uXAhJnzzFQlO-aU33VbhJgYIPu00IcpqX40kBoIFcMiVIyhw-Vny46dSo0QYyyNWM1lFYCMnoGzkokuf9Ww8L7AwyncoJfYCyiFG4zE8I66Yn9reseKkGjHWESN7-LsE8OED6ytJ39LFPmM9SnMqar3NKamA0EPmAO17acc1Rhs8-CQIFSOkex3kvRk0BgsXBLXbcm_NItpTXUw7wUqnGrkmGQvO645KcKW4hWaAx8AmlnYlglWWYg/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJf2ZRIE-l5jkROGifDy8bumI/photos/AWn5SU4XzPgGcWr4hdD2VzhRdI-LfDMi2eKGmsL8_dfqhYZ13kxqSioqumegz9qbBs80Z1ftDt34QtOhLKCFRPJfy0h2IAjt0_IZPW8qMARlWBA4LcufqPt7p6NWjmTmWD_vtospUWlS08OBNNCWt-Gw_OSBCcECWLZ8_OhPzfk4Y39TZMLkVDDZ0UmQcSXNOGxUW37nSBrUKLMStWf_KGZqx9_CczKlWrAv-AXMxH8MVH2rR58DZWzoePs65vB_RGTCvm66Vt0kRXWxIZBFHWbVvRSrakA-sWCdcBQ4blaTpOnofA/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJf2ZRIE-l5jkROGifDy8bumI/photos/AWn5SU598wM1c8zMAY0pScTN82o8cdhN1a6ISkyAUYqMZvkiMORI3je2vi8f4BTy-hn6Wnmjpb_RuorygAySa8OPQloRbEP2RFsglitwbmQJymK1-p0wolkor20MklN57ZHvDDG320KlDLryba66fvudu9QlTDp_4JsJGingopJCMGOXON9FsbUorwiJ1G_o7n2qNJVQ88FJcm0gXUJZN7_L0v9h6lbf7ubZnDsKdA-iYU5wi-wvoIQgq3QmvVRsPjm8jHYn0IP2r_OhhhgU24dLL8GB_yn43P8EsKIvE4ein_0R43_tS4ZjyZ00OVlmRa2wIcgv6sciZLPoxIAFc2hl4DxVmNit9OCqKSqSU17lKbinHiwllztb3iV2t3qXF6xVSnkFZToyaqwnZn1vDuhjuVCZ9rYjavP5H0pSqOVTSBAPgs5h_l8AgxAaPxkcl3PK/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    }
+                ],
+                "transportation_notes": "Taxi back to the city center for dinner. Short walk to hostel after dinner."
+            },
+            "daily_total_cost": "3300.0",
+            "daily_notes": [
+                "Wear comfortable shoes for walking around the zoo and falls.",
+                "Carry a light jacket as evenings can be cool.",
+                "Remember to respect wildlife at the park and avoid littering."
+            ]
+        },
+        {
+            "day_number": 3,
+            "date": "2025-11-27",
+            "theme": "Monasteries & Spiritual Exploration",
+            "morning": {
+                "total_duration_hours": 3.5,
+                "estimated_cost": 600.0,
+                "activities": [
+                    {
+                        "group_cost": 600.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 300.0,
+                        "activity_type": "meal",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 623,
+                            "booking_url": null,
+                            "place_id": "ChIJF_HcqTiv5jkRDR55xg9xNpc",
+                            "address": "Chongeytar, GRBA road, below POC Boys Hostel, Gangtok, Sikkim 737103, India",
+                            "phone": null,
+                            "category": "restaurant",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.9,
+                            "duration_hours": 1.0,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 1,
+                            "estimated_cost": 600.0,
+                            "subcategory": "vegetarian_restaurant",
+                            "description": "Enjoy a wholesome vegetarian breakfast before heading out for a day of spiritual exploration.",
+                            "coordinates": {
+                                "lat": 27.3442477,
+                                "lng": 88.64984969999999
+                            },
+                            "why_recommended": "A highly-rated pure vegetarian restaurant, offering healthy and delicious breakfast options.",
+                            "name": "Grains Pure Veg by Udaan Alpine, Gangtok",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJF_HcqTiv5jkRDR55xg9xNpc/photos/AWn5SU5H1cCugtB9iooAm6lwMfD-82aH3iLmDfcPwXAwRun0tTgDh2r_FUTADCnFrB4uyYJqEljctdXqB_YFX33JN5Z-n4nSCegYjAemoxdCBJ5joCV1KBEfMblURUflB1Rvm5rMpWwCnlnqet-tTdK6WAa0fZEn9Qobg0IZYpQNzUKSjttRc662u9TEOu1QY5WcIsbV3KX9wXl77ogYPzaaFwDPGy--Rnh4j9gTgA0kLvhLPceEmF8JOIuwmzHffMu-E6eHujkLRFeT9b9cAlTlpos4jab-gGbiZLUkOEROOFalpw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJF_HcqTiv5jkRDR55xg9xNpc/photos/AWn5SU5H1cCugtB9iooAm6lwMfD-82aH3iLmDfcPwXAwRun0tTgDh2r_FUTADCnFrB4uyYJqEljctdXqB_YFX33JN5Z-n4nSCegYjAemoxdCBJ5joCV1KBEfMblURUflB1Rvm5rMpWwCnlnqet-tTdK6WAa0fZEn9Qobg0IZYpQNzUKSjttRc662u9TEOu1QY5WcIsbV3KX9wXl77ogYPzaaFwDPGy--Rnh4j9gTgA0kLvhLPceEmF8JOIuwmzHffMu-E6eHujkLRFeT9b9cAlTlpos4jab-gGbiZLUkOEROOFalpw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJF_HcqTiv5jkRDR55xg9xNpc/photos/AWn5SU71I2XNZNkJdTfzbb-L4uTSvoK6tihPVJEx6udkvAsHZ8xLJhAlsV1ZbUp9tb6avdD4LlRv7JymgxuPk2cx-p2MPsAhPAT0e9_LcR-t12vlwBPBA3neVcI57eHTGpuX94zyS_4fOxgoAtiGaUvL-E9bv0ADQe1XEl7Rj0kN64a94jQt8XbEZneC3H2yaASaYV5SOQ92vPd4hN3b0nhjGt68N79XTmwJVpkE6NYuXgArcwESjBdZbUuhuJ-WYdxd9_5BQNXxcuD-_H4Ucwy23lka2_OjjBI5KKkQOhwET7XtQHVGeTpEGr4aMzJpknrLuqZbW4nEGqDSwvSX4ubRPafU4IDXfswYIfMsDNG6S5KjRkRtN0_QGyR1Wnqu7zcTq9cUI04cayvbWEqMUxAkH7GNGPjmrvlf1OP2boZU3Hsirg/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJF_HcqTiv5jkRDR55xg9xNpc/photos/AWn5SU7r27ZHtmXE5CtfGpXQALl29whEGmRrGjQBWPkQEhzRF38-eKjrmMfw1M5Ng0nZc-AGG9NTJr1ACItw0_oSmwfokM9ayDyUksEkdDrnEh5ddj6wYzMWbQHkfN6T06qwQ1buf1scIArKXFK5PlHNx2w499hIgKYvZR8_UId_FMvqYZuQjwRPzJX33VIqBVESabHMhI8dxRuzQ75gXYLlfF0JcPGve3Xvt9gbsCD4BV6OyHcoZCibDEGUlBSA7wsPs7qdusGmoluSLxCGw2TiYvjgR0lDmevbs1VVx3AxFcNrdO26VtwXUqxUndQ38ZFJmIVrofX6AagBsMC78uE7WubTlz7VbXqnm0z6upKlWrosy9a3MQtSd6YjOX2IE-0gunddRjhycramt6lFa0Rr-WZQ7tPAeMsurrx0QNrvEvucWQ/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    },
+                    {
+                        "group_cost": 0.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 0.0,
+                        "activity_type": "cultural_visit",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 3980,
+                            "booking_url": null,
+                            "place_id": "ChIJuYKn9nOk5jkR47eDq3bSs-E",
+                            "address": "Tsurphu Labrang Pal Karmae Sangha Dhuche, Dharma Chakra Centre, 7HQ6+FHG, Sikkim 737135, India",
+                            "phone": null,
+                            "category": "tourist_attraction",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.6,
+                            "duration_hours": 2.5,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 0,
+                            "estimated_cost": 0.0,
+                            "subcategory": "place_of_worship",
+                            "description": "Embark on a morning visit to the magnificent Rumtek Dharma Chakra Centre, one of the most significant monasteries in Sikkim, known for its unique architecture and sacred relics.",
+                            "coordinates": {
+                                "lat": 27.2886861,
+                                "lng": 88.5614622
+                            },
+                            "why_recommended": "Offers profound spiritual insight and stunning Buddhist art and architecture. A peaceful and culturally rich experience.",
+                            "name": "Rumtek Dharma Chakra Centre",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJuYKn9nOk5jkR47eDq3bSs-E/photos/AWn5SU7Zf5imLG1P2WiJkvJ7F7aRe4_ByEzt9k-_lYz_xwCylf-QKt5AnZVdViizR5zAYDTlNztIW01nThiFn5kZ-ViRzHbDsZJGnpheIY-_jRkaPj2IPInCTsez96VWpow615YweDydX8vXaz8-5ZSTX2PFebtV91It1lBfBY8xi0WSGRLHTRSBNv2IzdSF8pVEeADrr8-t16S7NmI2ajgXjktyrFWO2RowGg0b09qA_hXwAVMzm1XKwskNpV62ubKCtKrTfEZ5VdK56U0WEDAzR8xKJSzdu0kY-b0u2vcadEUsPy1V-6iF3uhZDJ577eBqxPB7PNN5fRYOIEbdxFB1PDZ64U6jxiYZiYe1SGynvdXLG7Gm-Zjc1xtrEI-ju5eUK8W7CGGKrUKUoAhuzHsOseT1dsgxbTOrNPmKkojC_sXA0Kgo/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJuYKn9nOk5jkR47eDq3bSs-E/photos/AWn5SU7Zf5imLG1P2WiJkvJ7F7aRe4_ByEzt9k-_lYz_xwCylf-QKt5AnZVdViizR5zAYDTlNztIW01nThiFn5kZ-ViRzHbDsZJGnpheIY-_jRkaPj2IPInCTsez96VWpow615YweDydX8vXaz8-5ZSTX2PFebtV91It1lBfBY8xi0WSGRLHTRSBNv2IzdSF8pVEeADrr8-t16S7NmI2ajgXjktyrFWO2RowGg0b09qA_hXwAVMzm1XKwskNpV62ubKCtKrTfEZ5VdK56U0WEDAzR8xKJSzdu0kY-b0u2vcadEUsPy1V-6iF3uhZDJ577eBqxPB7PNN5fRYOIEbdxFB1PDZ64U6jxiYZiYe1SGynvdXLG7Gm-Zjc1xtrEI-ju5eUK8W7CGGKrUKUoAhuzHsOseT1dsgxbTOrNPmKkojC_sXA0Kgo/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJuYKn9nOk5jkR47eDq3bSs-E/photos/AWn5SU6G3i8J4sONQr_YQSOwn2DkXRFGhbimMxZi04aBs8MMpVnmlyKiQayAiYz-Rj9DHCVrOe94OdwtwtvmHDT2GofoGswLk2SfG2HIjYDiI8UTnFDXVKhytmm0OZFJ3OQPYi5EGLApKb8XjSr28Hv3OfXTfCFAwee8FoVSJSBXlYjebMUYKgk4JZgwiKn896P_R8D4xyGUQUKzW7CFiwqt3VCSh0JiOiKKlj_ljohIa-aaMiyBIqbAzSNHhJ4TI1_cfGid2X20SInRnFMPcKat4FZFsRJSc2R8hSwK9TMCY5vxlBj6FeEi-go4Wy86gndml2WsCfUb9klYaD2albyE3bu0Eys2Ep5JMM9-j870-1yNjRp6uoMFxupi7L8gtSJ96rFDn0PYhXEjgGRRbd1ltffpD_0sc22_ADlZLd5wCtdr-B-A/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJuYKn9nOk5jkR47eDq3bSs-E/photos/AWn5SU5ZF_Q6rGeJByBbWccjxLsLrcaMde-swgSuQXBqSCpk85L56KFgyEv5hGhCRYTbgFvMNppcrHWr0dkEpyEmOcVw8Uq94u9vLGyGfDikOh0F3_6ovKrNTM2knpfnbHFuooINULTjGzQ-dWZaJkzTOpvd8gAluvCz1C5EIZd31rc51XK0AzQO3olB6E7CK0h8XGqr9nxvKoAPNCV-gPBSvMi6ePlq5fpEsc4wFjVNeGdBG_oIM2RFuMJlZBiD0WriyexZCh2ZsbZ3MAKuYWviGV1fczkIjQ3BAXnfkUgH7n6Gi9XvJrKrLM_6RiOqFHWKnx0lSvQFXu8ZHv-0O9Lw1SicNyyZptskfOUITITpnU9Y-GRXy0TC9yxv4TB7L_F-gAQ-EW-DTasOM6oMiYh2j-pcH-CL6gyoowrUWWFJDxj3xA/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    }
+                ],
+                "transportation_notes": "Private or shared taxi to Rumtek Monastery (approx 1 hour drive from Gangtok)."
+            },
+            "afternoon": {
+                "total_duration_hours": 3.0,
+                "estimated_cost": 1000.0,
+                "activities": [
+                    {
+                        "group_cost": 1000.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 500.0,
+                        "activity_type": "meal",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 1364,
+                            "booking_url": null,
+                            "place_id": "ChIJnbZhguel5jkRHgLrzyzwMwc",
+                            "address": "16 Adampool, Lumsey, Tadong, Gangtok, Sikkim 737102, India",
+                            "phone": null,
+                            "category": "restaurant",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.7,
+                            "duration_hours": 1.5,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 2,
+                            "estimated_cost": 1000.0,
+                            "subcategory": null,
+                            "description": "After returning from Rumtek, enjoy a delicious lunch at Queen's Pod, known for its inviting atmosphere and diverse menu.",
+                            "coordinates": {
+                                "lat": 27.324191799999998,
+                                "lng": 88.5938924
+                            },
+                            "why_recommended": "A highly-rated restaurant with a pleasant ambiance, perfect for a relaxing lunch after a monastery visit.",
+                            "name": "Queen's Pod",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJnbZhguel5jkRHgLrzyzwMwc/photos/AWn5SU4Cs7QuYUQms36fLvHFz4OB17A2irqxubVOjwBi-vZjYRp4ZohdIekaEG6gFDchu1VhMHoBpkt7rVwlHvtKyhPZxdovNynr3ii-hcjm1bRMvOIVThNii5qQQWO9oZ9SyPBrsicD5erj-APvStPKDcEAf1QYxwSsjfWvQji9Ch20qytVR5iPFFMAwZlG_s8auiU8lnS_m2mYIogVtyhwagDV1ESeqGYNyISn-Ytz8z671NYoa-OE6R2KmJ78MMtFy6_zCJcXqZ6UHLatD2G2PPKvSIJc1FxI8aisAcUOp3Ou4lrExcgfL9QsCVsBh9J1OQn4T74wvvLB4cHDsL6iReJbNlFLXckxedMtjN_TP55focsm5swdo9dLrFJwgUxafbgOO48rn3ZJQ7-RoplgMNpLtxbe0xrcZPma5rDQvjgYGB6OAc_EnNerQocjrtzd/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJnbZhguel5jkRHgLrzyzwMwc/photos/AWn5SU4Cs7QuYUQms36fLvHFz4OB17A2irqxubVOjwBi-vZjYRp4ZohdIekaEG6gFDchu1VhMHoBpkt7rVwlHvtKyhPZxdovNynr3ii-hcjm1bRMvOIVThNii5qQQWO9oZ9SyPBrsicD5erj-APvStPKDcEAf1QYxwSsjfWvQji9Ch20qytVR5iPFFMAwZlG_s8auiU8lnS_m2mYIogVtyhwagDV1ESeqGYNyISn-Ytz8z671NYoa-OE6R2KmJ78MMtFy6_zCJcXqZ6UHLatD2G2PPKvSIJc1FxI8aisAcUOp3Ou4lrExcgfL9QsCVsBh9J1OQn4T74wvvLB4cHDsL6iReJbNlFLXckxedMtjN_TP55focsm5swdo9dLrFJwgUxafbgOO48rn3ZJQ7-RoplgMNpLtxbe0xrcZPma5rDQvjgYGB6OAc_EnNerQocjrtzd/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJnbZhguel5jkRHgLrzyzwMwc/photos/AWn5SU6D2fa736GDlEEicWAFK3PxiSCzlWYTmS6R9NYkL8t-6ZpF-u4zQe-xBsZjL7jC6oCVc4zzbws0kQ5koPH1hYYel5DaUxXHeA1TXwRsoflaOKJurG6oSIYkmZoeJEHLCp-FTLWintAJmjrugUc8OFe7O0Fj5aeAJbUDCugyt7rt1BOUhJ7mGRWJaQjz_2YzuHiqski-5X1qUc-jn11Gi2vJ3Dafdb4Em1EdXu5PN0IRcVHyEPcr-10_KcGMKqjJBePg_7GVNb1SW7WBm1O3ErO9IOnSAxoccjtTeiOJ9eOS-PoNKKTuKhz_-3hCHFcpLWGd_LOMVcy1qxAzTxrPcpoiSXSjEwm4yrbr4l8CcliQZviGO-JY_Vs-TmUi2tVElDJ5LnpuegaigSDI3DNnO_BxLghM2B5lGwrWQBxQxHSz0T64/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJnbZhguel5jkRHgLrzyzwMwc/photos/AWn5SU5731NbBhHcTHfYw7Fi6d4CE2oMahSwUoYNhk_Du6Z4nhIRohIYglAHJsiu7cGWi9xYXBZqjKrytoitxCO_KNjaRj-wbuKAuN3ZiPmom2vfFrLThkeiJ10ZNuGEFROSTyn_6nH67Dxcuczk_cOduQQ9nuJPCEvQdXxck2xRviC6S_ZZXal6sQuH4-CnmP8l8EO7Nun2Mdi29fRt1md98cIsgGpDwW7WrigNNiu-wtzAo_o43cYMmp-EBZzshR83P_DMklOtqXCikeL7clX-PHpyJUnhL4nUTRAliTx-AtzYhdcLjHzXxDBvd-2gdmpumH_7O54aLi-1FEtgyV1RzN7bT_zbEcM-4SmRqCRN6rohemk8KkQ9pt8oKcXh9mDaqIZJU1018396d08cbieuoBsnSy9wSJLGigCxxBcV4NXCTPc36q3q7WscG0ujSw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    },
+                    {
+                        "group_cost": 0.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 0.0,
+                        "activity_type": "cultural_visit",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 4949,
+                            "booking_url": null,
+                            "place_id": "ChIJG_2ZaA-l5jkRcYOEzUYVuGY",
+                            "address": "8J73+4WP, M.P.Golai, Tadong, Gangtok, Sikkim 737102, India",
+                            "phone": null,
+                            "category": "tourist_attraction",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.4,
+                            "duration_hours": 1.5,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 0,
+                            "estimated_cost": 0.0,
+                            "subcategory": "place_of_worship",
+                            "description": "Visit the Do Drul Chorten, a large white stupa surrounded by 108 prayer wheels. Spin the wheels for good luck and observe the peaceful atmosphere.",
+                            "coordinates": {
+                                "lat": 27.312841499999998,
+                                "lng": 88.6048366
+                            },
+                            "why_recommended": "An important Buddhist stupa offering a serene environment and cultural experience. Beautiful architecture and spiritual significance.",
+                            "name": "Do Drul Chorten",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJG_2ZaA-l5jkRcYOEzUYVuGY/photos/AWn5SU5DzANTsk0l4g6cmNuTfvgY9vop9iJij_XEVWU7Lv94BEv9T5mGGFCteD9lj1UyxBBHzBzziiRnrFw2z_1F-jbrVbot-Q9D1DPvf8SBZ9tLJwo17gs1Cxwvlk87nreCc3CJphI_Y-nrdG_nttYAS8LGITyIPTeXmQ96cWoMQpw7gZWyOjNkkrAbecWeVaNQdknpvKXqH0uSLN6_pHwy_jkQvoZi8kIvQ9z2vo499DrAFrOU6oHJeubcBu9aD3HQ1GR_KOXVraMQ0aPv7A7LBHGN7p4zw3tdm_dKF9dYyF9e4NMgBuHbcv0o89YMsDh35MrXS2h6dskggVC1ZsrEeBc8yBMV_qH8ck3cKqQ_lYclkmcUjzd5LSqodOywQIXCJ-JzUwhDve0kDk2yauFYb29gGx_gg9czmiNPcoa_YK8/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJG_2ZaA-l5jkRcYOEzUYVuGY/photos/AWn5SU5DzANTsk0l4g6cmNuTfvgY9vop9iJij_XEVWU7Lv94BEv9T5mGGFCteD9lj1UyxBBHzBzziiRnrFw2z_1F-jbrVbot-Q9D1DPvf8SBZ9tLJwo17gs1Cxwvlk87nreCc3CJphI_Y-nrdG_nttYAS8LGITyIPTeXmQ96cWoMQpw7gZWyOjNkkrAbecWeVaNQdknpvKXqH0uSLN6_pHwy_jkQvoZi8kIvQ9z2vo499DrAFrOU6oHJeubcBu9aD3HQ1GR_KOXVraMQ0aPv7A7LBHGN7p4zw3tdm_dKF9dYyF9e4NMgBuHbcv0o89YMsDh35MrXS2h6dskggVC1ZsrEeBc8yBMV_qH8ck3cKqQ_lYclkmcUjzd5LSqodOywQIXCJ-JzUwhDve0kDk2yauFYb29gGx_gg9czmiNPcoa_YK8/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJG_2ZaA-l5jkRcYOEzUYVuGY/photos/AWn5SU7FRecIBPoIWz-Z2lJpHQBmOHxZqa_WeqPv8CvvhRt7hMjUcL50uVCS1_SaBIHL-LRPhtViihDifQ4BjCAnRsandIHtDy-u8ndavX2fH3bNvXcRhEH0TU6PsrXN1fp1MYYUdDsBVIjHCRi_91N7cR7DHPIcHbQH57Lz6FIfIsH4CcXvkH1ptyBj2Pfdko5fNVUN7Wf17aKWay691IiV0wHtoQYfX7RWrTlPf--x357v2UyqpXG3msGRETO4cWexw54dkAQSB6TdnhcmXMsY2DMH5YRgHpPW_AW97guSBxdpdRv51AhlHlm5Z9PEs7q5UX0bdxHox_h7r29V3oHTI74Lg6sMX3CMkp_St59uAFkkV6zyup3j-2BvM1abVSRLxjDWXxnHpWUo4XRAmOMb90p8aockbNJdTHowTi6FKgM/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJG_2ZaA-l5jkRcYOEzUYVuGY/photos/AWn5SU7xizqiRUWqtZl-WAi3aUq5uiFpbvm-L1ldCNsvPHpeQD-VFRY2B6Q7DyBssIpypMHo4j1Ptj0XcGpeZS9HOcLDjhLA8lss56yGLiLMeX71FIGEtlOORzBuDafUTcHlxUBSofgM5HB6fU0WqZabr7QZrF4EraQJMl5B6N99XOmC1E_a_f2aBakpEc11lXa64aqP69JpvQ668IkGon022Cix_8MYCHOlNZn0G6OWlmcNrHDdmDBvCXBj3I53r2PZ0_HVosfLdaxY1N2SjeFCmytM1HwKL8TSZmV0ILntnCO7ciMwcjI05juDRBHAKMoTBIkt249o1BYhh16T5Nb_kj-uMAdP3se34Sa3Ev3gO-qVFlUUnykHXb9VJHnvcd54EMqXMzn4NJJxZwYHV-RDtP-D7Xx1lxYJyN7nLlUyq4dWvQ/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    }
+                ],
+                "transportation_notes": "Taxi from Rumtek to Queen's Pod, then short taxi to Do Drul Chorten."
+            },
+            "evening": {
+                "total_duration_hours": 1.5,
+                "estimated_cost": 1400.0,
+                "activities": [
+                    {
+                        "group_cost": 1400.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 700.0,
+                        "activity_type": "meal",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 2877,
+                            "booking_url": null,
+                            "place_id": "ChIJZa14-hSl5jkRAD_WSLyKYIU",
+                            "address": "Mahatma Gandhi Marg, Arithang, Gangtok, Sikkim 737101, India",
+                            "phone": null,
+                            "category": "restaurant",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 3.9,
+                            "duration_hours": 1.5,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 2,
+                            "estimated_cost": 1400.0,
+                            "subcategory": null,
+                            "description": "Indulge in authentic Tibetan cuisine for dinner at Taste Of Tibet, a popular eatery for local flavors.",
+                            "coordinates": {
+                                "lat": 27.3276315,
+                                "lng": 88.6125429
+                            },
+                            "why_recommended": "Known for its traditional momos and thukpa, offering a true taste of the region. Despite slightly lower rating, high user count indicates popularity.",
+                            "name": "Taste Of Tibet",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJZa14-hSl5jkRAD_WSLyKYIU/photos/AWn5SU5sLW58AvF-BlQ3Rr_-RYlZIfCvQRxaE4hmjAnbbIprqcvID1aFIUs_F4B6YQ7eT_3c4IYnqVB1rJQEZpYPCTxc7rhwnjdymlZj9zHXaso19lEIrDOO8FIdbiEPsZC9GWKY6msR27pw1f0MaOczPyro3qk60hvQREGcIlJia-ujBWUPGmiPflLZwPo9riFWAntgm0fbANeoScxdRd7ewyuxD-Ovy4CSILbRqTWXHdiiv1WtY8CA8wrft3GQ8SIilHsSpnPCEVt3rPDAx5uAeAp7SP5UZT9itGymmBBQOfAcXoqscGsjMq9rHXvNWKmXxpOv0T0IU201j0Hy6PEN-kr_4hN4byTc2oZs-XM110zmmxpOV9DvKn5vPNUt3Zo0blkIfrkumR3e3jaQrNjI-hVeBM6PdPb2w3C79EgnaaaWZw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJZa14-hSl5jkRAD_WSLyKYIU/photos/AWn5SU5sLW58AvF-BlQ3Rr_-RYlZIfCvQRxaE4hmjAnbbIprqcvID1aFIUs_F4B6YQ7eT_3c4IYnqVB1rJQEZpYPCTxc7rhwnjdymlZj9zHXaso19lEIrDOO8FIdbiEPsZC9GWKY6msR27pw1f0MaOczPyro3qk60hvQREGcIlJia-ujBWUPGmiPflLZwPo9riFWAntgm0fbANeoScxdRd7ewyuxD-Ovy4CSILbRqTWXHdiiv1WtY8CA8wrft3GQ8SIilHsSpnPCEVt3rPDAx5uAeAp7SP5UZT9itGymmBBQOfAcXoqscGsjMq9rHXvNWKmXxpOv0T0IU201j0Hy6PEN-kr_4hN4byTc2oZs-XM110zmmxpOV9DvKn5vPNUt3Zo0blkIfrkumR3e3jaQrNjI-hVeBM6PdPb2w3C79EgnaaaWZw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJZa14-hSl5jkRAD_WSLyKYIU/photos/AWn5SU7JsBIr9HRl0qbHt-O6u3ffqE-r9YSOJUnfGZBOYtysZge0RbPleL3WVm-cpBCy9816L9z7GUsP0REMRLGEnGQONfrKhlL-YsIBONvxvcPMNwU2olBO-5yIRHztja79LLm7gEDyvQwrgW9vPZnI7O40nYR4D6-yZ9EklOprqslzhaeFKwDbpILVK3AHUR5W7b6MXVBUVMT9WWVDcbt_QPpP0Clg6BWdwNRAcgKMra_Vt4Z1LVJhvttw3ihz84Llv29MWUZd_8vrVsbxZiz70hEPNZLKgg9V7qjOZLvdxbB7wG7QawtDuKtrZU83YmQQD1zspUvQrdeYQa9PFce86849NHF9lAG1HDpMALjU4ln6uQOPfbNFdDtgBsmzkKd5MQVDIqWMNJFGz-BozZFTxNghZOL3MvlBXAxinIUr69RBUw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJZa14-hSl5jkRAD_WSLyKYIU/photos/AWn5SU70VHz89ilXjiVowFViVZDb-HQZj90L8XIJv728BIOFKZAm8lzcTy3U07kfWNnIpZeocWDuk7VqeWPUh5b-eELj1EW0F6OZDksRfkwkjDAT-GIgDPfZTQ0B3kbDmehTAu3tXcz7dAT0uNKNV_sbOFTwPTf6Jj__xT3i0IlDegUIrKZIzoPo-lTHj4LM6VtZFKc208lZP896m__lHa5wZAB7pQiHuYJl8_xdralnjICGE_moREZjyWedcgRZ28KCRiHKL5BOqJZDukt3VLAwah0sjkr1M3DSaSkCHGLc1BbYCA3kq6rq12lzTLqcEsYN4QGkJ99PlV2zRmDesgwohfZzQesq4dOTbOKdc93ie0CiD_hZdQa5m_x6kkK0JnP_jndN7b_cuWJYwLJ-M-1Hf-FpPDZe6FpZY5R_mP7lPwlnQz5OETtvGkTTR-tL46DH/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    }
+                ],
+                "transportation_notes": "Short taxi ride to dinner, then walk back to hostel."
+            },
+            "daily_total_cost": "3000.0",
+            "daily_notes": [
+                "Dress modestly when visiting monasteries.",
+                "Photography might be restricted in some areas inside the monasteries.",
+                "Be prepared for winding roads during the drive to Rumtek."
+            ]
+        },
+        {
+            "day_number": 4,
+            "date": "2025-11-28",
+            "theme": "High Altitude Adventure: Nathula Pass Excursion",
+            "morning": {
+                "total_duration_hours": 6.5,
+                "estimated_cost": 3000.0,
+                "activities": [
+                    {
+                        "group_cost": 600.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 300.0,
+                        "activity_type": "meal",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 117,
+                            "booking_url": null,
+                            "place_id": "ChIJBQX2Cm6l5jkRkYcaJnqQe-k",
+                            "address": "Sikkim Coffee Road, New Market Rd, Vishal Gaon, Gangtok, Sikkim 737101, India",
+                            "phone": null,
+                            "category": "coffee_shop",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.7,
+                            "duration_hours": 0.5,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 1,
+                            "estimated_cost": 600.0,
+                            "subcategory": "cafe",
+                            "description": "Grab a quick and early breakfast at Sikkim Coffee before embarking on your full-day high-altitude excursion.",
+                            "coordinates": {
+                                "lat": 27.324243799999998,
+                                "lng": 88.6118643
+                            },
+                            "why_recommended": "Known for its fresh coffee and light bites, ideal for an early start.",
+                            "name": "Sikkim Coffee",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJBQX2Cm6l5jkRkYcaJnqQe-k/photos/AWn5SU5xndCbIuVIIDBhkD8KhkhIakdCwRzF3tSYd_KTZGGu1f9SPvAV9ZWLh6dZjWcGUzTH0pHFqvtAwfUwy1otPsgowXLHYgYcSnL7j9SbH7C9t5EUT2IsCqPFIaqfsWbFgdb4IohUNXmTkHtWYFN_acg0AW_zv_hZWHtFP0jXLbeBbFEeaQxdeeTrwHqh7PQjLfiAeNQArzojNZ-rxhl3zDgBZyEDIgImlamKne5gAogOvXG6J2Km_mgSSYrsZBmbxbA1jgiED75JbnGNM94XJk_-hicBWA6ylGMN0XcSc7OVlvDmhhFXIE0UWDVxhB1ERNI9N9WxdvJvu1E64W2A3iNI35r7KvxntTo4b-6TJ5OIxPSBM9WX_eKvr_IDX8AvV6HVP9J5EoG7wIvPRLEI3h-LHUvidhdzKrErXlVJ9ao/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJBQX2Cm6l5jkRkYcaJnqQe-k/photos/AWn5SU5xndCbIuVIIDBhkD8KhkhIakdCwRzF3tSYd_KTZGGu1f9SPvAV9ZWLh6dZjWcGUzTH0pHFqvtAwfUwy1otPsgowXLHYgYcSnL7j9SbH7C9t5EUT2IsCqPFIaqfsWbFgdb4IohUNXmTkHtWYFN_acg0AW_zv_hZWHtFP0jXLbeBbFEeaQxdeeTrwHqh7PQjLfiAeNQArzojNZ-rxhl3zDgBZyEDIgImlamKne5gAogOvXG6J2Km_mgSSYrsZBmbxbA1jgiED75JbnGNM94XJk_-hicBWA6ylGMN0XcSc7OVlvDmhhFXIE0UWDVxhB1ERNI9N9WxdvJvu1E64W2A3iNI35r7KvxntTo4b-6TJ5OIxPSBM9WX_eKvr_IDX8AvV6HVP9J5EoG7wIvPRLEI3h-LHUvidhdzKrErXlVJ9ao/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJBQX2Cm6l5jkRkYcaJnqQe-k/photos/AWn5SU7M5v-rB39Cx-Q1nyyEQvfIRBJVEDTTyh0tpa5lK227fP5yvf5Jg-uvNIWodews2qK9uoP9-AOeKTwUYMQAmqHzUNId8e4U4ndIVpy_KdIajFzZ9bKhOKnCc6a8WgiKBYIEFQcsZ_31A_CXAGIl3QVty9QPWo7KEuSNGHeRe4i3Nygqi64oZp1sJIvbd_VfCWIqDUNTBousCWXI5592-eMmZbG9jz8BKoOk7tK73qHs6SYpcKYa4jGgh5xY-aLtq3KZxoQe5sWSmT0mr8aiWc7AJtsJocxisA-wrSMy7S_C2A/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJBQX2Cm6l5jkRkYcaJnqQe-k/photos/AWn5SU6cWAIioCK8xcrZ76Vv0eaIracnIke9Q5Z7ZAibOWDFv6nEg98TlLAP_wRzADmcBiMTOagaIZIfLxddNa4ICKZEAfIbmCFAXdKi5nTZmd7Lpoeab1B2jgEm_9zUxFmSh1HGJGAwwv1RFagmPjmKLKa_MJyc6ZvyVqrB-y_s8BESb3ayl828U_qxrgXN5Wyyu_B9ZDqZpjqTRG169eoYbvFbGajFXCHfhjOsKOeA_WpTpxflB1Oiywjtu8B3qHT-X953YYagFJO0BBwm8_mDrCF67FHlnma7jNu1ZzKhSO1iaZm9G02os2m4rZsmVJM91F-kDx22latAYenDTYQgWiD_IwdttDpIGQtkJhDJop8fKMeSiyZ_5h6oAKwXHXVpM1s_peHa4BHDYI8yA4q18rHHva7XpMELCv3wqbQMgEHyAEOz5fFK2tPYSFv5Lw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    },
+                    {
+                        "group_cost": 2400.0,
+                        "age_suitability": [
+                            "adults",
+                            "teenagers"
+                        ],
+                        "difficulty_level": "hard",
+                        "estimated_cost_per_person": 1200.0,
+                        "activity_type": "adventure",
+                        "weather_dependent": true,
+                        "activity": {
+                            "user_ratings_total": 3587,
+                            "booking_url": null,
+                            "place_id": "ChIJmyVkqaZN4TkRB5jPTtmO_Qg",
+                            "address": "Nathula, Shigatse",
+                            "phone": null,
+                            "category": "natural_feature",
+                            "website": null,
+                            "booking_required": true,
+                            "rating": 4.7,
+                            "duration_hours": 6.0,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 1,
+                            "estimated_cost": 2400.0,
+                            "subcategory": null,
+                            "description": "Embark on a full-day excursion to Nathula Pass (subject to permit and weather conditions). This high-altitude mountain pass connects India with China, offering stunning views and a glimpse into border life. Note: Requires permits obtained a day in advance.",
+                            "coordinates": {
+                                "lat": 27.386568399999998,
+                                "lng": 88.83087309999999
+                            },
+                            "why_recommended": "A thrilling high-altitude experience with panoramic views, historical significance, and unique landscapes. A highlight for adventure seekers.",
+                            "name": "Nathula",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJmyVkqaZN4TkRB5jPTtmO_Qg/photos/AWn5SU6ZW25oiE4pr5F5YLIQMOUraVBHlDHKcuG71vEx9by-tmHUly5ct8ckoAtWFgWnYeLZ6_fgMexolVCzAdKT-vAlWcz-4dern6XHJhTa-P6-c7a6O6dn7HJx1gUkxjqodWvINS_Hoyon4ELfGxj6Kyi_8L8Mrdhu0MmUDjaxqBilLyywQq8ATagrXLOtpKBGf5M7Rb8N6SqykCV2htEmFHcUnnNe58DxqlTOiBdsUV8pV2mpsekB2Fv0F9jKeiY7LWEwM5N025_JDgwontr9uYsi3xMH1XSipzT572OyE-6EQnay98jeMIICygdtB4uBy88qPEDB3tLNsyzpaEFgpg8N9KrSYPeDpqcFWpYD93Yip6XJOLZ-T2NYVmru37xXhsiqS1GPBAFz9q1sOkS_-fLrj8q_1nS4x1Hzx9De96faIw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJmyVkqaZN4TkRB5jPTtmO_Qg/photos/AWn5SU6ZW25oiE4pr5F5YLIQMOUraVBHlDHKcuG71vEx9by-tmHUly5ct8ckoAtWFgWnYeLZ6_fgMexolVCzAdKT-vAlWcz-4dern6XHJhTa-P6-c7a6O6dn7HJx1gUkxjqodWvINS_Hoyon4ELfGxj6Kyi_8L8Mrdhu0MmUDjaxqBilLyywQq8ATagrXLOtpKBGf5M7Rb8N6SqykCV2htEmFHcUnnNe58DxqlTOiBdsUV8pV2mpsekB2Fv0F9jKeiY7LWEwM5N025_JDgwontr9uYsi3xMH1XSipzT572OyE-6EQnay98jeMIICygdtB4uBy88qPEDB3tLNsyzpaEFgpg8N9KrSYPeDpqcFWpYD93Yip6XJOLZ-T2NYVmru37xXhsiqS1GPBAFz9q1sOkS_-fLrj8q_1nS4x1Hzx9De96faIw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJmyVkqaZN4TkRB5jPTtmO_Qg/photos/AWn5SU4vifkfperrp2JN-lG1OBXHVBndu-RqQVKVZxPHZG9OggxbBPwPthJUVBefKGjr263ZSlVGnLLeshFNP6CniEIn98z8jSGEmezQE8vnipU3hNM4lFw33nY5nRi5wGVnykB8reF5cBg6q5tnyNUIS5G0Ile0YntUVzrUqG0ZSPeSOICcQyE-cZgHi7mPHrlqg8icpb0Rb3oSofXmvWEKIxBTK0Whpd7bF8_XG-RRBZCH_xZ6MeSt12T9rsfXkIapDrHrf8yfldVkEn9dzZlb4IuY8imTWKA6YO9OIDr__eikF0EStX9Djdzfa71z2El_Y2RBk-VeaUdZpjyEiNM5ykKuKc7CdCG_rzc7Fy8Gwwld3Z9QLBUUtnSuj6Exit6CxD16rcdDOrEfJ4a72D3seF9yQ4t101dyfoMARVw-tFWT3ZE/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJmyVkqaZN4TkRB5jPTtmO_Qg/photos/AWn5SU4lOeuIeywozUqA_E9D6mGphL0rtEit2HCqBFU_vgFKhjIvCqX8g7MpmA86yGgnOWXZuAe7qOKIl85ApP6MHNWqjmiXY0taOKcWK3D1WT3EqyYomNkPmSt0gQe5I-Fj94gZVpZUQCFkxqwbClbyG2MDMRWhx60_cMxOKKyra080mOkyCx42dTDWq39rXSiMsdjmHT-IsGxvkiGJcnZwSIxB-t693lVmdpXOE3NjWMEZ9yw8GrM8eemSxG1pD7Df3TKIIlnlSupUM0iLi78Zu3VT9zpOm6jpYksZ2Zl5-dkyhailV7j-1x2WjvG9cOJYqQJskvMPH_G-K9ffjatroaUVqq2bFiamFA30fgIW9T6SEj49deHkmsJafLXOWvlwKSd8fl03_Y3TMyFLVv8gJYjduAVcxNAHTB1iY9vlI6JEcA/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": true
+                    }
+                ],
+                "transportation_notes": "Shared jeep/private taxi for the full day excursion to Nathula. Permit required."
+            },
+            "afternoon": {
+                "total_duration_hours": 1.0,
+                "estimated_cost": 1000.0,
+                "activities": [
+                    {
+                        "group_cost": 1000.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 500.0,
+                        "activity_type": "meal",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 434,
+                            "booking_url": null,
+                            "place_id": "ChIJ2xplBWal5jkRlJAUSZZ2Gm8",
+                            "address": "New Market, below bank of Baroda, Vishal Gaon, Gangtok, Sikkim 737101, India",
+                            "phone": null,
+                            "category": "cafe",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.6,
+                            "duration_hours": 1.0,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 2,
+                            "estimated_cost": 1000.0,
+                            "subcategory": "coffee_shop",
+                            "description": "Enjoy a late lunch or early dinner at The Local Cafe upon your return from the Nathula excursion.",
+                            "coordinates": {
+                                "lat": 27.3267779,
+                                "lng": 88.6121538
+                            },
+                            "why_recommended": "A cozy cafe offering comfort food, perfect for refueling after a long, cold day trip.",
+                            "name": "The Local Cafe",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJ2xplBWal5jkRlJAUSZZ2Gm8/photos/AWn5SU4jvZKlzCHxmHcBC63ucZFHzcrs9l01p2EcLxKm8S1CaQ3N1BDcgskrFb_TgM_B_3khWeiV2oTxmlSkaW22zEA8mEcz7L3DrDdU5Gz1JjXE-6iR_epWeRerH-v8d-olV0V7uKB50wh_ifD_bpOoZsxtBcwIfIbT9X_Z5UjWyLriLLjmcFRlBZ-3qFnxE5JkjpapfQKubix0ZH-I-LdLXXdHzI3CLRGzmj0AF7hxz_RJ__yVE_IxMa4825p8TqRPmT5cELZ5AB293guQ0PDU8cqD1c0QufjejpTM7x13nu6XKg/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJ2xplBWal5jkRlJAUSZZ2Gm8/photos/AWn5SU4jvZKlzCHxmHcBC63ucZFHzcrs9l01p2EcLxKm8S1CaQ3N1BDcgskrFb_TgM_B_3khWeiV2oTxmlSkaW22zEA8mEcz7L3DrDdU5Gz1JjXE-6iR_epWeRerH-v8d-olV0V7uKB50wh_ifD_bpOoZsxtBcwIfIbT9X_Z5UjWyLriLLjmcFRlBZ-3qFnxE5JkjpapfQKubix0ZH-I-LdLXXdHzI3CLRGzmj0AF7hxz_RJ__yVE_IxMa4825p8TqRPmT5cELZ5AB293guQ0PDU8cqD1c0QufjejpTM7x13nu6XKg/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJ2xplBWal5jkRlJAUSZZ2Gm8/photos/AWn5SU6flyDqcTuzViNXDnsr8-1axir76WCnVqioexPPbTzbH_NUQlqa-OrCuC7Na_DpN7TtkNXU1hR3K487nyxS7gQ5sxrRFYcEnUEPvWRuG8Dq-pDB81szpcMWB_3k_X47pI71hPWer_O9shR_lJxX11edp_CypD4NF1tXqgprYD3OuvtgnspwKB5Xiu6xE-wDGQTVgEyYHB3tj5nQkidtOID5-aixA9Yu_-zCWYcI1Jma_XPhzSZ1UkaWa_xh6t2e00yYuniBLyGAMDu6BeSXD644jFl3bdBOJfQrnd1GwLIW7w/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJ2xplBWal5jkRlJAUSZZ2Gm8/photos/AWn5SU42Wtyv1rCUgVRmAaaySPPfEFaeDq9bkuiU9r-fwhEA_WTKS1HU0dhbQsg4rX2xO_7zsrkjaAuz0p9aO2CvqdaXJ31tig_LxzCUjzj2CZgCeKD89wR8SVivuPiDtUY0-H7B7L0Cad2dyE5pYGRLrcIFEBCOrzlhUWBhSn17PdznXWFc3PCaNK5lIL92dQ8O_oT7o9za9eHVG35dpvkXRMDNGzD17v8rgLNOJCCkshFmmeXxhpdwCoAcAXP_-jUgSxW4otSHt1Inu6ScftTgu6GbT7_wW7RRfQNg-chniiRKMO9N9rG5NzdwmZR51EYE6MS8ecY3IcAdXNLdPWfGBZjpqwE6jV_-nmkZp5ExQ21R97vYFp_mjuLJ7uHHVIFvcVcw99vokFNZBjj3KeYbNs6kBfa9LQ820H2RB__s0cCp43_1510x05sQwk0kNQ/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    }
+                ],
+                "transportation_notes": "Return journey from Nathula to Gangtok. Drop-off near city center."
+            },
+            "evening": {
+                "total_duration_hours": 1.5,
+                "estimated_cost": 1400.0,
+                "activities": [
+                    {
+                        "group_cost": 1400.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 700.0,
+                        "activity_type": "meal",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 118,
+                            "booking_url": null,
+                            "place_id": "ChIJt2jQ3I-l5jkR6wmb5mXgwK0",
+                            "address": "Sonam Tshering Marg, Kazi Rd, Arithang, Gangtok, Sikkim 737103, India",
+                            "phone": null,
+                            "category": "restaurant",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.9,
+                            "duration_hours": 1.5,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 1,
+                            "estimated_cost": 1400.0,
+                            "subcategory": "vegetarian_restaurant",
+                            "description": "Enjoy a wholesome vegetarian dinner to warm up after the cold high-altitude trip.",
+                            "coordinates": {
+                                "lat": 27.3286488,
+                                "lng": 88.614603
+                            },
+                            "why_recommended": "A highly-rated vegetarian option for a nutritious and satisfying meal.",
+                            "name": "Grains Pure Veg by Udaan Keepsa, Gangtok",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJt2jQ3I-l5jkR6wmb5mXgwK0/photos/AWn5SU6zlfeTS7mY80CcQU05VaI-skh1Wl1aGE46zeHDiyAprb3B6fO3pZIKvGTY4sMiVuV25TIwdGcqZWcmkILKZocXEed-_MLzpzUhKjjnzAyZqU_iZoZ2OfqvULHBLK0LdF6-pjJaJQH3GMx6V6U4Qbb1_t4Wc_gq8VeqHzMGveSnO44T9OyzS2Yrw-9OuzkxmWsM7SXdeTh-MyBPIXA0KFwjp_bueOq8tKwaEAL7369tS1IwazVnDbulsIEEQvy-QUATQ3foG-mrxFxQhVeEpH7I1PifHGvnmXyYHIn7P4f71A/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJt2jQ3I-l5jkR6wmb5mXgwK0/photos/AWn5SU6zlfeTS7mY80CcQU05VaI-skh1Wl1aGE46zeHDiyAprb3B6fO3pZIKvGTY4sMiVuV25TIwdGcqZWcmkILKZocXEed-_MLzpzUhKjjnzAyZqU_iZoZ2OfqvULHBLK0LdF6-pjJaJQH3GMx6V6U4Qbb1_t4Wc_gq8VeqHzMGveSnO44T9OyzS2Yrw-9OuzkxmWsM7SXdeTh-MyBPIXA0KFwjp_bueOq8tKwaEAL7369tS1IwazVnDbulsIEEQvy-QUATQ3foG-mrxFxQhVeEpH7I1PifHGvnmXyYHIn7P4f71A/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJt2jQ3I-l5jkR6wmb5mXgwK0/photos/AWn5SU7Dr_2DT5tPf7vMlRSgyqNbMi049cPIZEX5wF3QBPxraIFaRE_3Qmrgygf7DrGTU7IolX1I1daMshU3BcEdZuMZWRdfhB3mC45EF4sU2qli85Npw_GW9dycNLx3TCnwIwxc7WddNYghOFbd1NtmxmTWr_jkbICtwsY89NSvf0lXlBKnsRRQS_76ukSeIb0Xvg9ZaeEPbhVH7-eN5F3wJCM9kk0Em3GzRUu4EB6Fm3jhafFftAhoUpuFZusJ_YeuMW3ilwdz0cm4aVe9l8VOvUbMIbGxJW7nIXbcryNsNORkAWzglmWtt4tBmWIQH-G7o8isxTjXwIKR38CJQNTRzk4NipjNstXwrDVvjBuRJUmldCXGX-yIBl4gUv6mXEFeBUj6moTEoH_iXzdyAzcey_yYt5ctELMGBMpiMjMomaq5g6BMlalJr7ssf8yDGg/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJt2jQ3I-l5jkR6wmb5mXgwK0/photos/AWn5SU7198exmum9ld2Z88BZNwKW4hcFNInzm2ASN2edwaHZR22wz7fM8XOLbK0XbgvTupqHn97zvTjH5kLYW6-pLQm3slXAWyWAqyOjof5zs5_QcQbxTVDQ23Kq-GGDFd8tkkrOrxG9UfY-cS27PNHVpXnS0QCDI67JyCjvSaBTeOgyDC3UcsKSXwLGBg5sd_QBhRNzzN1YFEqNUs6Fj0eQK3dl9gnk6FNfcIbFeGXFYcelJPKhdP-qUkDsg7wKbRF84TZ81u5m9PRRNYdEHPGTnaHREQped28GS2Bn8CJHaslsEhGyuUc4u1uQVZOWFj4yDoVb3l0_StsSEs3rh6UFSwm-LZYkz1WJziEpFkGrRTRPmAglBuRq60gNumCfxuTWUBJ5k_xYolWlA5-1yJkuQv5DG59yAUa2KEUkEeg_ey9ajA/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    }
+                ],
+                "transportation_notes": "Short taxi ride for dinner."
+            },
+            "daily_total_cost": "5400.0",
+            "daily_notes": [
+                "Nathula Pass requires permits, which should be arranged at least a day in advance through a registered tour operator. Carry valid ID proofs.",
+                "Wear multiple layers of warm clothing, including gloves, caps, and waterproof jackets, as temperatures can be very low.",
+                "Carry basic medicines for altitude sickness (e.g., Diamox) and a small oxygen cylinder if advised by your doctor.",
+                "Avoid strenuous activity at Nathula due to high altitude."
+            ]
+        },
+        {
+            "day_number": 5,
+            "date": "2025-11-29",
+            "theme": "Museum & Departure",
+            "morning": {
+                "total_duration_hours": 2.5,
+                "estimated_cost": 700.0,
+                "activities": [
+                    {
+                        "group_cost": 600.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 300.0,
+                        "activity_type": "meal",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 2421,
+                            "booking_url": null,
+                            "place_id": "ChIJ13qQCBWl5jkR-kNgRwNa-9A",
+                            "address": "Norbula Complex, Mahatma Gandhi Marg, Arithang, Gangtok, Sikkim 737101, India",
+                            "phone": null,
+                            "category": "restaurant",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.5,
+                            "duration_hours": 1.0,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 2,
+                            "estimated_cost": 600.0,
+                            "subcategory": "indian_restaurant",
+                            "description": "Enjoy a final breakfast in Gangtok at Osm Restro & Lounge before checking out from your hostel.",
+                            "coordinates": {
+                                "lat": 27.3285807,
+                                "lng": 88.6121821
+                            },
+                            "why_recommended": "A reliable choice for a good breakfast with a central location, offering a last taste of Gangtok.",
+                            "name": "Osm Restro & Lounge",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJ13qQCBWl5jkR-kNgRwNa-9A/photos/AWn5SU4V1WG5-4zAT6vkBzCG8XzcRpIt0HrZ0XKTGRtU4kA5IkiZfCt1T_jGj5kUdsrfYu6HjEw6UR0o5ymUQQhAA4mDaIcC3iBpeEmJKU10V2VV_4uneKuliqs3KUpjoSbbnI2r0gWBeYXWKYJ0CynxN357ZJoymjRflL0TTlAN2MFpwn4XlF_CQ7EGWEcUuxsqRFBWseTwBFvhijlS5HppPn9i_waAgw9p7XpiGIyviuX3mfg7EVq2FCqgB1zGUNrhxDpLety_R_-3IhZ6RJvbFO2-8y9-BKg697ogE1elG0ptVkKBKNDdC6bVnl_vBVgYeE-4cThiNCIQdz4QQbed6nZDCf5WCMSd69xeexRj67oaM5ubxKo5sjKNx4cfpv5NWfijacdR2jTS7NplbMMnlh41JuHSLZA9ZEnKr2Bs9JqcAQ/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJ13qQCBWl5jkR-kNgRwNa-9A/photos/AWn5SU4V1WG5-4zAT6vkBzCG8XzcRpIt0HrZ0XKTGRtU4kA5IkiZfCt1T_jGj5kUdsrfYu6HjEw6UR0o5ymUQQhAA4mDaIcC3iBpeEmJKU10V2VV_4uneKuliqs3KUpjoSbbnI2r0gWBeYXWKYJ0CynxN357ZJoymjRflL0TTlAN2MFpwn4XlF_CQ7EGWEcUuxsqRFBWseTwBFvhijlS5HppPn9i_waAgw9p7XpiGIyviuX3mfg7EVq2FCqgB1zGUNrhxDpLety_R_-3IhZ6RJvbFO2-8y9-BKg697ogE1elG0ptVkKBKNDdC6bVnl_vBVgYeE-4cThiNCIQdz4QQbed6nZDCf5WCMSd69xeexRj67oaM5ubxKo5sjKNx4cfpv5NWfijacdR2jTS7NplbMMnlh41JuHSLZA9ZEnKr2Bs9JqcAQ/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJ13qQCBWl5jkR-kNgRwNa-9A/photos/AWn5SU6A2sEGWDm0QuwJS0ft9P4CGoYixox0yoa7J-CKL3HSqrpMAosboKjtNDfC8aodhb4Nph1drSQR6BnvXq5ZLw59Rx6p9xxjOp4170r7iuEtAAZveQW8DNJVsimSgmQRjv5aHcIQR7UWMERz-uCsTe6QGs9DPdtEkGqOKAKmy9URmoC5Qsg0xGphx_7B22HtbQjh2oLJ_A_QHEgHlkyxl3zHV7TOLsV-ihirOvXSbNzYqbI565fZU_9ykjSVNur2FlWr5AL99i19Dcw0lHu-_BinqkCKylZ2we_I3Tpth9B7ybn8_uv7oyRj67vIDY7gg6E8ia_FtEBS5qAClDX1abMW8X-IcFMMfvhF0JBRFQnnrn6k51dnxaSu2Z7MJrrJeZsQqoAh9THXqwGzeZHA_p6ALevAswm3XkwdXtZCMK-6Mg/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJ13qQCBWl5jkR-kNgRwNa-9A/photos/AWn5SU78VXZMF6B0xytFdXuR5ivCxx6C0Fgo9r882gjUqMyZkiQPGXNv2VVzWlt3PmofrXUzDc9Mq8aRgPz6bq4IMacS1pU6P4v1XWBNXpG8GNY7Ume2rlYtSnpek0sx3zwwksuXOK3y5J08h1pwDiZENNKMQbkNcTuJfb5CBzirXyw4NjnEkyre6SY4587YubnJYnjaxbFG8bP2c9B3J54WdP1pVxg_SX0jQO9ct1qvIT230NHewwkVMxPTcWmjzegPEkNPngKMVMAa3M8eD-uxTBS_w3wF_PAC3Y-GF4pOA6h99Ipp-ZKRf_Xx97lk05apn8oRsF6LFT3MTQ-yLP7MT2NHpjNeut6ZIdRyW5HN18SdvEaLmxULtJEWpMgDt6ExcIVoCaJvROQnjCiqVdZxZzpceUTnsN0QMOxL8Wb7xnQu9ynkdxXZOOy2ikIlMcXv/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    },
+                    {
+                        "group_cost": 100.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 50.0,
+                        "activity_type": "cultural_visit",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 1530,
+                            "booking_url": null,
+                            "place_id": "ChIJFy8m6vql5jkRc28nvq_aImI",
+                            "address": "8J92+2WQ, Lingding Rd, Upper Tadong, Deorali Bazar, Gangtok, Sikkim 737102, India",
+                            "phone": null,
+                            "category": "museum",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.8,
+                            "duration_hours": 1.5,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 1,
+                            "estimated_cost": 100.0,
+                            "subcategory": null,
+                            "description": "Visit the Black Cat Museum to learn about the history and operations of the Indian Army's Black Cat Division in Sikkim.",
+                            "coordinates": {
+                                "lat": 27.317583,
+                                "lng": 88.6023622
+                            },
+                            "why_recommended": "Offers a unique historical and military perspective of the region, providing insights into India's defense in the Himalayas.",
+                            "name": "Black Cat Museum",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJFy8m6vql5jkRc28nvq_aImI/photos/AWn5SU7ASOqvwp23eAduyZ_u0uF6EwPf4tqFdmeuRl_PD1fnkzfTRgARl2kFCym6O4eKrvIpYJXp2GxcK48iJjUkkZz8z-eA2x_SkXrZbj-O_KjiRKmkDxxjug9RgkbvD56BWXumWQQ0Xs-8hH73-Oi-mFN45KcqP0Ljtnv1yiqLBm7OCwi9LeUrYTHG3wzaEOG2DbPtqMH-Weypz_RoXdU2eXW7AhUdJPGY21sgFTvMLQKjgH9UE1Dwtc8n1wgiKLksI3i-jxy_vwltK4fLdw9y975lXYqhMyhw6zs7d3N-QFVxc4fYEz0L9QysTSiGXXASYC-w7Xq1Rot77RJCwy241tZYddOxbxeI9F7GxfwSt4yfYTd5zqn7HblVqfgpkkhzhSmq8twd_IbGnvaRtTrbHnyg8ZBVJVhUGkeKvNanRafGw80A/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJFy8m6vql5jkRc28nvq_aImI/photos/AWn5SU7ASOqvwp23eAduyZ_u0uF6EwPf4tqFdmeuRl_PD1fnkzfTRgARl2kFCym6O4eKrvIpYJXp2GxcK48iJjUkkZz8z-eA2x_SkXrZbj-O_KjiRKmkDxxjug9RgkbvD56BWXumWQQ0Xs-8hH73-Oi-mFN45KcqP0Ljtnv1yiqLBm7OCwi9LeUrYTHG3wzaEOG2DbPtqMH-Weypz_RoXdU2eXW7AhUdJPGY21sgFTvMLQKjgH9UE1Dwtc8n1wgiKLksI3i-jxy_vwltK4fLdw9y975lXYqhMyhw6zs7d3N-QFVxc4fYEz0L9QysTSiGXXASYC-w7Xq1Rot77RJCwy241tZYddOxbxeI9F7GxfwSt4yfYTd5zqn7HblVqfgpkkhzhSmq8twd_IbGnvaRtTrbHnyg8ZBVJVhUGkeKvNanRafGw80A/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJFy8m6vql5jkRc28nvq_aImI/photos/AWn5SU6UW2Kelw_ojM0PsE0w99iijvKTyes1-bubr38zTjB1koFHMJ1k4zqtOj_KtuAxgHQRldYfGz68-hYmlN0CxCIVm5BJ7GtPWVjLfzmZM2JOJwCGHYFrf3SwFEoUUUS7tXtYyXpJFMoPKik4q4Z8OlxgTnPkZLyMRzNnMHZRl0Nb_LAx81JFDIBc_1vR7yEwL0JzBe1vaW5d79k4hKzTB1c1hcg1UcBXDjOBtL9QHodQfpT_uQQjepg-IXGU-TC4AE8rcFTzvOQMmD74dqtuOIPRBxV4EVIe4z0jEhzP9f3ba7u1sxwwNYFdMIB2UrVJ2ayfThuTX7MoLGeklIX97_9fM5LbZsMdFBK-xB1INp1WRuwiRsTrJrjnpvMRQMgatsFIticf0bLSsBfRJ8SIxvrzNSOmZr7xeEcw01yOjz-GZ7_H/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJFy8m6vql5jkRc28nvq_aImI/photos/AWn5SU7Zw79Vl-e3RfbdvMRFx0-XtCf0Eh0cqNuQh0qvbb1zCRkyO9oip8vA5_qmdBUbe_WJNFmRCvJpQJRwdJgeb2TBbY_cm65RpKl4zQ1pWUkIP0Xi5zs3ykqF9zrjfw93vA4XjNJsLUiym2wHBuq1J1Z3Q2if6CwKUa_TccYdZ2VQiWiWpNhHKkvTa_XR3A1hfSgZVU1q4-7NA8cnquwA2if_IybNvpC5tvY4gaOMUC5DIT5lcnpC9j48C-Qg9BZGWaKooIkVLpcAkTS78FwQXZ5eIp1icpvn2ZnqyZYm2uit0sVbbxnmBI1HErbvD2-VFOmE_aSBJT80tPDVTZQ_lHuRPL5s5LdMfudS9WirT69MaYY9md9Qz36hTB9relDKd6rxXKDubzQlf2oaCz_Iculb7TmyeskXZMPG5F9xRBoDfF8/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    }
+                ],
+                "transportation_notes": "Walk to breakfast, then short taxi ride to the museum."
+            },
+            "afternoon": {
+                "total_duration_hours": 1.0,
+                "estimated_cost": 1000.0,
+                "activities": [
+                    {
+                        "group_cost": 1000.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 500.0,
+                        "activity_type": "meal",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 434,
+                            "booking_url": null,
+                            "place_id": "ChIJ2xplBWal5jkRlJAUSZZ2Gm8",
+                            "address": "New Market, below bank of Baroda, Vishal Gaon, Gangtok, Sikkim 737101, India",
+                            "phone": null,
+                            "category": "cafe",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.6,
+                            "duration_hours": 1.0,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 2,
+                            "estimated_cost": 1000.0,
+                            "subcategory": "coffee_shop",
+                            "description": "Have a final lunch at The Local Cafe before starting your journey back.",
+                            "coordinates": {
+                                "lat": 27.3267779,
+                                "lng": 88.6121538
+                            },
+                            "why_recommended": "A comfortable spot for a quick and satisfying meal before departure.",
+                            "name": "The Local Cafe",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJ2xplBWal5jkRlJAUSZZ2Gm8/photos/AWn5SU4jvZKlzCHxmHcBC63ucZFHzcrs9l01p2EcLxKm8S1CaQ3N1BDcgskrFb_TgM_B_3khWeiV2oTxmlSkaW22zEA8mEcz7L3DrDdU5Gz1JjXE-6iR_epWeRerH-v8d-olV0V7uKB50wh_ifD_bpOoZsxtBcwIfIbT9X_Z5UjWyLriLLjmcFRlBZ-3qFnxE5JkjpapfQKubix0ZH-I-LdLXXdHzI3CLRGzmj0AF7hxz_RJ__yVE_IxMa4825p8TqRPmT5cELZ5AB293guQ0PDU8cqD1c0QufjejpTM7x13nu6XKg/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJ2xplBWal5jkRlJAUSZZ2Gm8/photos/AWn5SU4jvZKlzCHxmHcBC63ucZFHzcrs9l01p2EcLxKm8S1CaQ3N1BDcgskrFb_TgM_B_3khWeiV2oTxmlSkaW22zEA8mEcz7L3DrDdU5Gz1JjXE-6iR_epWeRerH-v8d-olV0V7uKB50wh_ifD_bpOoZsxtBcwIfIbT9X_Z5UjWyLriLLjmcFRlBZ-3qFnxE5JkjpapfQKubix0ZH-I-LdLXXdHzI3CLRGzmj0AF7hxz_RJ__yVE_IxMa4825p8TqRPmT5cELZ5AB293guQ0PDU8cqD1c0QufjejpTM7x13nu6XKg/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJ2xplBWal5jkRlJAUSZZ2Gm8/photos/AWn5SU6flyDqcTuzViNXDnsr8-1axir76WCnVqioexPPbTzbH_NUQlqa-OrCuC7Na_DpN7TtkNXU1hR3K487nyxS7gQ5sxrRFYcEnUEPvWRuG8Dq-pDB81szpcMWB_3k_X47pI71hPWer_O9shR_lJxX11edp_CypD4NF1tXqgprYD3OuvtgnspwKB5Xiu6xE-wDGQTVgEyYHB3tj5nQkidtOID5-aixA9Yu_-zCWYcI1Jma_XPhzSZ1UkaWa_xh6t2e00yYuniBLyGAMDu6BeSXD644jFl3bdBOJfQrnd1GwLIW7w/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJ2xplBWal5jkRlJAUSZZ2Gm8/photos/AWn5SU42Wtyv1rCUgVRmAaaySPPfEFaeDq9bkuiU9r-fwhEA_WTKS1HU0dhbQsg4rX2xO_7zsrkjaAuz0p9aO2CvqdaXJ31tig_LxzCUjzj2CZgCeKD89wR8SVivuPiDtUY0-H7B7L0Cad2dyE5pYGRLrcIFEBCOrzlhUWBhSn17PdznXWFc3PCaNK5lIL92dQ8O_oT7o9za9eHVG35dpvkXRMDNGzD17v8rgLNOJCCkshFmmeXxhpdwCoAcAXP_-jUgSxW4otSHt1Inu6ScftTgu6GbT7_wW7RRfQNg-chniiRKMO9N9rG5NzdwmZR51EYE6MS8ecY3IcAdXNLdPWfGBZjpqwE6jV_-nmkZp5ExQ21R97vYFp_mjuLJ7uHHVIFvcVcw99vokFNZBjj3KeYbNs6kBfa9LQ820H2RB__s0cCp43_1510x05sQwk0kNQ/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    }
+                ],
+                "transportation_notes": "Walk from museum to lunch, then pick up luggage from hostel."
+            },
+            "evening": {
+                "total_duration_hours": 1.0,
+                "estimated_cost": 1400.0,
+                "activities": [
+                    {
+                        "group_cost": 1400.0,
+                        "age_suitability": [
+                            "all_ages"
+                        ],
+                        "difficulty_level": "easy",
+                        "estimated_cost_per_person": 700.0,
+                        "activity_type": "meal",
+                        "weather_dependent": false,
+                        "activity": {
+                            "user_ratings_total": 1091,
+                            "booking_url": null,
+                            "place_id": "ChIJf2ZRIE-l5jkROGifDy8bumI",
+                            "address": "Mahatma Gandhi Marg, Arithang, Gangtok, Sikkim 737101, India",
+                            "phone": null,
+                            "category": "restaurant",
+                            "website": null,
+                            "booking_required": false,
+                            "rating": 4.6,
+                            "duration_hours": 1.0,
+                            "opening_hours": null,
+                            "has_photos": true,
+                            "price_level": 2,
+                            "estimated_cost": 1400.0,
+                            "subcategory": "indian_restaurant",
+                            "description": "Enjoy an early dinner at The Shahi Darbar before heading to Bagdogra for your flight back to Patna. This will be your last meal in Sikkim.",
+                            "coordinates": {
+                                "lat": 27.329286,
+                                "lng": 88.6122955
+                            },
+                            "why_recommended": "A last chance to enjoy the quality cuisine of Gangtok before your departure.",
+                            "name": "THE SHAHI DARBAR",
+                            "primary_photo": "https://places.googleapis.com/v1/places/ChIJf2ZRIE-l5jkROGifDy8bumI/photos/AWn5SU6gWpBMK8f8dNlEo3woPt5ny3sSki3Y4p6UMQ1U1kWh1LsJx-4HeVj3uXAhJnzzFQlO-aU33VbhJgYIPu00IcpqX40kBoIFcMiVIyhw-Vny46dSo0QYyyNWM1lFYCMnoGzkokuf9Ww8L7AwyncoJfYCyiFG4zE8I66Yn9reseKkGjHWESN7-LsE8OED6ytJ39LFPmM9SnMqar3NKamA0EPmAO17acc1Rhs8-CQIFSOkex3kvRk0BgsXBLXbcm_NItpTXUw7wUqnGrkmGQvO645KcKW4hWaAx8AmlnYlglWWYg/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                            "photo_urls": [
+                                "https://places.googleapis.com/v1/places/ChIJf2ZRIE-l5jkROGifDy8bumI/photos/AWn5SU6gWpBMK8f8dNlEo3woPt5ny3sSki3Y4p6UMQ1U1kWh1LsJx-4HeVj3uXAhJnzzFQlO-aU33VbhJgYIPu00IcpqX40kBoIFcMiVIyhw-Vny46dSo0QYyyNWM1lFYCMnoGzkokuf9Ww8L7AwyncoJfYCyiFG4zE8I66Yn9reseKkGjHWESN7-LsE8OED6ytJ39LFPmM9SnMqar3NKamA0EPmAO17acc1Rhs8-CQIFSOkex3kvRk0BgsXBLXbcm_NItpTXUw7wUqnGrkmGQvO645KcKW4hWaAx8AmlnYlglWWYg/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJf2ZRIE-l5jkROGifDy8bumI/photos/AWn5SU4XzPgGcWr4hdD2VzhRdI-LfDMi2eKGmsL8_dfqhYZ13kxqSioqumegz9qbBs80Z1ftDt34QtOhLKCFRPJfy0h2IAjt0_IZPW8qMARlWBA4LcufqPt7p6NWjmTmWD_vtospUWlS08OBNNCWt-Gw_OSBCcECWLZ8_OhPzfk4Y39TZMLkVDDZ0UmQcSXNOGxUW37nSBrUKLMStWf_KGZqx9_CczKlWrAv-AXMxH8MVH2rR58DZWzoePs65vB_RGTCvm66Vt0kRXWxIZBFHWbVvRSrakA-sWCdcBQ4blaTpOnofA/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                                "https://places.googleapis.com/v1/places/ChIJf2ZRIE-l5jkROGifDy8bumI/photos/AWn5SU598wM1c8zMAY0pScTN82o8cdhN1a6ISkyAUYqMZvkiMORI3je2vi8f4BTy-hn6Wnmjpb_RuorygAySa8OPQloRbEP2RFsglitwbmQJymK1-p0wolkor20MklN57ZHvDDG320KlDLryba66fvudu9QlTDp_4JsJGingopJCMGOXON9FsbUorwiJ1G_o7n2qNJVQ88FJcm0gXUJZN7_L0v9h6lbf7ubZnDsKdA-iYU5wi-wvoIQgq3QmvVRsPjm8jHYn0IP2r_OhhhgU24dLL8GB_yn43P8EsKIvE4ein_0R43_tS4ZjyZ00OVlmRa2wIcgv6sciZLPoxIAFc2hl4DxVmNit9OCqKSqSU17lKbinHiwllztb3iV2t3qXF6xVSnkFZToyaqwnZn1vDuhjuVCZ9rYjavP5H0pSqOVTSBAPgs5h_l8AgxAaPxkcl3PK/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                            ]
+                        },
+                        "advance_booking_required": false
+                    }
+                ],
+                "transportation_notes": "Taxi to Bagdogra Airport (approx 4-5 hours) for evening flight to Patna."
+            },
+            "daily_total_cost": "3100.0",
+            "daily_notes": [
+                "Ensure all permits are in order and hostel checkout is smooth.",
+                "Allow ample time for the journey from Gangtok to Bagdogra Airport due to mountain roads and potential traffic."
+            ]
+        }
+    ],
+    "accommodations": {
+        "primary_recommendation": {
+            "place_id": "ChIJ6bWUVSWl5jkRkM5F8dBiIlw",
+            "name": "Mellow Fellow Hostel Gangtok",
+            "address": "Hostel Mellow Fellow, Mahatma Gandhi Marg, Vishal Gaon, Gangtok, Sikkim 737101, India",
+            "category": "hostel",
+            "subcategory": null,
+            "rating": 4.8,
+            "user_ratings_total": 337,
+            "price_level": 1,
+            "estimated_cost": null,
+            "duration_hours": null,
+            "coordinates": {
+                "lat": 27.326057799999997,
+                "lng": 88.61181309999999
+            },
+            "opening_hours": null,
+            "website": null,
+            "phone": null,
+            "description": "A highly-rated hostel in Gangtok offering comfortable and social accommodation, ideal for budget travelers and those seeking an adventure vibe.",
+            "why_recommended": "Excellent reviews, central location, and vibrant atmosphere make it a perfect fit for an adventure-style trip on a hostel budget.",
+            "booking_required": true,
+            "booking_url": "https://www.booking.com/hostels/gangtok",
+            "photo_urls": [
+                "https://places.googleapis.com/v1/places/ChIJ6bWUVSWl5jkRkM5F8dBiIlw/photos/AWn5SU44kp0XybczaJXXK17TKVGSTWubj4R-OcTmg_SW1uPlomgwTBy4Ap53RhiweXvD7ysS2XC7U2E0L528qbCK8smTsgJXaJbi-_t8Jol3dA8BStoTvearm1RsFNwg4LvQmGDFPaTIIwRjnFVayenAZlUDD1-Cwm14MJdTUr8vKsfbX76QF2D0xhy_3tzT9YSX80RyODv0YgLVP4-BOM_q-EUCGeqKhcnH7RD-ZPQLxX9AARvTnmxmzbQG7T0PkF8LgOd7GDMinB-wTuNdPQ5E6NqbCu63z8ZNZij2Fd9YkdeVPQ/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                "https://places.googleapis.com/v1/places/ChIJ6bWUVSWl5jkRkM5F8dBiIlw/photos/AWn5SU6bA4C0CXyrGDQJBBpU0IrJLyQPQ2Ll5ZpaxgUcnc1Ywgk8SbXBkkfSPIh7Q8DoV3X5YFv8yyMQA10xsymj4PSldlKtfrasdfkexTAJciXr0k4mFK__aoOW3oYocke6U0yxxmkLkiPkwFjusDGJpUQFHk8qrddHpxV1lv13Z8cwP-XVBqdcnsF9MvZ1-7pgNHo_1SfRNR2IeNZBpziuhY28gxeSv2-Dhe3l32W7nZHV7LSvXDDVjjSB8tQTJLu_2zgoMRViDEci5kwXfUype4TUCSOhu2rpLyDEKbwQVeTyBZzlIEg_SsBMRrNW1uMXWFpsWim0KiaE9R1cvaxr03DWm7v3YBjTcC-_Vfx4HT2tYKyuUFqKXdXFnGtEwpZIR63tMTz1YjVTjUZqmnIu8raFKpgfEgJYLx3rKtkgQUYboMA/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                "https://places.googleapis.com/v1/places/ChIJ6bWUVSWl5jkRkM5F8dBiIlw/photos/AWn5SU4sbgfTAWXkoPUL6B1uia_5r8rWley3Gp3-X9Txmv8mYdLt4eRafRvTzjjDgPcMjMMc73P3hQ_vneYDGfNHyyB4M_SeI_ppTjK9rvJULMOwyrFoORfDQ3Ar111Y7bXtoylZdyr7kGUY4LivHRDrsk9vPvBnRD_gegKl2zeOUNo6_CuGWh_eH1yoi7w__4-ZpIJMFvt1BjwIrc4vuJqduCxruTDhxT3-WnsdnOhpV_b7jmKN-UQJcymZilOljxnha-itSxID_y0d-JSxq6n6NRa88Gbzv9-bzfDDT0rUOm_ccg/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+            ],
+            "primary_photo": "https://places.googleapis.com/v1/places/ChIJ6bWUVSWl5jkRkM5F8dBiIlw/photos/AWn5SU44kp0XybczaJXXK17TKVGSTWubj4R-OcTmg_SW1uPlomgwTBy4Ap53RhiweXvD7ysS2XC7U2E0L528qbCK8smTsgJXaJbi-_t8Jol3dA8BStoTvearm1RsFNwg4LvQmGDFPaTIIwRjnFVayenAZlUDD1-Cwm14MJdTUr8vKsfbX76QF2D0xhy_3tzT9YSX80RyODv0YgLVP4-BOM_q-EUCGeqKhcnH7RD-ZPQLxX9AARvTnmxmzbQG7T0PkF8LgOd7GDMinB-wTuNdPQ5E6NqbCu63z8ZNZij2Fd9YkdeVPQ/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+            "has_photos": true
+        },
+        "alternative_options": [
+            {
+                "place_id": "ChIJy8mZ-V2l5jkRvEExMJ2WuJc",
+                "name": "Tag Along 2.0 Hostel Gangtok",
+                "address": "near Higher Secondary School, Dhupidara, Gangtok, Sikkim 737101, India",
+                "category": "hostel",
+                "subcategory": null,
+                "rating": 4.7,
+                "user_ratings_total": 338,
+                "price_level": 1,
+                "estimated_cost": null,
+                "duration_hours": null,
+                "coordinates": {
+                    "lat": 27.3453007,
+                    "lng": 88.6114693
+                },
+                "opening_hours": null,
+                "website": null,
+                "phone": null,
+                "description": "Another well-regarded hostel in Gangtok, known for its friendly staff and clean facilities, suitable for adventure travelers.",
+                "why_recommended": "Good ratings and similar offerings to Mellow Fellow, providing a solid alternative for hostel accommodation.",
+                "booking_required": true,
+                "booking_url": "https://www.hostelworld.com/hostels/gangtok",
+                "photo_urls": [
+                    "https://places.googleapis.com/v1/places/ChIJy8mZ-V2l5jkRvEExMJ2WuJc/photos/AWn5SU5cafEFMwOa49Ulb5mopV8WQxBAFmoinViqehF4O8yhbk8aCR0x3KbJNk-kxmP0dxl9EuI9BX0TF0epeHaUWxk2GHFAU89QiGRbaljPSBer45eusiTszcDrPWBYzuBq7sio1CSEi0qPlw-vE1QJ0zQjkghiQ-bzS1_M7w5gbFOMW2ckADgh5vXweP2r4FBMDZVPMTihdrOu_wn8rUmQfT1tNizXGjiQUAZzMgOW6eSEfha-27Cugs0-ALkHE31NEHFqefQhEgtUAGnhxj_ZmfqQZC5mHiHq_LFGZfTCq7_0XA/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                    "https://places.googleapis.com/v1/places/ChIJy8mZ-V2l5jkRvEExMJ2WuJc/photos/AWn5SU4tGA2cVKM3AVoaxBkhocagte3SwQrjCE28UtXkqb0PLYx0jPOr67oXxPgerodJqGJNjYHewroZtKvXAR0HwjCmClu_cW96PjZe9cVTPRiqAlCLSCNaG0dxwyzNxOYM60MwYklCyVGpKURz42Z0fdf60S7Q6kqrOCaUFHPyR0GU7JoRH4310XVe2tCQoEANX3VaBiaxAjj2nx5e2I91wPaWMB42szgqdRFMd0d1BbnepallNAXTpB24iJyTuBJKwdangWPIVDhqwLA8GB3ZNCJyqg9xNBz7YsaxGOJH2Rwv2g/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                    "https://places.googleapis.com/v1/places/ChIJy8mZ-V2l5jkRvEExMJ2WuJc/photos/AWn5SU4W9Sv_cGyv4MpY7PlRmG2JyWzvoDlyVnekG0tiVeOnVl8fOY3_Ar2fWprSmT1_y_GRoRuH7rDRyOWT3WFzGG30v9jFY8e_DaBUr5b9vALhVzsNinKizjoBWfAuG5kYzog8nYLRhYEFidxxfeX3HcxL-y5nnwUIM2PtoVFGDfqmtNO96hBhicoIzBqv9nQyxa-66qXqAncPszdP8MdJYixNSFUmR88W_AdDoG8aaGQ9jInqj1XvRgJ7-WyXswUdokPu1R3yOOeamnhkaRk2VWhceO-mnwFlXkp9K5zoaGYBEnBcEqIPVNSc4hwzGM9h2Fn9MuaTUQUYW5dWYCkn1ndszI250dd0FJHyb4hHVrQd14a1saCJTYS5k4tYDAd06rvFm3NMBdMo49IXXU6W0D2aTS7y8OPqkqnfhq5HCZS35A/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+                ],
+                "primary_photo": "https://places.googleapis.com/v1/places/ChIJy8mZ-V2l5jkRvEExMJ2WuJc/photos/AWn5SU5cafEFMwOa49Ulb5mopV8WQxBAFmoinViqehF4O8yhbk8aCR0x3KbJNk-kxmP0dxl9EuI9BX0TF0epeHaUWxk2GHFAU89QiGRbaljPSBer45eusiTszcDrPWBYzuBq7sio1CSEi0qPlw-vE1QJ0zQjkghiQ-bzS1_M7w5gbFOMW2ckADgh5vXweP2r4FBMDZVPMTihdrOu_wn8rUmQfT1tNizXGjiQUAZzMgOW6eSEfha-27Cugs0-ALkHE31NEHFqefQhEgtUAGnhxj_ZmfqQZC5mHiHq_LFGZfTCq7_0XA/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                "has_photos": true
+            }
+        ],
+        "booking_platforms": [
+            {
+                "url": "https://www.booking.com/hostels/gangtok",
+                "name": "Booking.com"
+            },
+            {
+                "url": "https://www.hostelworld.com/hostels/gangtok",
+                "name": "Hostelworld"
+            }
+        ],
+        "estimated_cost_per_night": "1000.0",
+        "total_accommodation_cost": "4000.0"
+    },
+    "budget_breakdown": {
+        "total_budget": "50000.0",
+        "currency": "INR",
+        "accommodation_cost": "4000.0",
+        "food_cost": "15000.0",
+        "activities_cost": "9000.0",
+        "transport_cost": "19000.0",
+        "miscellaneous_cost": "3000.0",
+        "daily_budget_suggestion": "10000.0",
+        "cost_per_person": "25000.0",
+        "budget_tips": [
+            "Opt for shared taxis for inter-city and local travel to save costs.",
+            "Eat at local eateries and dhabas for authentic and affordable meals.",
+            "Carry a reusable water bottle to reduce plastic waste and save money.",
+            "Book flights and accommodation well in advance for better rates."
+        ]
+    },
+    "transportation": {
+        "airport_transfers": {
+            "arrival": {
+                "mode": "shared_taxi",
+                "estimated_cost": 3500.0,
+                "notes": "Shared taxi from Bagdogra Airport (IXB) to Gangtok. Cost is for 2 people."
+            },
+            "departure": {
+                "mode": "shared_taxi",
+                "estimated_cost": 3500.0,
+                "notes": "Shared taxi from Gangtok to Bagdogra Airport (IXB). Cost is for 2 people."
+            }
+        },
+        "local_transport_guide": {
+            "modes": [
+                "shared_taxi",
+                "private_taxi",
+                "walking"
+            ],
+            "notes": "Within Gangtok, short distances can be covered by walking. For longer distances or specific attractions, shared taxis are economical. Private taxis can be hired for convenience but are more expensive. For high-altitude trips like Nathula, shared jeeps are common and cost-effective."
+        },
+        "daily_transport_costs": {
+            "Day 3": "1500.0",
+            "Day 5": "3500.0",
+            "Day 1": "3500.0",
+            "Day 2": "1000.0",
+            "Day 4": "2500.0"
+        },
+        "recommended_apps": [
+            "Google Maps (for navigation)",
+            "RedBus (for bus bookings if considering)",
+            "MakeMyTrip/Goibibo (for flight/hotel bookings)"
+        ]
+    },
+    "map_data": {
+        "interactive_map_embed_url": "https://www.google.com/maps?q=27.3389,88.6065",
+        "daily_route_maps": {
+            "Day 3": "https://www.google.com/maps/dir/27.3442477,88.64984969999999/27.2886861,88.5614622/27.324191799999998,88.5938924/27.312841499999998,88.6048366/27.3276315,88.6125429",
+            "Day 5": "https://www.google.com/maps/dir/27.3285807,88.6121821/27.317583,88.6023622/27.3267779,88.6121538/27.329286,88.6122955",
+            "Day 1": "https://www.google.com/maps/dir/27.328946199999997,88.612202/27.331665599999997,88.61628189999999/27.3285807,88.6121821/27.3283472,88.6124316/27.3178355,88.6066283/27.3283639,88.6129696",
+            "Day 2": "https://www.google.com/maps/dir/27.3261076,88.61191989999999/27.350486399999998,88.62693759999999/27.3292527,88.61188829999999/27.350764299999998,88.6032316/27.329286,88.6122955",
+            "Day 4": "https://www.google.com/maps/dir/27.324243799999998,88.6118643/27.386568399999998,88.83087309999999/27.3267779,88.6121538/27.3286488,88.614603"
+        }
+    },
+    "local_information": {
+        "currency_info": {
+            "currency": "Indian Rupee (INR)",
+            "symbol": "₹",
+            "exchange_rate": "1 INR = 1 INR (local currency)",
+            "payment_methods": [
+                "Cash",
+                "UPI",
+                "Credit Card (limited)",
+                "Debit Card (limited)"
+            ]
+        },
+        "language_info": {
+            "primary": "Nepali",
+            "notes": "English is widely understood in tourist areas and by younger generations. Hindi is also commonly spoken.",
+            "secondary": "Sikkimese (Bhutia), Lepcha, Hindi, English"
+        },
+        "cultural_etiquette": [
+            "Remove shoes before entering monasteries and temples.",
+            "Dress modestly, especially when visiting religious sites.",
+            "Always walk clockwise around chortens, stupas, and prayer wheels.",
+            "Ask for permission before taking photos of people, especially monks or during religious ceremonies.",
+            "Be respectful of local customs and traditions."
+        ],
+        "safety_tips": [
+            "Sikkim is generally safe, but always be aware of your surroundings.",
+            "Avoid traveling alone at night in secluded areas.",
+            "Keep valuables secure and out of sight.",
+            "Be cautious on winding mountain roads, especially during monsoon season.",
+            "Stay hydrated and take precautions against altitude sickness."
+        ],
+        "emergency_contacts": {
+            "Fire": "101",
+            "Tourist Information Centre (Gangtok)": "+91-3592-201385",
+            "Police": "100",
+            "Ambulance": "102"
+        },
+        "local_customs": [
+            "Greeting with 'Namaste' or 'Tashi Delek' (in Tibetan communities) is common.",
+            "Hospitality is highly valued; accept refreshments if offered.",
+            "Bargaining is common in local markets but not in fixed-price shops.",
+            "Avoid public displays of affection."
+        ],
+        "tipping_guidelines": {
+            "Restaurants": "5-10% if service charge is not included.",
+            "Tour Guides": "200-500 INR per day, depending on service quality.",
+            "Hotel Staff": "50-100 INR per bag for porters; 100-200 INR per day for housekeeping.",
+            "Taxi Drivers": "Rounding up the fare is common, or 50-100 INR for longer trips."
+        },
+        "useful_phrases": {
+            "Water": "Pani",
+            "Delicious": "Mitho Chha (Nepali)",
+            "Thank you": "Dhanyawaad (Hindi) / Thuk-je-che (Tibetan)",
+            "Hello": "Namaste / Tashi Delek",
+            "How are you?": "Kasto Chha? (Nepali)"
+        }
+    },
+    "travel_options": [
+        {
+            "mode": "multi-leg",
+            "details": "Comfort Option: Flight from Patna to Bagdogra, followed by a private taxi to Gangtok.",
+            "estimated_cost": "17000.0",
+            "booking_link": "https://www.makemytrip.com/flights",
+            "legs": [
+                {
+                    "mode": "flight",
+                    "from_location": "Patna (PAT)",
+                    "to_location": "Bagdogra (IXB)",
+                    "estimated_cost": "6000.0",
+                    "duration_hours": 1.5,
+                    "booking_link": "https://www.makemytrip.com/flights",
+                    "notes": "Direct flight, prices vary based on booking time."
+                },
+                {
+                    "mode": "cab",
+                    "from_location": "Bagdogra Airport (IXB)",
+                    "to_location": "Gangtok",
+                    "estimated_cost": "2500.0",
+                    "duration_hours": 4.5,
+                    "booking_link": "https://www.goibibo.com/cabs/",
+                    "notes": "Private taxi, offers comfort and direct travel. Cost is per vehicle, split for 2 people."
+                }
+            ]
+        },
+        {
+            "mode": "multi-leg",
+            "details": "Value Option: Train from Patna to New Jalpaiguri, followed by a shared taxi to Gangtok.",
+            "estimated_cost": "5000.0",
+            "booking_link": "https://www.irctc.co.in/",
+            "legs": [
+                {
+                    "mode": "train",
+                    "from_location": "Patna Junction (PNBE)",
+                    "to_location": "New Jalpaiguri (NJP)",
+                    "estimated_cost": "1000.0",
+                    "duration_hours": 10.0,
+                    "booking_link": "https://www.irctc.co.in/",
+                    "notes": "Overnight train journey, sleeper or 3AC class."
+                },
+                {
+                    "mode": "cab",
+                    "from_location": "New Jalpaiguri (NJP)",
+                    "to_location": "Gangtok",
+                    "estimated_cost": "1500.0",
+                    "duration_hours": 4.0,
+                    "booking_link": "https://www.goibibo.com/cabs/",
+                    "notes": "Shared taxi from NJP station to Gangtok. Cost is per person."
+                }
+            ]
+        },
+        {
+            "mode": "multi-leg",
+            "details": "Budget Option: Overnight bus from Patna to Siliguri, followed by a shared jeep to Gangtok.",
+            "estimated_cost": "2500.0",
+            "booking_link": "https://www.redbus.in/",
+            "legs": [
+                {
+                    "mode": "bus",
+                    "from_location": "Patna",
+                    "to_location": "Siliguri",
+                    "estimated_cost": "800.0",
+                    "duration_hours": 12.0,
+                    "booking_link": "https://www.redbus.in/",
+                    "notes": "Overnight sleeper or semi-sleeper bus."
+                },
+                {
+                    "mode": "bus",
+                    "from_location": "Siliguri",
+                    "to_location": "Gangtok",
+                    "estimated_cost": "450.0",
+                    "duration_hours": 5.0,
+                    "booking_link": "https://www.redbus.in/",
+                    "notes": "Shared jeep or bus from Siliguri SNT bus stand to Gangtok. Cost is per person."
+                }
+            ]
+        }
+    ],
+    "packing_suggestions": [
+        "Warm clothing (layers, thermal wear, woolen socks, gloves, cap) as November can be cold.",
+        "Waterproof jacket and umbrella (weather can be unpredictable).",
+        "Comfortable walking shoes/hiking boots.",
+        "Sunscreen, sunglasses, and a hat.",
+        "Basic first-aid kit (including medicines for headache, cold, and altitude sickness if prone).",
+        "Power bank for electronics.",
+        "Reusable water bottle.",
+        "Camera and extra batteries.",
+        "Valid ID proofs and necessary permits (especially for Nathula)."
+    ],
+    "weather_forecast_summary": "November in Sikkim marks the beginning of winter. Expect clear skies, sunny days, and cold nights. Daytime temperatures range from 10-18°C, while nights can drop to 0-5°C, especially at higher altitudes. Minimal rainfall is expected.",
+    "seasonal_considerations": [
+        "November offers clear mountain views, making it ideal for photography.",
+        "It's peak tourist season, so book accommodation and permits in advance.",
+        "Higher altitude areas like Nathula will be very cold; dress accordingly.",
+        "Road conditions are generally good, but landslides are possible in mountain regions."
+    ],
+    "photography_spots": [
+        {
+            "place_id": "ChIJcYy7uy2l5jkRFbz75PzWwZE",
+            "name": "Ban Jhakri Falls Park",
+            "address": "Gangtok, Sikkim 737103, India",
+            "category": "tourist_attraction",
+            "subcategory": "park",
+            "rating": 4.4,
+            "user_ratings_total": 12796,
+            "price_level": 1,
+            "estimated_cost": null,
+            "duration_hours": null,
+            "coordinates": {
+                "lat": 27.350764299999998,
+                "lng": 88.6032316
+            },
+            "opening_hours": null,
+            "website": null,
+            "phone": null,
+            "description": "The multi-tiered waterfall and the surrounding park offer excellent opportunities for nature photography.",
+            "why_recommended": "Picturesque waterfall, lush greenery, and cultural statues provide diverse photo ops.",
+            "booking_required": false,
+            "booking_url": null,
+            "photo_urls": [
+                "https://places.googleapis.com/v1/places/ChIJcYy7uy2l5jkRFbz75PzWwZE/photos/AWn5SU50vQlTDjjehq21UVuCQ9OBel_262e-WQCwC73m2JBAfwVeh-ML266eOVhrrXKjQ_WZJVns9mjz2NNW9jTgTZFpOrsvRlTO9_kkhPupi4X2T32uQmStb9yR_3tfUtoTAfdb7E0Gf00ia-n0r4beqgdDQnxHm4XvgxO5kENp9vSszN-E4JB9YGT6FMmqM1uMixIrUBDz0FpEfYYxZGAemW-uyYWA1VKtUzPRAsDCpcmLAgxHqLAKdTPD0dqyc_DnZ_jNBGjmhWII7JCUNC_-PFAzoHHytWAm6TWfnREzuRvwpQ0ls9Cmd80o1FI-xHaDf-wuldyAbzAYdd3f1FzoekoL7aq1KmNejVvEv4QJh-TWA6OQVBBQ96D35mTWzRGfVC_GfSvmnF4AF5oxahkyLLCXCMaGYxXjugrfs21wRLyoboDM/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                "https://places.googleapis.com/v1/places/ChIJcYy7uy2l5jkRFbz75PzWwZE/photos/AWn5SU5TxqDuSjvbXhLQCyurQvwl8Uw1turX37fuVo0dJCINhj25DUiyzWwFFhWu9GvS0IpvVhxASCml6F_J3Cg9mAovzcxHxoSXRvrqIPBNN1tjaikpexnaOF6Ju-azqFYxFVnXYPVsEUCoQZT2XdO6Pit-0eO_MnsjdCKEvDwMWA4DOZf9o7IndtpM-0AicNetuTpX3hVSj7QM9TQ-Ht3joiNHA1s0RmpQzFerGKxv0YlQXa5N66ZcK0nCAcmDY4cMjSr4_rvtoFOC41bR-x8UlEbMo97PCcZ7RGnHOL8x3-Z6T_qVTagvfWNHhcuWmd6uoDQ_IVGJYPvmE853838oZdCplYo_aK-H8cIFo0eEV2T4m7n2UM_deNAtC457hnqouh1tkgWtskAxeBzmacEXWHTABOvAFhWFif9DoPNjYDgwPAHq/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                "https://places.googleapis.com/v1/places/ChIJcYy7uy2l5jkRFbz75PzWwZE/photos/AWn5SU4kIX1OmypcCr6SkQ9fu0KF2B-2pLwctrqhp0bFtEtHPszopXD66WEtUHTIQoabuqk-PpC2HtZX13g1ktTwbl1UdhrGMqR-FpNZ1NOQwZtKqb0z311taB6QiRIkTFSIoxHfAR-w3qLSxeB-QbKwevyOrJ5R28fqV0KCUrQ74oOHvM9TYIfdvcKo_TyBIoPRzMUKmaJnJHnCUU84v40UpjcHyWHxZe1WOpxuPMWjDeF9CilBkt3FCTzBOX-0mpT0ZJ20Bhpy0sAZiqtdkiR5Aduul3Nrdt_WB8dNCUfP_DZIXRNVNdqYAZR0h-idqsF2hPXXwU2IIZdi8BNcK4QWVNNK4OVUsQ36qxS8yfDf0e4P7MR52IhQ47RoeEH6ihsWAknHXq_dOXhhNuPQ1Ds9ci_gZgDv6uw0Olxd5a8MWfQqWw/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+            ],
+            "primary_photo": "https://places.googleapis.com/v1/places/ChIJcYy7uy2l5jkRFbz75PzWwZE/photos/AWn5SU50vQlTDjjehq21UVuCQ9OBel_262e-WQCwC73m2JBAfwVeh-ML266eOVhrrXKjQ_WZJVns9mjz2NNW9jTgTZFpOrsvRlTO9_kkhPupi4X2T32uQmStb9yR_3tfUtoTAfdb7E0Gf00ia-n0r4beqgdDQnxHm4XvgxO5kENp9vSszN-E4JB9YGT6FMmqM1uMixIrUBDz0FpEfYYxZGAemW-uyYWA1VKtUzPRAsDCpcmLAgxHqLAKdTPD0dqyc_DnZ_jNBGjmhWII7JCUNC_-PFAzoHHytWAm6TWfnREzuRvwpQ0ls9Cmd80o1FI-xHaDf-wuldyAbzAYdd3f1FzoekoL7aq1KmNejVvEv4QJh-TWA6OQVBBQ96D35mTWzRGfVC_GfSvmnF4AF5oxahkyLLCXCMaGYxXjugrfs21wRLyoboDM/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+            "has_photos": true
+        },
+        {
+            "place_id": "ChIJG_2ZaA-l5jkRcYOEzUYVuGY",
+            "name": "Do Drul Chorten",
+            "address": "8J73+4WP, M.P.Golai, Tadong, Gangtok, Sikkim 737102, India",
+            "category": "tourist_attraction",
+            "subcategory": "place_of_worship",
+            "rating": 4.4,
+            "user_ratings_total": 4949,
+            "price_level": 0,
+            "estimated_cost": null,
+            "duration_hours": null,
+            "coordinates": {
+                "lat": 27.312841499999998,
+                "lng": 88.6048366
+            },
+            "opening_hours": null,
+            "website": null,
+            "phone": null,
+            "description": "The white stupa, colorful prayer flags, and prayer wheels create a serene and vibrant photo setting.",
+            "why_recommended": "Iconic Buddhist landmark with rich colors and cultural elements for photography.",
+            "booking_required": false,
+            "booking_url": null,
+            "photo_urls": [
+                "https://places.googleapis.com/v1/places/ChIJG_2ZaA-l5jkRcYOEzUYVuGY/photos/AWn5SU5DzANTsk0l4g6cmNuTfvgY9vop9iJij_XEVWU7Lv94BEv9T5mGGFCteD9lj1UyxBBHzBzziiRnrFw2z_1F-jbrVbot-Q9D1DPvf8SBZ9tLJwo17gs1Cxwvlk87nreCc3CJphI_Y-nrdG_nttYAS8LGITyIPTeXmQ96cWoMQpw7gZWyOjNkkrAbecWeVaNQdknpvKXqH0uSLN6_pHwy_jkQvoZi8kIvQ9z2vo499DrAFrOU6oHJeubcBu9aD3HQ1GR_KOXVraMQ0aPv7A7LBHGN7p4zw3tdm_dKF9dYyF9e4NMgBuHbcv0o89YMsDh35MrXS2h6dskggVC1ZsrEeBc8yBMV_qH8ck3cKqQ_lYclkmcUjzd5LSqodOywQIXCJ-JzUwhDve0kDk2yauFYb29gGx_gg9czmiNPcoa_YK8/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                "https://places.googleapis.com/v1/places/ChIJG_2ZaA-l5jkRcYOEzUYVuGY/photos/AWn5SU7FRecIBPoIWz-Z2lJpHQBmOHxZqa_WeqPv8CvvhRt7hMjUcL50uVCS1_SaBIHL-LRPhtViihDifQ4BjCAnRsandIHtDy-u8ndavX2fH3bNvXcRhEH0TU6PsrXN1fp1MYYUdDsBVIjHCRi_91N7cR7DHPIcHbQH57Lz6FIfIsH4CcXvkH1ptyBj2Pfdko5fNVUN7Wf17aKWay691IiV0wHtoQYfX7RWrTlPf--x357v2UyqpXG3msGRETO4cWexw54dkAQSB6TdnhcmXMsY2DMH5YRgHpPW_AW97guSBxdpdRv51AhlHlm5Z9PEs7q5UX0bdxHox_h7r29V3oHTI74Lg6sMX3CMkp_St59uAFkkV6zyup3j-2BvM1abVSRLxjDWXxnHpWUo4XRAmOMb90p8aockbNJdTHowTi6FKgM/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+                "https://places.googleapis.com/v1/places/ChIJG_2ZaA-l5jkRcYOEzUYVuGY/photos/AWn5SU7xizqiRUWqtZl-WAi3aUq5uiFpbvm-L1ldCNsvPHpeQD-VFRY2B6Q7DyBssIpypMHo4j1Ptj0XcGpeZS9HOcLDjhLA8lss56yGLiLMeX71FIGEtlOORzBuDafUTcHlxUBSofgM5HB6fU0WqZabr7QZrF4EraQJMl5B6N99XOmC1E_a_f2aBakpEc11lXa64aqP69JpvQ668IkGon022Cix_8MYCHOlNZn0G6OWlmcNrHDdmDBvCXBj3I53r2PZ0_HVosfLdaxY1N2SjeFCmytM1HwKL8TSZmV0ILntnCO7ciMwcjI05juDRBHAKMoTBIkt249o1BYhh16T5Nb_kj-uMAdP3se34Sa3Ev3gO-qVFlUUnykHXb9VJHnvcd54EMqXMzn4NJJxZwYHV-RDtP-D7Xx1lxYJyN7nLlUyq4dWvQ/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk"
+            ],
+            "primary_photo": "https://places.googleapis.com/v1/places/ChIJG_2ZaA-l5jkRcYOEzUYVuGY/photos/AWn5SU5DzANTsk0l4g6cmNuTfvgY9vop9iJij_XEVWU7Lv94BEv9T5mGGFCteD9lj1UyxBBHzBzziiRnrFw2z_1F-jbrVbot-Q9D1DPvf8SBZ9tLJwo17gs1Cxwvlk87nreCc3CJphI_Y-nrdG_nttYAS8LGITyIPTeXmQ96cWoMQpw7gZWyOjNkkrAbecWeVaNQdknpvKXqH0uSLN6_pHwy_jkQvoZi8kIvQ9z2vo499DrAFrOU6oHJeubcBu9aD3HQ1GR_KOXVraMQ0aPv7A7LBHGN7p4zw3tdm_dKF9dYyF9e4NMgBuHbcv0o89YMsDh35MrXS2h6dskggVC1ZsrEeBc8yBMV_qH8ck3cKqQ_lYclkmcUjzd5LSqodOywQIXCJ-JzUwhDve0kDk2yauFYb29gGx_gg9czmiNPcoa_YK8/media?maxWidthPx=800&key=AIzaSyDBm1tVl_dbC6dDBhf-fRbkRP6rsdUsrNk",
+            "has_photos": true
+        }
+    ],
+    "hidden_gems": [],
+    "alternative_itineraries": {},
+    "customization_suggestions": [
+        "If time permits, consider extending your trip to include North Sikkim (Lachen, Lachung, Gurudongmar Lake) for more intense adventure, though this requires more days and a significantly higher budget.",
+        "For a more relaxed pace, spend an extra day in Gangtok exploring local cafes, shopping, or visiting nearby viewpoints.",
+        "If interested in trekking, inquire about short day treks around Gangtok, suitable for your 'Highly Active' preference.",
+        "Explore local culinary classes to learn about Sikkimese cuisine."
+    ],
+    "last_updated": "2025-11-25T16:08:45.316793",
+    "data_freshness_score": 0.9,
+    "confidence_score": 0.95,
+    "photos_enriched_at": "2025-11-22T22:15:22.874688",
+    "photo_enrichment_version": "1.0"
+}

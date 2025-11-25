@@ -175,6 +175,13 @@ export interface AppState {
   chatError: string | null;
   isTyping: boolean;
 
+  // Trip update state (from WebSocket)
+  tripUpdateData: {
+    tripId: string;
+    itinerary: unknown;
+    timestamp: number;
+  } | null;
+
   // Chat actions
   connectChat: (tripId: string) => Promise<void>;
   disconnectChat: () => void;
@@ -182,6 +189,9 @@ export interface AppState {
   addAiChatMessage: (messageText: string) => void;
   clearChatMessages: () => void;
   setChatError: (error: string | null) => void;
+  
+  // Trip update actions (from WebSocket)
+  clearTripUpdateData: () => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -212,6 +222,9 @@ export const useAppStore = create<AppState>()(
       webSocket: null,
       chatError: null,
       isTyping: false,
+      
+      // Trip update initial state (from WebSocket)
+      tripUpdateData: null,
       
       // User actions
       setUser: (user) => set({ user }),
@@ -794,6 +807,21 @@ export const useAppStore = create<AppState>()(
                 return;
               }
 
+              // Handle trip updated event (from AI assistant edits)
+              if (data.type === 'trip_updated') {
+                console.log('[Chat] Trip updated event received:', data.trip_id);
+                
+                // Store the updated itinerary data in state
+                set({
+                  tripUpdateData: {
+                    tripId: data.trip_id || tripId,
+                    itinerary: data.updated_itinerary,
+                    timestamp: Date.now(),
+                  },
+                });
+                return;
+              }
+
               // Handle AI message
               if (data.type === 'message' && data.message) {
                 // Decode the message if it contains escaped sequences
@@ -919,6 +947,11 @@ export const useAppStore = create<AppState>()(
 
       setChatError: (error: string | null) => {
         set({ chatError: error });
+      },
+
+      // Trip update actions (from WebSocket)
+      clearTripUpdateData: () => {
+        set({ tripUpdateData: null });
       },
     }),
     {

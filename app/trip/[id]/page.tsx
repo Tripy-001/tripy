@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/ban-ts-comment */
 
 import React from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -25,6 +25,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { toast } from 'sonner';
 
 type Trip = unknown;
 
@@ -50,7 +51,7 @@ export default function TripDetailPage(props: TripPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tripId, setTripId] = useState<string | null>(null);
-  const { firebaseUser, authLoading } = useAppStore();
+  const { firebaseUser, authLoading, tripUpdateData, clearTripUpdateData } = useAppStore();
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [weatherError, setWeatherError] = useState<string | null>(null);
   const [weatherMap, setWeatherMap] = useState<Record<string, {
@@ -211,6 +212,63 @@ export default function TripDetailPage(props: TripPageProps) {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trip?.id, tripId, todosLoading, todosInitialized]); // Only re-run if trip ID changes or initialization status changes
+
+  // Function to refetch trip data from API
+  const refetchTrip = useCallback(async () => {
+    if (!tripId || !firebaseUser) return;
+    
+    try {
+      const token = await firebaseUser.getIdToken();
+      const res = await fetch(`/api/trips/${tripId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: 'no-store',
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setTrip(data?.trip || null);
+        console.log('[TripUpdate] Trip data refetched successfully');
+      }
+    } catch (err) {
+      console.error('[TripUpdate] Error refetching trip:', err);
+    }
+  }, [tripId, firebaseUser]);
+
+  // Listen for trip updates from WebSocket (AI assistant edits)
+  useEffect(() => {
+    if (!tripUpdateData || !tripId) return;
+    
+    // Only process updates for the current trip
+    if (tripUpdateData.tripId !== tripId) return;
+    
+    console.log('[TripUpdate] Received trip update via WebSocket');
+    
+    // If we have the updated itinerary directly, update the trip state
+    if (tripUpdateData.itinerary) {
+      setTrip((prevTrip: Trip | null) => {
+        if (!prevTrip) return prevTrip;
+        return {
+          ...prevTrip,
+          itinerary: tripUpdateData.itinerary,
+        };
+      });
+      toast.success('Trip itinerary updated!', {
+        description: 'Your trip has been modified by the AI assistant.',
+      });
+    } else {
+      // Fallback: refetch from Firestore if no itinerary provided
+      refetchTrip();
+      toast.success('Trip updated!', {
+        description: 'Refreshing trip data...',
+      });
+    }
+    
+    // Clear the update data after processing
+    clearTripUpdateData();
+  }, [tripUpdateData, tripId, clearTripUpdateData, refetchTrip]);
 
   const formatCurrency = (val: unknown): string => {
     if (val === null || val === undefined) return '';
@@ -1089,10 +1147,10 @@ export default function TripDetailPage(props: TripPageProps) {
                                             {/* Information Grid */}
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm pt-3 border-t border-border/30">
                                               <div className="space-y-2.5">
-                                                {p?.description && (
+                                                {(p?.description || p?.why_recommended) && (
                                                   <div className="flex flex-col gap-1">
                                                     <span className="font-semibold text-foreground text-xs uppercase tracking-wide">Why Visit</span>
-                                                    <span className="text-muted-foreground">{p.description}</span>
+                                                    <span className="text-muted-foreground">{p.description || p.why_recommended}</span>
                                                   </div>
                                                 )}
                                                 {(p?.category || p?.subcategory || act?.activity_type) && (
