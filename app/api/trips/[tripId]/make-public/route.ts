@@ -1,7 +1,7 @@
 // /app/api/trips/[tripId]/make-public/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb, adminAuth } from '@/lib/firebaseAdmin';
-import { Timestamp } from 'firebase-admin/firestore';
+import { Timestamp, FieldValue } from 'firebase-admin/firestore';
 import { checkTripAccess } from '@/lib/tripAccess';
 import axios from 'axios';
 
@@ -88,12 +88,30 @@ export async function POST(req: NextRequest, context: Context): Promise<NextResp
         timeout: 30000, // 30 second timeout
       });
 
-      // Store purchase records in Firestore for paid trips
-      if (is_paid) {
-        const purchasesRef = adminDb.collection('public_trip_purchases');
-        // This will be used to track who purchased the trip
-        // We'll create a document structure: { trip_id, user_id, purchased_at, price }
-        // But we don't create it here - it will be created when a user purchases
+      // Update Firestore public_trips document with is_paid and price fields
+      // Find the public trip document by source_trip_id
+      const publicTripsRef = adminDb.collection('public_trips');
+      const publicTripQuery = await publicTripsRef.where('source_trip_id', '==', tripId).limit(1).get();
+      
+      if (!publicTripQuery.empty) {
+        const publicTripDoc = publicTripQuery.docs[0];
+        const updateData: Record<string, unknown> = {
+          is_paid: Boolean(is_paid),
+          updated_at: Timestamp.now(),
+        };
+        
+        // Only add price if it's a paid trip, otherwise remove it
+        if (is_paid && price) {
+          updateData.price = typeof price === 'string' ? price.trim() : String(price);
+        } else {
+          // Remove price field if trip is not paid
+          updateData.price = FieldValue.delete();
+        }
+        
+        await publicTripDoc.ref.update(updateData);
+        console.log(`[make-public] Updated public trip ${publicTripDoc.id} with is_paid=${is_paid}, price=${is_paid ? price : 'removed'}`);
+      } else {
+        console.warn(`[make-public] Public trip document not found for source_trip_id=${tripId}`);
       }
 
       return NextResponse.json({
