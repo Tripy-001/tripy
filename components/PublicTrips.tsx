@@ -243,7 +243,7 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
           return (
             <div key={`${trip.source_trip_id}-${idx}`} className="relative">
               <Link href={`/explore/trip/${trip.source_trip_id}`}>
-                <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 relative">
+                <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 relative h-full flex flex-col">
                   {isPaid && (
                     <div className="absolute top-2 right-2 z-10">
                       <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white border-0 shadow-lg">
@@ -253,9 +253,9 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
                     </div>
                   )}
                   {Array.isArray(trip.destination_photos) && trip.destination_photos.length > 0 ? (
-                    <AutoCarousel images={trip.destination_photos} className="w-full aspect-[4/3]" />
+                    <AutoCarousel images={trip.destination_photos} className="w-full h-48 flex-shrink-0" />
                   ) : trip.thumbnail_url ? (
-                    <div className="w-full aspect-[4/3] bg-muted/40 overflow-hidden">
+                    <div className="w-full h-48 flex-shrink-0 bg-muted/40 overflow-hidden">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={trip.thumbnail_url}
@@ -265,14 +265,14 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
                       />
                     </div>
                   ) : (
-                    <div className="w-full aspect-[4/3] bg-muted/40" />
+                    <div className="w-full h-48 flex-shrink-0 bg-muted/40" />
                   )}
-                  <CardHeader>
+                  <CardHeader className="flex-shrink-0 pb-2">
                     <div className="flex items-start justify-between gap-2">
-                      <CardTitle className="text-base font-semibold leading-tight">
+                      <CardTitle className="text-base font-semibold leading-tight line-clamp-2 min-h-[2.5rem]">
                         {trip.title || "Untitled Trip"}
                       </CardTitle>
-                      <div className="flex flex-col items-end gap-1">
+                      <div className="flex flex-col items-end gap-1 flex-shrink-0">
                         {isPaid && (
                           <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 font-bold">
                             ₹{trip.price ? parseFloat(trip.price).toLocaleString() : '0'}
@@ -284,7 +284,7 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-grow">
                     <p className="text-sm text-muted-foreground line-clamp-3">
                       {trip.summary || "No summary available."}
                     </p>
@@ -297,15 +297,16 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
 
         {isLoading && (
           Array.from({ length: Math.max(3 - (trips.length % 3), 1) }).map((_, i) => (
-            <Card key={`skeleton-${i}`} className="overflow-hidden animate-pulse">
-              <div className="w-full aspect-[4/3] bg-muted/40" />
-              <CardHeader>
-                <div className="h-5 w-2/3 bg-muted/60 rounded" />
+            <Card key={`skeleton-${i}`} className="overflow-hidden animate-pulse h-full flex flex-col">
+              <div className="w-full h-48 flex-shrink-0 bg-muted/40" />
+              <CardHeader className="flex-shrink-0 pb-2">
+                <div className="h-10 w-2/3 bg-muted/60 rounded" />
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex-grow">
                 <div className="space-y-2">
                   <div className="h-3 w-full bg-muted/60 rounded" />
                   <div className="h-3 w-5/6 bg-muted/60 rounded" />
+                  <div className="h-3 w-4/6 bg-muted/60 rounded" />
                 </div>
               </CardContent>
             </Card>

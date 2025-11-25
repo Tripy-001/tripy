@@ -209,65 +209,30 @@ export const SummaryStep = ({ form }: SummaryStepProps) => {
           </CardContent>
         </Card>
 
-        {/* Special Requirements */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Star className="w-5 h-5 text-primary" />
-              Special Requirements
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {data.dietary_restrictions && data.dietary_restrictions.length > 0 && (
-              <div>
-                <p className="text-sm text-muted-foreground mb-2">Dietary Restrictions</p>
-                <div className="flex flex-wrap gap-1">
-                  {data.dietary_restrictions.map((restriction) => (
-                    <Badge key={restriction} variant="secondary" className="text-xs">
-                      {restriction}
-                    </Badge>
-                  ))}
-                </div>
+        {/* Special Occasions */}
+        {data.special_occasions && data.special_occasions.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="w-5 h-5 text-primary" />
+                Special Occasions
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-1">
+                {data.special_occasions.map((occasion) => (
+                  <Badge key={occasion} variant="outline" className="text-xs">
+                    {occasion.replace('_', ' ')}
+                  </Badge>
+                ))}
               </div>
-            )}
-            
-            {data.accessibility_needs && data.accessibility_needs.length > 0 && (
-              <div>
-                <p className="text-sm text-muted-foreground mb-2">Accessibility Needs</p>
-                <div className="flex flex-wrap gap-1">
-                  {data.accessibility_needs.map((need) => (
-                    <Badge key={need} variant="secondary" className="text-xs">
-                      {need}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {data.special_occasions && data.special_occasions.length > 0 && (
-              <div>
-                <p className="text-sm text-muted-foreground mb-2">Special Occasions</p>
-                <div className="flex flex-wrap gap-1">
-                  {data.special_occasions.map((occasion) => (
-                    <Badge key={occasion} variant="outline" className="text-xs">
-                      {occasion}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {(!data.dietary_restrictions?.length && !data.accessibility_needs?.length && !data.special_occasions?.length) && (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                No special requirements specified
-              </p>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Additional Information */}
-      {(data.must_visit_places?.length > 0 || data.must_try_cuisines?.length > 0 || data.avoid_places?.length > 0) && (
+      {(data.must_visit_places?.length > 0 || data.must_try_cuisines?.length > 0) && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -296,19 +261,6 @@ export const SummaryStep = ({ form }: SummaryStepProps) => {
                   {data.must_try_cuisines.map((cuisine) => (
                     <Badge key={cuisine} variant="default" className="text-xs">
                       {cuisine}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {data.avoid_places && data.avoid_places.length > 0 && (
-              <div>
-                <p className="text-sm text-muted-foreground mb-2">Places to Avoid</p>
-                <div className="flex flex-wrap gap-1">
-                  {data.avoid_places.map((place) => (
-                    <Badge key={place} variant="destructive" className="text-xs">
-                      {place}
                     </Badge>
                   ))}
                 </div>
