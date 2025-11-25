@@ -30,6 +30,8 @@ export default function ExploreTripContent({ tripId, isPaid, children }: Explore
 
   useEffect(() => {
     const checkPurchase = async () => {
+      // For explore page, paid trips are always masked (never show full content)
+      // So we always set hasPurchased to false for paid trips
       if (!isPaid || !firebaseUser) {
         setHasPurchased(true); // Free trips or not logged in - show content
         setIsChecking(false);
@@ -37,25 +39,9 @@ export default function ExploreTripContent({ tripId, isPaid, children }: Explore
       }
 
       setIsChecking(true);
-      try {
-        const token = await firebaseUser.getIdToken();
-        const res = await fetch('/api/public_trips/purchases', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setHasPurchased(data.trip_ids?.includes(tripId) ?? false);
-        } else {
-          setHasPurchased(false);
-        }
-      } catch (e) {
-        console.error('Failed to check purchase status:', e);
-        setHasPurchased(false);
-      } finally {
-        setIsChecking(false);
-      }
+      // Always mask paid trips on explore page
+      setHasPurchased(false);
+      setIsChecking(false);
     };
 
     checkPurchase();

@@ -82,9 +82,17 @@ export default async function PublicTripsPage(
   const isPaid = response?.is_paid ?? false;
   const price = response?.price ? String(response.price) : '0';
   const tripId = id || '';
+  const tripData = {
+    title: response?.title,
+    summary: response?.summary,
+    description: response?.description,
+    thumbnail_url: response?.thumbnail_url,
+    destination_photos: response?.destination_photos,
+    destination: it?.destination,
+  };
 
   return (
-    <PaidTripGate tripId={tripId} isPaid={isPaid} price={price}>
+    <PaidTripGate tripId={tripId} isPaid={isPaid} price={price} tripData={tripData}>
       <ExploreTripContent tripId={tripId} isPaid={isPaid}>
       <div className="min-h-screen bg-muted/30">
         <header className="bg-white/80 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">

@@ -6,30 +6,37 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { CreditCard, Lock, DollarSign, CheckCircle } from "lucide-react";
+import { CreditCard, Lock, DollarSign } from "lucide-react";
 import { useAppStore } from "@/lib/store";
+import { toast } from "sonner";
 
 type PaidTripGateProps = {
   tripId: string;
   isPaid?: boolean;
   price?: string;
+  tripData?: {
+    title?: string;
+    summary?: string;
+    description?: string;
+    thumbnail_url?: string;
+    destination_photos?: string[];
+    destination?: string;
+  };
   children: React.ReactNode;
 };
 
-export default function PaidTripGate({ tripId, isPaid = false, price = '0', children }: PaidTripGateProps) {
+export default function PaidTripGate({ tripId, isPaid = false, price = '0', tripData, children }: PaidTripGateProps) {
   const router = useRouter();
   const { firebaseUser } = useAppStore();
-  const [hasPurchased, setHasPurchased] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [clonedTripId, setClonedTripId] = useState<string | null>(null);
 
   useEffect(() => {
+    // Check if user has already purchased and find their cloned trip
     const checkPurchase = async () => {
       if (!isPaid || !firebaseUser) {
-        setHasPurchased(true); // Free trips or not logged in - show content
         setIsChecking(false);
         return;
       }
@@ -37,20 +44,17 @@ export default function PaidTripGate({ tripId, isPaid = false, price = '0', chil
       setIsChecking(true);
       try {
         const token = await firebaseUser.getIdToken();
-        const res = await fetch('/api/public_trips/purchases', {
+        const res = await fetch(`/api/public_trips/${tripId}/cloned-trip`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         if (res.ok) {
           const data = await res.json();
-          setHasPurchased(data.trip_ids?.includes(tripId) ?? false);
-        } else {
-          setHasPurchased(false);
+          setClonedTripId(data.trip_id);
         }
       } catch (e) {
-        console.error('Failed to check purchase status:', e);
-        setHasPurchased(false);
+        console.error('Failed to check cloned trip:', e);
       } finally {
         setIsChecking(false);
       }
@@ -61,7 +65,7 @@ export default function PaidTripGate({ tripId, isPaid = false, price = '0', chil
 
   const handlePurchase = async () => {
     if (!firebaseUser) {
-      alert('Please log in to purchase trips');
+      toast.error('Please log in to purchase trips');
       return;
     }
 
@@ -82,25 +86,59 @@ export default function PaidTripGate({ tripId, isPaid = false, price = '0', chil
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ error: 'Purchase failed' }));
+        
+        // Handle already purchased case - redirect to cloned trip
+        if (errorData.already_purchased) {
+          // Try to find the cloned trip
+          try {
+            const token = await firebaseUser.getIdToken();
+            const clonedRes = await fetch(`/api/public_trips/${tripId}/cloned-trip`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            if (clonedRes.ok) {
+              const clonedData = await clonedRes.json();
+              toast('You already own this trip', {
+                description: 'Redirecting to your trip...',
+              });
+              setTimeout(() => {
+                router.push(`/trip/${clonedData.trip_id}`);
+              }, 1000);
+              return;
+            }
+          } catch (e) {
+            console.error('Failed to find cloned trip:', e);
+          }
+          toast.error('You have already purchased this trip');
+          setIsProcessingPayment(false);
+          return;
+        }
+        
         throw new Error(errorData.error || 'Purchase failed');
       }
 
       const data = await res.json();
-      setHasPurchased(true);
       setPaymentModalOpen(false);
       
-      // If trip was cloned, show success modal with option to view cloned trip
+      // If trip was cloned, redirect to cloned trip page
       if (data.cloned && data.trip_id) {
-        setClonedTripId(data.trip_id);
-        setShowSuccessModal(true);
+        toast.success('Trip purchased successfully!', {
+          description: 'Redirecting to your trip...',
+        });
+        // Small delay to show toast, then redirect
+        setTimeout(() => {
+          router.push(`/trip/${data.trip_id}`);
+        }, 1000);
       } else {
-        // Refresh to show unlocked content
-        window.location.reload();
+        toast.error('Purchase completed but trip cloning failed');
+        setIsProcessingPayment(false);
       }
     } catch (err) {
       console.error('Purchase error:', err);
-      alert(err instanceof Error ? err.message : 'Failed to purchase trip');
-    } finally {
+      toast.error('Purchase failed', {
+        description: err instanceof Error ? err.message : 'Failed to purchase trip',
+      });
       setIsProcessingPayment(false);
     }
   };
@@ -118,32 +156,41 @@ export default function PaidTripGate({ tripId, isPaid = false, price = '0', chil
     );
   }
 
-  if (!isPaid || hasPurchased) {
+  // For free trips, show content
+  if (!isPaid) {
     return <>{children}</>;
   }
 
-  // For unpaid trips, show content with purchase banner
+  // For paid trips, show full trip structure with purchase banner and masked sections
   return (
     <>
       {/* Purchase Banner */}
       <div className="sticky top-16 z-50 bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-3">
-              <Lock className="w-5 h-5" />
+              <Lock className="w-5 h-5 shrink-0" />
               <div>
                 <p className="font-semibold">Premium Trip - Purchase Required</p>
-                <p className="text-sm text-amber-100">Unlock full access to all itinerary details</p>
+                <p className="text-sm text-amber-100">Purchase to unlock full access and get your own copy</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <Badge className="bg-white text-amber-600 font-bold text-lg px-3 py-1">
+            <div className="flex items-center gap-3 flex-wrap">
+              <Badge className="bg-white text-amber-600 font-bold text-lg px-3 py-1 shrink-0">
                 ₹{parseFloat(price || '0').toLocaleString()}
               </Badge>
-              {firebaseUser ? (
+              {clonedTripId ? (
+                <Button
+                  onClick={() => router.push(`/trip/${clonedTripId}`)}
+                  className="bg-white text-amber-600 hover:bg-amber-50 font-semibold shrink-0"
+                  size="sm"
+                >
+                  View My Trip
+                </Button>
+              ) : firebaseUser ? (
                 <Button
                   onClick={() => setPaymentModalOpen(true)}
-                  className="bg-white text-amber-600 hover:bg-amber-50 font-semibold"
+                  className="bg-white text-amber-600 hover:bg-amber-50 font-semibold shrink-0"
                   size="sm"
                 >
                   <CreditCard className="w-4 h-4 mr-2" />
@@ -152,7 +199,7 @@ export default function PaidTripGate({ tripId, isPaid = false, price = '0', chil
               ) : (
                 <Button
                   onClick={() => window.location.href = '/login'}
-                  className="bg-white text-amber-600 hover:bg-amber-50 font-semibold"
+                  className="bg-white text-amber-600 hover:bg-amber-50 font-semibold shrink-0"
                   size="sm"
                 >
                   Log In to Purchase
@@ -163,48 +210,8 @@ export default function PaidTripGate({ tripId, isPaid = false, price = '0', chil
         </div>
       </div>
       
-      {/* Show content with masked sections */}
+      {/* Show full trip structure with masked sections */}
       {children}
-
-      {/* Original purchase screen (kept as fallback - hidden) */}
-      <div className="hidden">
-        <Card className="shadow-2xl border-0 max-w-md w-full">
-          <CardContent className="p-12 text-center">
-            <Lock className="w-16 h-16 text-muted-foreground mx-auto mb-6" />
-            <h2 className="text-2xl font-bold text-foreground mb-4">Premium Trip</h2>
-            <p className="text-muted-foreground mb-6">
-              This is a paid trip. Purchase to unlock full access to the itinerary and details.
-            </p>
-            <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 mb-6 text-lg px-4 py-2">
-              <DollarSign className="w-4 h-4 mr-2" />
-              ₹{parseFloat(price || '0').toLocaleString()}
-            </Badge>
-            <div className="space-y-3">
-              {firebaseUser ? (
-                <Button
-                  onClick={() => setPaymentModalOpen(true)}
-                  className="w-full theme-bg theme-bg-hover text-primary-foreground"
-                  size="lg"
-                >
-                  <CreditCard className="w-5 h-5 mr-2" />
-                  Purchase Trip
-                </Button>
-              ) : (
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">Please log in to purchase this trip</p>
-                  <Button
-                    onClick={() => window.location.href = '/login'}
-                    className="w-full theme-bg theme-bg-hover text-primary-foreground"
-                    size="lg"
-                  >
-                    Log In
-                  </Button>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Payment Modal */}
       <Dialog open={paymentModalOpen} onOpenChange={setPaymentModalOpen}>
@@ -270,52 +277,6 @@ export default function PaidTripGate({ tripId, isPaid = false, price = '0', chil
         </DialogContent>
       </Dialog>
 
-      {/* Success Modal - Trip Cloned */}
-      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-green-500" />
-              Trip Purchased & Cloned!
-            </DialogTitle>
-            <DialogDescription>
-              Your trip has been purchased and cloned to your account. You are now the owner of this trip.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            <div className="p-4 rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800">
-              <p className="text-sm text-green-800 dark:text-green-200">
-                ✓ Payment processed successfully<br />
-                ✓ Trip cloned to your account<br />
-                ✓ You are now the owner
-              </p>
-            </div>
-          </div>
-
-          <DialogFooter className="flex-col sm:flex-row gap-2">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setShowSuccessModal(false);
-                window.location.reload();
-              }}
-            >
-              Continue Viewing
-            </Button>
-            {clonedTripId && (
-              <Button
-                onClick={() => {
-                  router.push(`/trip/${clonedTripId}`);
-                }}
-                className="theme-bg theme-bg-hover text-primary-foreground"
-              >
-                View My Trip
-              </Button>
-            )}
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
