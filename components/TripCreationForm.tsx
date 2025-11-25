@@ -14,35 +14,23 @@ import {
   ArrowLeft, 
   ArrowRight, 
   MapPin, 
-  Calendar, 
-  Users, 
-  DollarSign,
   Heart,
-  Home,
-  Star,
+  Settings,
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
 import { TripPlanRequestSchema, defaultTripPlanValues, type TripPlanRequest } from '@/lib/schemas/trip-plan';
-import { BasicInfoStep } from '@/components/form-steps/BasicInfoStep';
-import { BudgetStep } from '@/components/form-steps/BudgetStep';
-import { GroupDetailsStep } from '@/components/form-steps/GroupDetailsStep';
-import { PreferencesStep } from '@/components/form-steps/PreferencesStep';
-import { AccommodationTransportStep } from '@/components/form-steps/AccommodationTransportStep';
-import { SpecialRequirementsStep } from '@/components/form-steps/SpecialRequirementsStep';
-import { AdditionalInfoStep } from '@/components/form-steps/AdditionalInfoStep';
+import { CombinedBasicInfoStep } from '@/components/form-steps/CombinedBasicInfoStep';
+import { CombinedPreferencesStep } from '@/components/form-steps/CombinedPreferencesStep';
+import { CombinedAdditionalStep } from '@/components/form-steps/CombinedAdditionalStep';
 import { SummaryStep } from '@/components/form-steps/SummaryStep';
 import { useAppStore } from '@/lib/store';
 import CreditsDisplay from '@/components/CreditsDisplay';
 
 const STEPS = [
-  { id: 'basic', title: 'Basic Info', icon: MapPin },
-  { id: 'budget', title: 'Budget', icon: DollarSign },
-  { id: 'group', title: 'Group Details', icon: Users },
+  { id: 'basic', title: 'Trip Details', icon: MapPin },
   { id: 'preferences', title: 'Preferences', icon: Heart },
-  { id: 'accommodation', title: 'Accommodation & Transport', icon: Home },
-  { id: 'special', title: 'Special Requirements', icon: Star },
-  { id: 'additional', title: 'Additional Info', icon: Calendar },
+  { id: 'additional', title: 'Customize', icon: Settings },
   { id: 'summary', title: 'Summary', icon: CheckCircle },
 ];
 
@@ -70,22 +58,24 @@ export const TripCreationForm = () => {
   const isStepValid = () => {
     const values = form.getValues();
     switch (currentStep) {
-      case 0:
-        return !!(values.origin && values.destination && values.start_date && values.end_date);
-      case 1:
-        return !!(values.total_budget && values.total_budget > 0);
-      case 2:
-        return !!(values.group_size && values.traveler_ages && values.traveler_ages.length === values.group_size);
-      case 3:
-        return !!(values.activity_level && values.primary_travel_style);
-      case 4:
-        return !!(values.accommodation_type);
-      case 5:
-        return true; // Special requirements are optional
-      case 6:
-        return true; // Additional info is optional
-      case 7:
-        return true; // Summary step
+      case 0: // Trip Details (Basic Info + Budget + Group)
+        return !!(
+          values.origin && 
+          values.destination && 
+          values.start_date && 
+          values.end_date &&
+          values.total_budget && 
+          values.total_budget > 0 &&
+          values.group_size && 
+          values.traveler_ages && 
+          values.traveler_ages.length === values.group_size
+        );
+      case 1: // Preferences (Accommodation + Activity + Travel Style)
+        return !!(values.accommodation_type && values.activity_level && values.primary_travel_style);
+      case 2: // Customize (Transport + Occasions + Must Visit/Try + Previous Visits)
+        return true; // All fields are optional
+      case 3: // Summary
+        return true;
       default:
         return false;
     }
@@ -148,34 +138,26 @@ export const TripCreationForm = () => {
 
   const getFieldsForStep = (step: number): (keyof TripPlanRequest)[] => {
     switch (step) {
-      case 0: return ['origin', 'destination', 'start_date', 'end_date'];
-      case 1: return ['total_budget', 'budget_currency'];
-      case 2: return ['group_size', 'traveler_ages'];
-      case 3: return ['activity_level', 'primary_travel_style', 'preferences'];
-      case 4: return ['accommodation_type', 'transport_preferences'];
-      case 5: return ['dietary_restrictions', 'accessibility_needs', 'special_occasions'];
-      case 6: return ['must_visit_places', 'must_try_cuisines', 'avoid_places', 'previous_visits', 'language_preferences'];
-      default: return [];
+      case 0: // Trip Details
+        return ['origin', 'destination', 'start_date', 'end_date', 'total_budget', 'budget_currency', 'group_size', 'traveler_ages'];
+      case 1: // Preferences
+        return ['accommodation_type', 'activity_level', 'primary_travel_style'];
+      case 2: // Customize
+        return ['transport_preferences', 'special_occasions', 'must_visit_places', 'must_try_cuisines', 'previous_visits'];
+      default: 
+        return [];
     }
   }; 
 
   const renderStep = () => {
     switch (currentStep) {
       case 0:
-        return <BasicInfoStep form={form} />;
+        return <CombinedBasicInfoStep form={form} />;
       case 1:
-        return <BudgetStep form={form} />;
+        return <CombinedPreferencesStep form={form} />;
       case 2:
-        return <GroupDetailsStep form={form} />;
+        return <CombinedAdditionalStep form={form} />;
       case 3:
-        return <PreferencesStep form={form} />;
-      case 4:
-        return <AccommodationTransportStep form={form} />;
-      case 5:
-        return <SpecialRequirementsStep form={form} />;
-      case 6:
-        return <AdditionalInfoStep form={form} />;
-      case 7:
         return <SummaryStep form={form} />;
       default:
         return null;
@@ -314,13 +296,9 @@ export const TripCreationForm = () => {
 
 const getStepDescription = (step: number): string => {
   const descriptions = [
-    'Tell us where you want to go and when',
-    'Set your budget and spending preferences',
-    'Tell us about your travel group',
-    'Share your interests and preferences',
-    'Choose your accommodation and transport preferences',
-    'Any special requirements or dietary needs?',
-    'Additional information to personalize your trip',
+    'Where are you going, when, and with how many people?',
+    'How do you like to travel?',
+    'Any special requests or must-see places?',
     'Review your trip details before we create your itinerary',
   ];
   return descriptions[step] || '';
