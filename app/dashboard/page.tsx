@@ -16,7 +16,6 @@ import {
   Plane, 
   Clock,
   TrendingUp,
-  Heart,
   X,
   RefreshCw
 } from 'lucide-react';
@@ -147,46 +146,7 @@ const DashboardPage = () => {
           </Card>
         </div>
 
-        {/* Quick Actions */}
-        <div className="mb-8">
-          <h3 className="text-xl font-semibold text-foreground mb-4">Quick Actions</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:-translate-y-1"
-              onClick={handleCreateTrip}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 theme-bg rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Plus className="w-6 h-6 text-white" />
-                </div>
-                <h4 className="font-semibold text-foreground mb-2">Plan New Trip</h4>
-                <p className="text-sm text-muted-foreground">Create a personalized itinerary with AI</p>
-              </CardContent>
-            </Card>
-
-            <Card className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 theme-bg-accent rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Heart className="w-6 h-6 text-white" />
-                </div>
-                <h4 className="font-semibold text-foreground mb-2">Explore Destinations</h4>
-                <p className="text-sm text-muted-foreground">Discover amazing places to visit</p>
-              </CardContent>
-            </Card>
-
-            <Card className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-6 h-6 text-white" />
-                </div>
-                <h4 className="font-semibold text-foreground mb-2">Share Trip</h4>
-                <p className="text-sm text-muted-foreground">Share your travel experiences</p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Recent Trips */}
+        {/* Your Trips */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-semibold text-foreground">Your Trips</h3>
