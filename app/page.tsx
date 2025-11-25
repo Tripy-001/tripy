@@ -206,6 +206,34 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Public Trips Section */}
+      <section 
+        ref={tripsRef}
+        className="py-32 bg-gradient-to-b from-background via-muted/10 to-background relative overflow-hidden section-animate"
+      >
+        <div 
+          className="absolute inset-0 bg-grid-pattern opacity-5 parallax-slow"
+          style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+        />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 px-4 py-1.5 text-sm font-semibold bg-primary/10 text-primary border-primary/20">
+              Community Trips
+            </Badge>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight">
+              Explore{' '}
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Public Trips
+              </span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              See community-created itineraries and get inspired. Load more to browse.
+            </p>
+          </div>
+          <PublicTrips initialLimit={9} />
+        </div>
+      </section>
+
       {/* Features Section */}
       <section 
         ref={featuresRef}
@@ -368,35 +396,6 @@ const HomePage = () => {
               </p>
             </div>
           </div>
-        </div>
-      </section>
-
-
-      {/* Public Trips Section */}
-      <section 
-        ref={tripsRef}
-        className="py-32 bg-gradient-to-b from-background via-muted/10 to-background relative overflow-hidden section-animate"
-      >
-        <div 
-          className="absolute inset-0 bg-grid-pattern opacity-5 parallax-slow"
-          style={{ transform: `translateY(${scrollY * 0.1}px)` }}
-        />
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16">
-            <Badge className="mb-4 px-4 py-1.5 text-sm font-semibold bg-primary/10 text-primary border-primary/20">
-              Community Trips
-            </Badge>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight">
-              Explore{' '}
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                Public Trips
-              </span>
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              See community-created itineraries and get inspired. Load more to browse.
-            </p>
-          </div>
-          <PublicTrips initialLimit={9} />
         </div>
       </section>
 
