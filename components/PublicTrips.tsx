@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,6 +45,7 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
   const router = useRouter();
   const [trips, setTrips] = useState<PublicTrip[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const nextCursorRef = React.useRef<string | null>(null);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true);
@@ -73,12 +74,18 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
     [initialLimit, orderBy]
   );
 
+  // Keep ref in sync with state
+  useEffect(() => {
+    nextCursorRef.current = nextCursor;
+  }, [nextCursor]);
+
   const fetchPage = useCallback(async (reset = false) => {
     if (isLoading) return;
     setIsLoading(true);
     setError(null);
     try {
-      const cursor = reset ? null : nextCursor;
+      // Use ref to get the latest cursor value (avoids stale closure)
+      const cursor = reset ? null : nextCursorRef.current;
       const res = await fetch(buildUrl(cursor ?? undefined, filter));
       if (!res.ok) {
         const text = await res.text();
@@ -91,6 +98,7 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
         setTrips(prev => [...prev, ...(data.trips || [])]);
       }
       setNextCursor(data.nextCursor);
+      nextCursorRef.current = data.nextCursor;
       setHasMore(Boolean(data.hasMore));
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load trips");
@@ -99,7 +107,7 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
       setIsFirstLoad(false);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buildUrl, nextCursor, filter]); // Removed isLoading from dependencies
+  }, [buildUrl, filter]); // Removed nextCursor and isLoading from dependencies
 
   // Reset and refetch when filter changes
   useEffect(() => {
@@ -279,7 +287,10 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
                           </Badge>
                         )}
                         <Badge variant="secondary" className="whitespace-nowrap">
-                          {trip.updated_at ? new Date(trip.updated_at).toLocaleDateString() : "New"}
+                          {trip.updated_at ? (() => {
+                            const date = new Date(trip.updated_at);
+                            return isNaN(date.getTime()) ? "New" : date.toLocaleDateString();
+                          })() : "New"}
                         </Badge>
                       </div>
                     </div>
@@ -316,7 +327,7 @@ export default function PublicTrips({ initialLimit = 9, orderBy = "updated_at" }
 
       <div className="flex justify-center mt-8">
         {hasMore ? (
-          <Button onClick={fetchPage} disabled={isLoading} variant="outline">
+          <Button onClick={() => fetchPage(false)} disabled={isLoading} variant="outline">
             {isLoading ? "Loading..." : "Load more"}
           </Button>
         ) : !isFirstLoad && trips.length > 0 ? (

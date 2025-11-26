@@ -349,8 +349,10 @@ export default function TripDetailPage(props: TripPageProps) {
         isPaid: false,
         price: '',
       });
-      // Show success message or redirect
-      alert('Trip made public successfully!');
+      // Show success toast
+      toast.success('Trip made public successfully!', {
+        description: 'Your trip is now visible in the public marketplace.',
+      });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to make trip public';
       setError(errorMessage);
@@ -804,11 +806,51 @@ export default function TripDetailPage(props: TripPageProps) {
                   onClick={() => {
                     // Pre-fill form with trip data if available
                     const tripData = trip as any;
+                    const itinerary = tripData?.itinerary;
+                    const request = tripData?.request;
+                    
+                    // Build title from destination or trip title
+                    const title = tripData?.title || 
+                      itinerary?.destination || 
+                      (request?.destination ? `Trip to ${request.destination}` : '');
+                    
+                    // Build summary from trip summary, itinerary description, or generate from request
+                    let summary = tripData?.summary || '';
+                    if (!summary && request) {
+                      const parts = [];
+                      if (request.destination) parts.push(`Explore ${request.destination}`);
+                      if (request.group_size) parts.push(`with ${request.group_size} travelers`);
+                      if (request.primary_travel_style) parts.push(`in ${request.primary_travel_style} style`);
+                      summary = parts.join(' ');
+                    }
+                    
+                    // Build description from itinerary overview or generate from request details
+                    let description = tripData?.description || itinerary?.trip_overview || '';
+                    if (!description && request) {
+                      const descParts = [];
+                      if (request.start_date && request.end_date) {
+                        descParts.push(`Travel dates: ${request.start_date} to ${request.end_date}`);
+                      }
+                      if (request.activity_level) {
+                        descParts.push(`Activity level: ${request.activity_level}`);
+                      }
+                      if (request.accommodation_type) {
+                        descParts.push(`Accommodation: ${request.accommodation_type}`);
+                      }
+                      description = descParts.join('. ');
+                    }
+                    
+                    // Build tags from travel style and activities
+                    const tags: string[] = [];
+                    if (request?.primary_travel_style) tags.push(request.primary_travel_style);
+                    if (request?.activity_level) tags.push(request.activity_level);
+                    if (request?.accommodation_type) tags.push(request.accommodation_type);
+                    
                     setPublicTripForm({
-                      title: tripData?.title || tripData?.itinerary?.destination || '',
-                      summary: tripData?.summary || '',
-                      description: tripData?.description || '',
-                      tags: '',
+                      title,
+                      summary,
+                      description,
+                      tags: tags.join(', '),
                       isPaid: false,
                       price: '',
                     });

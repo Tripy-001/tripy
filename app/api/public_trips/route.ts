@@ -109,13 +109,32 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         }
       }
       
+      // Helper to convert Firestore Timestamp or date to ISO string
+      const formatDate = (dateValue: unknown): string | undefined => {
+        if (!dateValue) return undefined;
+        // Firestore Timestamp object
+        if (typeof dateValue === 'object' && dateValue !== null && 'toDate' in dateValue) {
+          return (dateValue as { toDate: () => Date }).toDate().toISOString();
+        }
+        // Already a string
+        if (typeof dateValue === 'string') {
+          const parsed = new Date(dateValue);
+          return isNaN(parsed.getTime()) ? undefined : parsed.toISOString();
+        }
+        // Number (epoch)
+        if (typeof dateValue === 'number') {
+          return new Date(dateValue).toISOString();
+        }
+        return undefined;
+      };
+
       return {
         source_trip_id: data.source_trip_id,
         summary: data.summary,
         thumbnail_url: data.thumbnail_url,
         destination_photos,
         title: data.title,
-        updated_at: data.updated_at,
+        updated_at: formatDate(data.updated_at),
         is_paid: data.is_paid ?? false,
         price: data.price ? String(data.price) : undefined,
         day1_preview: day1Preview,
