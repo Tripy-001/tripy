@@ -21,9 +21,10 @@ interface Collaborator {
 interface CollaboratorsListProps {
   tripId: string;
   isOwner: boolean;
+  onCollaboratorsChange?: () => void;
 }
 
-export default function CollaboratorsList({ tripId, isOwner }: CollaboratorsListProps) {
+export default function CollaboratorsList({ tripId, isOwner, onCollaboratorsChange }: CollaboratorsListProps) {
   const { firebaseUser } = useAppStore();
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
   const [owner, setOwner] = useState<Collaborator | null>(null);
@@ -54,6 +55,10 @@ export default function CollaboratorsList({ tripId, isOwner }: CollaboratorsList
       const data = await res.json();
       setCollaborators(data.collaborators || []);
       setOwner(data.owner || null);
+      // Notify parent component that collaborators have changed
+      if (onCollaboratorsChange) {
+        onCollaboratorsChange();
+      }
     } catch (error) {
       console.error('Error fetching collaborators:', error);
       toast.error('Failed to load collaborators');

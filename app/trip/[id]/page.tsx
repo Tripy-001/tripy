@@ -133,6 +133,36 @@ export default function TripDetailPage(props: TripPageProps) {
     }
   }, [firebaseUser]);
 
+  // Callback to refetch trip members when collaborators change
+  const handleCollaboratorsChange = React.useCallback(async () => {
+    if (!tripId || !firebaseUser) return;
+    
+    try {
+      const token = await firebaseUser.getIdToken();
+      const res = await fetch(`/api/trips/${tripId}/collaborators`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const allMembers = data.owner ? [data.owner, ...(data.collaborators || [])] : (data.collaborators || []);
+        setTripMembers(allMembers);
+      }
+    } catch (error) {
+      console.error('Error refetching trip members:', error);
+      // If refetch fails, try using the existing trip data as fallback
+      if (trip) {
+        const tripData = trip as { userId?: string; collaborators?: string[] };
+        const userId = firebaseUser.uid;
+        const ownerId = tripData.userId || userId;
+        const collaboratorIds = tripData.collaborators || [];
+        fetchTripMembers(tripId, userId, ownerId, collaboratorIds);
+      }
+    }
+  }, [tripId, firebaseUser, trip, fetchTripMembers]);
+
   useEffect(() => {
     if (!tripId) return;
     if (authLoading) return;
@@ -2170,7 +2200,7 @@ export default function TripDetailPage(props: TripPageProps) {
             {/* Collaborators Section */}
             {tripId && (
               <div className="mb-6" id="collaborators">
-                <CollaboratorsList tripId={tripId} isOwner={isOwner} />
+                <CollaboratorsList tripId={tripId} isOwner={isOwner} onCollaboratorsChange={handleCollaboratorsChange} />
               </div>
             )}
 
